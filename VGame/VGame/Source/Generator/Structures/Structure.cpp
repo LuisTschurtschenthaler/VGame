@@ -1,0 +1,60 @@
+#include "Structure.h"
+#include "Random.h"
+#include "BlockType.h"
+#include "WorldConstants.h"
+#include "ChunkMap.h"
+#include "ChunkManager.h"
+#include "Chunk.h"
+
+
+void Structure::build(ChunkManager& chunkManager) {
+	for(auto& structureBlock : _structureBlocks)
+		chunkManager.placeBlock(structureBlock.position, structureBlock.block);
+}
+
+void Structure::generateTree(const BlockPositionXYZ& pos) {
+	int height = Random::get(4, 6);
+	int crownSize = 1, bushSize = 2;
+
+	int y = pos.y + height;
+	fillXZ({ pos.x - crownSize, y - 1, pos.z - crownSize },
+		   { pos.x + crownSize, y - 1, pos.z + crownSize },
+		   BlockType::OAK_LEAVE);
+	clearEdges({ pos.x, y - 1, pos.z }, crownSize);
+
+	fillXZ({ pos.x - bushSize, y - 2, pos.z - bushSize },
+		   { pos.x + bushSize, y - 2, pos.z + bushSize },
+		   BlockType::OAK_LEAVE);
+	clearEdges({ pos.x, y - 2, pos.z }, bushSize);
+
+	fillXZ({ pos.x - bushSize, y - 3, pos.z - bushSize },
+		   { pos.x + bushSize, y - 3, pos.z + bushSize },
+		   BlockType::OAK_LEAVE);
+
+	fillY(pos, BlockType::OAK_LOG, height);
+	_structureBlocks.emplace_back(pos.x, y, pos.z, BlockType::OAK_LEAVE);
+}
+
+void Structure::generateCactus(const BlockPositionXYZ& pos) {
+	fillY({ pos.x, pos.y + 1, pos.z }, BlockType::CACTUS, Random::get(3, 5));
+}
+
+
+void Structure::fillXZ(const BlockPositionXYZ& start, const BlockPositionXYZ& end, BlockType block) {
+	for(int x = start.x; x <= end.x; x++) {
+		for(int z = start.z; z <= end.z; z++)
+			_structureBlocks.emplace_back(x, start.y, z, block);
+	}
+}
+
+void Structure::fillY(const BlockPositionXYZ& start, BlockType block, int height) {
+	for(int y = start.y; y <= start.y + height; y++)
+		_structureBlocks.emplace_back(start.x, y, start.z, block);
+}
+
+void Structure::clearEdges(const BlockPositionXYZ& pos, int distance) {
+	_structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z + distance, BlockType::AIR);
+	_structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z - distance, BlockType::AIR);
+	_structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z + distance, BlockType::AIR);
+	_structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z - distance, BlockType::AIR);
+}
