@@ -14,6 +14,7 @@ public:
 		: TerrainGenerator() {
 
 		_seed = Random::get();
+		std::cout << "Terrain-Seed: " << _seed << std::endl;
 	}
 
 

@@ -12,7 +12,7 @@ std::string Desert::getName() const {
 }
 
 BlockType Desert::getPlant() const {
-	return BlockType::AIR;
+	return BlockType::DEAD_BUSH;
 }
 
 BlockType Desert::getTopBlock() const {
@@ -46,7 +46,7 @@ std::string Grassland::getName() const {
 
 
 BlockType Grassland::getPlant() const {
-	return BlockType::AIR;
+	return BlockType::GRASS2;
 }
 
 BlockType Grassland::getTopBlock() const {
@@ -79,7 +79,7 @@ std::string Forest::getName() const {
 }
 
 BlockType Forest::getPlant() const {
-	return BlockType::AIR;
+	return BlockType::GRASS2;
 }
 
 BlockType Forest::getTopBlock() const {
@@ -112,7 +112,7 @@ std::string SnowForest::getName() const {
 }
 
 BlockType SnowForest::getPlant() const {
-	return BlockType::AIR;
+	return BlockType::GRASS2;
 }
 
 BlockType SnowForest::getTopBlock() const {
@@ -145,7 +145,7 @@ std::string HighLands::getName() const {
 }
 
 BlockType HighLands::getPlant() const {
-	return BlockType::AIR;
+	return BlockType::GRASS2;
 }
 
 BlockType HighLands::getTopBlock() const {

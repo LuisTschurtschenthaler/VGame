@@ -7,6 +7,7 @@
 #include "MeshTypes.h"
 #include "NearbyChunks.h"
 #include "ChunkMesh.h"
+#include "AABB.h"
 class ChunkManager;
 class ChunkSection;
 class ChunkMap;
@@ -17,12 +18,13 @@ class Chunk {
 public:
 	ChunkManager* chunkManager;
 	ChunkCoordXZ coord;
-	Chunk* nearbyChunks[AMOUNT_OF_NEARBY_CHUNKS];
 
+	Chunk* nearbyChunks[AMOUNT_OF_NEARBY_CHUNKS];
 	std::vector<ChunkMesh*> meshCollection;
 	bool chunkDataGenerated, meshGenerated, isBuffered;
 	
 private:
+	AABB _aabb;
 	std::vector<ChunkSection*> _sections;
 
 public:
@@ -30,6 +32,7 @@ public:
 	~Chunk();
 
 	ChunkSection* getChunkSection(int y);
+
 	void placeBlock(const BlockPositionXYZ& coord, BlockType block);
 
 	void generateChunkData(ChunkMap* chunkMap);
@@ -44,6 +47,7 @@ public:
 	int getWorldPositionZ(int z) const;
 	
 private:
+	bool _isOutOfRange(const BlockPositionXYZ& coord);
 	float _vertexAO(bool side1, bool side2, bool corner);
 
 };

@@ -42,17 +42,9 @@ public:
 
 	void setCoreEngine(CoreEngine* coreEngine) { _coreEngine = coreEngine; }
 	Player* getPlayer() const { return _player; }
+	Sky* getSky() const { return _sky; }
 
-	/* ---------------------------------------------------- */
-	static bool isDay() { return (Game::dayTime >= 5.5 && Game::dayTime <= 18.3); }
-	static float getDayTheta() { return static_cast<float>((Game::dayTime - SUNRISE_TIME) * PI); }
-	static glm::vec3 getLightDirection() {
-		float dayTheta = getDayTheta();
-
-		if(isDay()) return glm::vec3(sin(PI) * cos(dayTheta), -sin(dayTheta), cos(PI) * cos(dayTheta));
-			else return glm::vec3(-sin(PI) * cos(dayTheta), sin(dayTheta), -cos(PI) * cos(dayTheta));
-	}
-	/* ---------------------------------------------------- */
+	static bool isDay() { return (Game::dayTime >= 0 && Game::dayTime <= 180); }
 
 };
 

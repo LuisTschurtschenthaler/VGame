@@ -4,10 +4,11 @@
 #define PI 3.14159265359
 #define PI2 PI * 2
 #define SUNRISE_TIME 6
+#define GRAVITY 1 //9.81
 
 constexpr float BLOCK_SIZE		= 1.f;
 
-constexpr int RENDER_DISTANCE	= 8;
+constexpr int RENDER_DISTANCE	= 12;
 
 constexpr int CHUNK_SECTIONS	= 16;
 constexpr int CHUNK_SIZE		= 16;

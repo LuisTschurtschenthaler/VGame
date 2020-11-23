@@ -23,9 +23,6 @@ enum TerrainGeneratorType {
 
 class TerrainGenerator {
 
-private:
-	int _seed;
-
 public:
 	static TerrainGenerator* generators[];
 

@@ -1,20 +1,20 @@
 Name
-Blocky
+Example
 
 ID
-5
-
-Opaque
-1
-
-Obstacle
-1
+0
 
 Texture Top
-2 0
+0 0 0 0 0 0
 
-Texture Side
-2 0
+LightLevel
+0
 
-Texture Bottom
-2 0
+MeshType
+0
+
+IsTransparent
+false
+
+HasHitbox
+

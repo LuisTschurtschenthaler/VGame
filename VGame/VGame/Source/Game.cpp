@@ -20,8 +20,6 @@ float Game::dayTime = 0;
 Game::Game() 
 	: _coreEngine(nullptr), _textRenderer(nullptr), _sky(nullptr), 
 	_player(nullptr), _world(nullptr) {
-
-	dayTime = 6.2f;
 }
 
 Game::~Game() {
@@ -42,13 +40,13 @@ void Game::init() {
 void Game::update() {
 	/* ------------ TEMP ------------ */
 	if(Input::isKeyPressed(KeyCode::KEY_Q))
-		dayTime -= 0.05f;
+		dayTime -= 1;
 	if(Input::isKeyPressed(KeyCode::KEY_E))
-		dayTime += 0.05f;
+		dayTime += 1;
 	/* ------------ TEMP ------------ */
 
-	//dayTime += 0.01f;
-	dayTime = (dayTime > 24) ? dayTime - 24 : (dayTime < 0) ? 24 : dayTime;
+	dayTime += 0.01;
+	dayTime = (dayTime > 360) ? dayTime - 360 : (dayTime < 0) ? 360 : dayTime;
 
 	_world->update();
 	_textRenderer->update(_world->getChunkManager(), _player);

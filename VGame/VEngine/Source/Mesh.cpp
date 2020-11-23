@@ -19,11 +19,8 @@ MeshData::MeshData(int indexSize) {
 }
 
 MeshData::~MeshData() {
-	if(_vbo)
-		glDeleteBuffers(1, &_vbo);
-
-	if(_ibo)
-		glDeleteBuffers(1, &_ibo);
+	if(_vbo) glDeleteBuffers(1, &_vbo);
+	if(_ibo) glDeleteBuffers(1, &_ibo);
 }
 
 
@@ -48,10 +45,11 @@ Mesh::Mesh(const std::string& file, glm::vec3 position, glm::vec3 rotation, glm:
 		for(unsigned int i = 0; i < model->mNumVertices; i++) {
 			const aiVector3D* position = &(model->mVertices[i]);
 			const aiVector3D* normal = &(model->mNormals[i]);
-			//const aiVector3D* texCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
+			const aiVector3D* texCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
 
 			Vertex vert(glm::vec3(position->x, position->y, position->z),
-						glm::vec3(normal->x, normal->y, normal->z));
+						glm::vec3(normal->x, normal->y, normal->z),
+						glm::vec3(texCoord->x, texCoord->y, texCoord->z));
 
 			vertices.push_back(vert);
 		}
@@ -68,9 +66,7 @@ Mesh::Mesh(const std::string& file, glm::vec3 position, glm::vec3 rotation, glm:
 		_initMesh(&vertices[0], vertices.size(), (int*) &indices[0], indices.size(), true);
 		_meshes.insert(std::pair<std::string, MeshData*>(file, _meshData));
 
-	} else {
-		_meshData = it->second;
-	}
+	} else _meshData = it->second;
 }
 
 void Mesh::draw() const {
@@ -82,11 +78,15 @@ void Mesh::draw() const {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
 	glEnableVertexAttribArray(1);
 
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, uvWithTextureID));
+	glEnableVertexAttribArray(2);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _meshData->getIBO());
 	glDrawElements(GL_TRIANGLES, _meshData->getSize(), GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 }
 
 void Mesh::_initMesh(Vertex* vertices, int vertexSize, int* indices, int indexSize, bool calculateNormals) {

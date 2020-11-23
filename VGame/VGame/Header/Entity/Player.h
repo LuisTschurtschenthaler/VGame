@@ -1,39 +1,39 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#define WALK_SPEED 0.05f
+#define WALK_SPEED 0.025f
 #define FLY_SPEED 0.075f
+#define JUMP_TIME 1.f
 #define MOUSE_SENSITIVITY 0.1f
 
 #include <GLM/glm.hpp>
 #include "Camera.h"
 #include "AABB.h"
 
+class ChunkManager;
+
 class Player {
 
 public:
 	Camera* camera;
+	AABB* aabb;
 	glm::vec3 lastChunkPosition;
+	bool isFlying, isFalling, isJumping, isSwimming;
 
 private:
-	bool _flying;
 	const float _cardinalPointRange;
-	AABB* _boundingBox;
 
 
 public:
 	Player();
 	~Player();
 
-	void update();
-	void updatePhysics();
+	void update(ChunkManager* chunkManager);
 	std::string yawToCardinalPoint();
 
 	void setSpawnPoint(glm::vec3 spawnPoint);
 	glm::vec3 getPosition() const { return camera->getPosition(); }
 	glm::vec3 getFront() const { return camera->getFront(); }
-	
-	AABB getBouningBox() const { return { _boundingBox->min + camera->getPosition(), _boundingBox->max + camera->getPosition() }; }
 
 private:
 	bool _isInRange(float yaw, int numberToCheckPos, int numberToCheckNeg = 0);

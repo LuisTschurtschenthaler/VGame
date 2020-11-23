@@ -1,7 +1,9 @@
 #include "Timer.h"
+#include <string>
+#include <iostream>
 
-float Timer::_last = 0.f;
-float Timer::_delta = 0.f;
+double Timer::_last = 0.f;
+double Timer::_delta = 0.f;
 
 void Timer::setup() {
 	_last = static_cast<float>(SDL_GetTicks());
@@ -9,7 +11,7 @@ void Timer::setup() {
 }
 
 void Timer::update() {
-	float now = static_cast<float>(SDL_GetTicks());
+	double now = static_cast<float>(SDL_GetTicks());
 	_delta = now - _last;
 	_last = now;
 }

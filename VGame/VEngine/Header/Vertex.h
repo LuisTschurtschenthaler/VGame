@@ -21,6 +21,9 @@ struct Vertex {
 		: position(position), normal(normal) {
 	}
 
+	Vertex(glm::vec3 position)
+		: position(position) { }
+
 };
 
 #endif // VERTEX_H

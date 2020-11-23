@@ -5,6 +5,7 @@
 #include "Coordinates.h"
 #include "NearbyChunks.h"
 #include "Array3D.h"
+#include "AABB.h"
 class ChunkManager;
 class ChunkMap;
 class Chunk;
@@ -15,6 +16,7 @@ class ChunkSection {
 public:
 	ChunkManager* chunkManager;
 	ChunkCoordXYZ coord;
+	AABB aabb;
 	Array3D<BlockType, CHUNK_SIZE> data;
 	bool areMeshesGenerated;
 
@@ -26,14 +28,15 @@ public:
 	ChunkSection(ChunkManager* chunkManager, Chunk* chunk, const ChunkCoordXYZ& coord);
 	~ChunkSection();
 
-	void placeBlock(BlockPositionXYZ blockCoord, const BlockType& block);
+	void placeBlock(const BlockPositionXYZ& blockCoord, const BlockType& block);
+	BlockType getBlock(const BlockPositionXYZ& blockCoord);
 	void generateMesh();
+	Block* getBlockRelative(int x, int y, int z);
 
 private:
 	bool _isOutOfChunkRange(BlockPositionXYZ coord);
 	bool _isOutOfChunkRange(int nr);
 	Block* _getBlock(int x, int y, int z);
-	Block* _getBlockRelative(int x, int y, int z);
 
 };
 

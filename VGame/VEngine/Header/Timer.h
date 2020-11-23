@@ -6,16 +6,16 @@
 class Timer {
 
 private:
-	static float _last;
-	static float _delta;
+	static double _last;
+	static double _delta;
 
 
 public:
 	static void setup();
 	static void update();
 
-	static float getTime() { return _last; }
-	static float getDelta() { return _delta; }
+	static double getTime() { return _last; }
+	static double getDelta() { return _delta; }
 
 };
 

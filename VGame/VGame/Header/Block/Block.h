@@ -2,6 +2,9 @@
 #define BLOCK_H
 
 #include "BlockType.h"
+#include "Coordinates.h"
+#include "AABB.h"
+
 
 enum BlockFace {
 	FACE_RIGHT	= 0, // X+
@@ -18,9 +21,9 @@ enum BlockFace {
 struct Block {
 	const char* name;
 	int textures[6];
-	float lightLevel;
+	float texturePixelOffset, lightLevel;
 	int meshType;
-	bool isTransparent, lightCanPass, hasHitbox;
+	bool isTransparent, hasHitbox;
 };
 
 
@@ -28,6 +31,7 @@ class BlockUtil {
 
 public:
 	static Block* blocks[AMOUNT_OF_BLOCKS];
+	static AABB getBlockAABB(const BlockPositionXYZ& pos);
 
 };
 

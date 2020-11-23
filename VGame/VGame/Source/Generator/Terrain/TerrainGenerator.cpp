@@ -21,15 +21,16 @@ TerrainGenerator* TerrainGenerator::generators[] = {
 
 
 TerrainGenerator::TerrainGenerator() {
-	_seed = Random::get(1000, 999999);
+	int seed = Random::get(1000, 999999);
+	std::cout << "Biome-Seed: " << seed << std::endl;
 
-	_desert = new Desert(_seed);
-	_grassland = new Grassland(_seed);
-	_forest = new Forest(_seed);
-	_snowForest = new SnowForest(_seed);
-	_highLands = new HighLands(_seed);
+	_desert = new Desert(seed);
+	_grassland = new Grassland(seed);
+	_forest = new Forest(seed);
+	_snowForest = new SnowForest(seed);
+	_highLands = new HighLands(seed);
 
-	_biomeNoise = new NoiseGenerator(Random::get(1000, 999999));
+	_biomeNoise = new NoiseGenerator(seed);
 }
 
 TerrainGenerator::~TerrainGenerator() {

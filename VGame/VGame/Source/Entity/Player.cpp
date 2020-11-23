@@ -1,30 +1,43 @@
 #include "Player.h"
 #include "Timer.h"
 #include "Input.h"
+#include "ChunkManager.h"
 
 
-Player::Player()
-	: _flying(false), _cardinalPointRange(22.5), lastChunkPosition({ 0.f }) {
+Player::Player() 
+	: isFlying(false), isFalling(false), isJumping(false), isSwimming(false),
+	_cardinalPointRange(22.5), lastChunkPosition({ 0.f }) {
 
 	camera = new Camera({ 0.f, 0.f, 0.f });
-	_boundingBox = new AABB({ -0.25, -1.375, -0.25 }, { 0.25, 0.25, 0.25 });
-
+	aabb = new AABB({ 0.5, 2, 0.5 });
 }
 
 Player::~Player() {
 }
 
 
-void Player::update() {
+void Player::update(ChunkManager* chunkManager) {
+	float playerSpeed = isFlying ? FLY_SPEED : WALK_SPEED;
+
 	camera->handleMouseInputs(MOUSE_SENSITIVITY);
-	camera->handleKeyboardInputs(_flying ? FLY_SPEED : WALK_SPEED);
+	//camera->handleKeyboardInputs(chunkManager, this, isFlying ? FLY_SPEED : WALK_SPEED);
+
+	if(Input::isKeyPressed(KeyCode::KEY_W))
+		camera->move(Camera::FORWARD, playerSpeed);
+	if(Input::isKeyPressed(KeyCode::KEY_A))
+		camera->move(Camera::LEFT, playerSpeed);
+	if(Input::isKeyPressed(KeyCode::KEY_S))
+		camera->move(Camera::BACKWARD, playerSpeed);
+	if(Input::isKeyPressed(KeyCode::KEY_D))
+		camera->move(Camera::RIGHT, playerSpeed);
+
+	if(Input::isKeyPressed(KeyCode::KEY_SPACE))
+		camera->move(Camera::UP, playerSpeed);
+	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
+		camera->move(Camera::DOWN, playerSpeed);
 
 	if((camera->getPosition() - lastChunkPosition).length() > 1)
 		lastChunkPosition = camera->getPosition();
-}
-
-void Player::updatePhysics() {
-
 }
 
 std::string Player::yawToCardinalPoint() {

@@ -14,6 +14,7 @@
 #include "TextureAtlas.h"
 #include "MeshTypes.h"
 #include "Player.h"
+#include "Sky.h"
 
 
 World::World(Game* game, TerrainGeneratorType type, const std::string& worldName)
@@ -36,14 +37,14 @@ World::~World() {
  
 
 void World::update() {
-	_player->update();
+	_player->update(_chunkManager);
 }
 
 void World::draw() {
 	_chunkShader->bind();
 	_updateUniforms();
-	
 	_chunkManager->chunkMapMutex.lock();
+	
 	for(auto& chunk : _chunkManager->getChunksToRender()) {
 		for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {
 			
@@ -56,6 +57,7 @@ void World::draw() {
 
 		}
 	}
+	
 	_chunkManager->chunkMapMutex.unlock();
 	_chunkShader->unbind();
 	Texture::unbind();
@@ -68,10 +70,10 @@ void World::_updateUniforms() {
 
 	_chunkShader->setFloat("dayTime", Game::dayTime);
 	_chunkShader->setVec3("cameraPosition", _player->getPosition()); 
-	_chunkShader->setInt("renderDistance", RENDER_DISTANCE * CHUNK_SIZE);
+	_chunkShader->setInt("renderDistance", RENDER_DISTANCE);
 
-	_chunkShader->setVec3("light.direction", Game::getLightDirection());
-	_chunkShader->setVec3("light.ambient", glm::vec3(1.f));
+	_chunkShader->setVec3("light.direction", _game->getSky()->getSunPosition());
+	_chunkShader->setVec3("light.ambient", glm::vec3(0.6f, 0.6f, 0.2f));
 	_chunkShader->setVec3("light.diffuse", glm::vec3(0.5f));
-	_chunkShader->setVec3("light.specular", glm::vec3(1.f));
+	_chunkShader->setVec3("light.specular", glm::vec3(0.5f));
 }

@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "ChunkMesh.h"
 #include "ChunkManager.h"
+#include "Util.h"
 
 
 bool TextRenderer::shouldShowText = false;
@@ -93,10 +94,11 @@ void TextRenderer::update(ChunkManager* chunkManager, Player* player) {
 
 	std::string title = "VGame";
 
-	std::string time = "Time: "
-		+ std::to_string(static_cast<int>(floor(Game::dayTime)))
-		+ ":"
-		+ std::to_string(static_cast<int>(floor((Game::dayTime - floor(Game::dayTime)) * 60)));
+	std::string time = "Time: " + std::to_string(Game::dayTime) + " " + Util::angleToTime(Game::dayTime)
+		+ ((Game::dayTime >= 270 || Game::dayTime <= 90) ? " am" : " pm");
+		//+ std::to_string(static_cast<int>(floor(Game::dayTime)))
+		//+ ":"
+		//+ std::to_string(static_cast<int>(floor((Game::dayTime - floor(Game::dayTime)) * 60)));
 
 	std::string pitch = std::to_string(player->camera->getPitch());
 	std::string yaw = std::to_string(player->camera->getYaw());
@@ -117,9 +119,9 @@ void TextRenderer::update(ChunkManager* chunkManager, Player* player) {
 		+ " / " + std::to_string(static_cast<int>(std::ceil(playerPos.z)));
 	
 	std::string chunkPositionXYZ = "Chunk: " 
-				+ std::to_string(static_cast<int>(std::ceil(playerPos.x / CHUNK_SIZE - 1))) 
-		+ " / " + std::to_string(static_cast<int>(std::ceil(playerPos.y / CHUNK_SIZE - 1)))
-		+ " / " + std::to_string(static_cast<int>(std::ceil(playerPos.z / CHUNK_SIZE - 1)));
+				+ std::to_string(static_cast<int>(std::floor(playerPos.x / CHUNK_SIZE))) 
+		+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.y / CHUNK_SIZE)))
+		+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.z / CHUNK_SIZE)));
 
 	std::string vertices = "Vertices: " + std::to_string(ChunkMesh::amountOfVertices);
 	std::string indices = "Indices: " + std::to_string(ChunkMesh::amountOfIndices);
@@ -244,5 +246,4 @@ void TextRenderer::draw() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 		_shader->unbind();
 	}
-
 }

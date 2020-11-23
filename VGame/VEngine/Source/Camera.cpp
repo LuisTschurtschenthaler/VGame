@@ -1,13 +1,19 @@
+#include <cmath>
 #include "Camera.h"
 #include "CoreEngine.h"
 #include "Input.h"
 #include "Window.h"
 #include "Timer.h"
 #include "Chunk.h"
-#include <cmath>
+#include "World.h"
+#include "ChunkSection.h"
+#include "ChunkManager.h"
+#include "Coordinates.h"
+#include "Block.h"
+#include "Player.h"
 
 
-Camera::Camera(glm::vec3 position)
+Camera::Camera(const glm::vec3& position)
 	: _yaw(0.f), _pitch(0.f),
 	_roll(0.f), _mouseLocked(false) {
 
@@ -48,30 +54,32 @@ void Camera::handleMouseInputs(float mouseSensitivity) {
 	if(_mouseLocked) {
 		glm::vec2 deltaPosition = Input::getMousePosition() - centerMousePosition;
 
-		bool rotationX = deltaPosition.x != 0;
-		bool rotationY = deltaPosition.y != 0;
+		bool mouseMovedX = deltaPosition.x != 0;
+		bool mouseMovedY = deltaPosition.y != 0;
 
-		if(rotationX) {
+		if(mouseMovedX) {
 			deltaPosition.x *= mouseSensitivity;
 			_yaw += deltaPosition.x;
 		}
 
-		if(rotationY) {
+		if(mouseMovedY) {
 			deltaPosition.y *= -mouseSensitivity;
 			_pitch += deltaPosition.y;
 		}
 
-		if(rotationX || rotationY) {
+		if(mouseMovedX || mouseMovedY) {
 			Input::setMousePosition(centerMousePosition);
 
-			if(_pitch > 89.9f)
-				_pitch = 89.9f;
-			else if(_pitch < -89.9f)
-				_pitch = -89.9f;
+			if(_pitch > 89.99f)
+				_pitch = 89.99f;
+			else if(_pitch < -89.99f)
+				_pitch = -89.99f;
 
 			if(_yaw > 360.f || _yaw < -360.f)
 				_yaw = 0.f;
 		}
+
+		_updateVectors();
 	}
 
 	if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
@@ -81,31 +89,135 @@ void Camera::handleMouseInputs(float mouseSensitivity) {
 	}
 }
 
-void Camera::handleKeyboardInputs(float movementSpeed) {
+void Camera::move(Direction direction, float movementSpeed) {
 	float velocity = movementSpeed * Timer::getDelta();
 
-	if(Input::isKeyPressed(KeyCode::KEY_W))
-		_position += _front * velocity;
-
-	if(Input::isKeyPressed(KeyCode::KEY_A))
-		_position -= _right * velocity;
-
-	if(Input::isKeyPressed(KeyCode::KEY_S))
-		_position -= _front * velocity;
-
-	if(Input::isKeyPressed(KeyCode::KEY_D))
-		_position += _right * velocity;
-
-
-	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
-		_position -= _up * velocity;
-
-	if(Input::isKeyPressed(KeyCode::KEY_SPACE))
-		_position += _up * velocity;
-
-	_updateVectors();
+	switch(direction) {
+		case FORWARD:	_position += _toHorizontal(_front) * velocity; break;
+		case BACKWARD:	_position -= _toHorizontal(_front) * velocity; break;
+		case RIGHT:		_position += _toHorizontal(_right) * velocity; break;
+		case LEFT:		_position -= _toHorizontal(_right) * velocity; break;
+		case UP:		_position += _worldUp * velocity; break;
+		case DOWN:		_position -= _worldUp * velocity; break;
+	}
 }
 
+/*
+void Camera::handleKeyboardInputs(ChunkManager* chunkManager, Player* player, float movementSpeed) {
+	_velocity.x *= 0.7f;
+	_velocity.y  = 0.f;
+	_velocity.z *= 0.7f;
+
+	if(player->isFlying)
+		_velocity.y = GRAVITY * 0.6f;
+	else if(player->isSwimming)
+		_velocity -= GRAVITY * 0.3f;
+	else
+		_velocity -= GRAVITY;
+
+	//if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
+	//	_velocity *= 2.f;
+
+	glm::vec3 updateVelocity = movementSpeed * _velocity * float(Timer::getDelta());
+	//std::cout << updateVelocity.x << " " << updateVelocity.y << " " << updateVelocity.z << std::endl;
+	
+	_position.y += updateVelocity.y;
+	if(player->aabb->collision(chunkManager, _position)) {
+		updateVelocity.y = 0;
+		_position.y -= updateVelocity.y;
+	}
+
+	
+	if(Input::isKeyPressed(KeyCode::KEY_W)) {
+		_position -= _front * updateVelocity;
+		if(player->aabb->collision(chunkManager, _position))
+			_position += _front * updateVelocity;
+	}
+	
+	if(Input::isKeyPressed(KeyCode::KEY_A)) {
+		_position += _right * updateVelocity;
+		if(player->aabb->collision(chunkManager, _position))
+			_position -= _right * updateVelocity;
+	}
+
+	if(Input::isKeyPressed(KeyCode::KEY_S)) {
+		_position += _front * updateVelocity;
+		if(player->aabb->collision(chunkManager, _position))
+			_position -= _front * updateVelocity;
+	}
+
+	if(Input::isKeyPressed(KeyCode::KEY_D)) {
+		_position -= _right * updateVelocity;
+		if(player->aabb->collision(chunkManager, _position))
+			_position += _right * updateVelocity;
+	}
+
+	if(Input::isKeyPressed(KeyCode::KEY_SPACE))
+		_position -= _worldUp * updateVelocity * glm::vec3(1, GRAVITY*2, 1);
+
+	if(Input::isKeyPressed(KeyCode::KEY_C))
+		positionChange -= _worldUp * velocity;
+
+	if(Input::isKeyPressed(KeyCode::KEY_SPACE))
+		positionChange += _worldUp * velocity;
+}
+
+void Camera::updatePhysics(ChunkManager* chunkManager, AABB* box) {
+	box->update(_position);
+ 	BlockPositionXYZ playerPosition = { int(_position.x), int(_position.y), int(_position.z) };
+
+	for(int x = box->min.x; x < box->max.x; x++) {
+		for(int y = box->min.y; y < box->max.y; y++) {
+			for(int z = box->min.z; z < box->max.z; z++) {
+				BlockPositionXYZ blockPos(x, y, z);
+				Block* block = BlockUtil::blocks[chunkManager->getBlock(blockPos)];
+
+				if(block->meshType != MeshType::SOLID) continue;
+				AABB blockAABB = BlockUtil::getBlockAABB(blockPos);
+
+				if(box->hitsBlock(blockAABB))
+					std::cout << "HIT: " << std::endl;
+
+			}
+		}
+	}
+
+	/*
+	std::vector<BlockPositionXYZ> adjacents = {
+		{ -1,  0,  0 },
+		{  1,  0,  0 },
+		{  0, -1,  0 },
+		{  0,  1,  0 },
+		{  0,  0, -1 },
+		{  0,  0,  1 }
+	};
+
+	for(int i = 0; i < 6; i++) {
+		BlockPositionXYZ toCheck = playerPosition + adjacents[i];
+		//std::cout << toCheck << std::endl;
+		Block* block = BlockUtil::blocks[chunkManager->getBlock(toCheck)];
+
+		if(block->meshType != MeshType::SOLID) continue;
+		AABB blockAABB = BlockUtil::getBlockAABB(toCheck);
+
+		if(playerAABB->hitsBlock(blockAABB)) {
+			switch(i) {
+				case 0: _position.x = toCheck.x + BLOCK_SIZE * 1.5; break;
+				case 1: _position.x = toCheck.x - BLOCK_SIZE * 0.5; break;
+				case 2: _position.y = toCheck.y + BLOCK_SIZE * 1.5; break;
+				case 3: _position.y = toCheck.y - BLOCK_SIZE * 0.5; break;
+				case 4: _position.z = toCheck.z + BLOCK_SIZE * 1.5; break;
+				case 5: _position.z = toCheck.z - BLOCK_SIZE * 0.5; break;
+				default: break;
+			}
+		}
+	} /*
+}*/
+
+
+glm::vec3 Camera::_toHorizontal(const glm::vec3& vec) {
+	return { vec.x, 0.f, vec.z };
+}
 
 void Camera::_updateVectors() {
 	glm::vec3 front;

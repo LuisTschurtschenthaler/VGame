@@ -7,28 +7,31 @@
 #include "Chunk.h"
 
 
+const int Structure::CROWN_RADIUS = 1;
+const int Structure::BUSH_RADIUS = 2;
+
+
 void Structure::build(ChunkManager& chunkManager) {
 	for(auto& structureBlock : _structureBlocks)
 		chunkManager.placeBlock(structureBlock.position, structureBlock.block);
 }
 
 void Structure::generateTree(const BlockPositionXYZ& pos) {
-	int height = Random::get(4, 6);
-	int crownSize = 1, bushSize = 2;
+	int height = Random::get(5, 6);
 
 	int y = pos.y + height;
-	fillXZ({ pos.x - crownSize, y - 1, pos.z - crownSize },
-		   { pos.x + crownSize, y - 1, pos.z + crownSize },
+	fillXZ({ pos.x - CROWN_RADIUS, y - 1, pos.z - CROWN_RADIUS },
+		   { pos.x + CROWN_RADIUS, y - 1, pos.z + CROWN_RADIUS },
 		   BlockType::OAK_LEAVE);
-	clearEdges({ pos.x, y - 1, pos.z }, crownSize);
+	clearEdges({ pos.x, y - 1, pos.z }, CROWN_RADIUS);
 
-	fillXZ({ pos.x - bushSize, y - 2, pos.z - bushSize },
-		   { pos.x + bushSize, y - 2, pos.z + bushSize },
+	fillXZ({ pos.x - BUSH_RADIUS, y - 2, pos.z - BUSH_RADIUS },
+		   { pos.x + BUSH_RADIUS, y - 2, pos.z + BUSH_RADIUS },
 		   BlockType::OAK_LEAVE);
-	clearEdges({ pos.x, y - 2, pos.z }, bushSize);
+	clearEdges({ pos.x, y - 2, pos.z }, BUSH_RADIUS);
 
-	fillXZ({ pos.x - bushSize, y - 3, pos.z - bushSize },
-		   { pos.x + bushSize, y - 3, pos.z + bushSize },
+	fillXZ({ pos.x - BUSH_RADIUS, y - 3, pos.z - BUSH_RADIUS },
+		   { pos.x + BUSH_RADIUS, y - 3, pos.z + BUSH_RADIUS },
 		   BlockType::OAK_LEAVE);
 
 	fillY(pos, BlockType::OAK_LOG, height);
@@ -36,7 +39,7 @@ void Structure::generateTree(const BlockPositionXYZ& pos) {
 }
 
 void Structure::generateCactus(const BlockPositionXYZ& pos) {
-	fillY({ pos.x, pos.y + 1, pos.z }, BlockType::CACTUS, Random::get(3, 5));
+	fillY({ pos.x, pos.y, pos.z }, BlockType::CACTUS, Random::get(3, 5));
 }
 
 
@@ -48,7 +51,7 @@ void Structure::fillXZ(const BlockPositionXYZ& start, const BlockPositionXYZ& en
 }
 
 void Structure::fillY(const BlockPositionXYZ& start, BlockType block, int height) {
-	for(int y = start.y; y <= start.y + height; y++)
+	for(int y = start.y + 1; y <= start.y + height; y++)
 		_structureBlocks.emplace_back(start.x, y, start.z, block);
 }
 

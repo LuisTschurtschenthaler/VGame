@@ -1,3 +1,8 @@
+#include <algorithm>
+#include <GLM/glm.hpp>
+#include <glm/gtx/vec_swizzle.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtx/euler_angles.hpp>
 #include "Sky.h"
 #include "Shader.h"
 #include "Game.h"
@@ -7,15 +12,12 @@
 #include "Window.h"
 #include "WorldConstants.h"
 #include "Camera.h"
-#include <algorithm>
-#include <GLM/glm.hpp>
-#include <glm/gtx/vec_swizzle.hpp>
-#include <GLM/gtc/matrix_transform.hpp>
-#include <GLM/gtx/euler_angles.hpp>
+#include "Mesh.h"
 
 
 Sky::Sky() {
 	_shader = new Shader("sky.vert", "sky.frag");
+	_sun = new Mesh("./Resources/Models/Sphere.obj", glm::vec3(0), glm::vec3(0), glm::vec3(100.f));
 }
 
 Sky::~Sky() {
@@ -31,8 +33,8 @@ Sky::~Sky() {
 
 
 void Sky::init() {
-	int sectorCount = 15,
-		stackCount  = 15;
+	int sectorCount = 360,
+		stackCount  = 360;
 
 	float sectorStep = PI2 / sectorCount;
 	float stackStep = PI / stackCount;
@@ -87,21 +89,17 @@ void Sky::init() {
 }
 
 void Sky::draw(Camera& camera) {
-	float time = static_cast<float>((SDL_GetTicks() / 1000) / 10.f);
-	auto rotMatrix = glm::rotate(glm::identity<glm::mat4>(), Game::dayTime, glm::vec3(0, 0, 1));
-	
-	//std::cout << "TIME: " << time << std::endl;
+	glm::mat4 mvp = glm::infinitePerspective(glm::radians(FOV), Window::getAspect(), NEAR_PLANE);
+	mvp *= camera.getView();
+	mvp *= glm::mat4(1.f);
 
-	auto mvp = glm::infinitePerspective(glm::radians(FOV), 4.f / 3.f, 0.1f);
-	mvp *= glm::lookAt(glm::vec3(0), camera.getFront(), glm::vec3(0, 1, 0));
-	
 	glDepthFunc(GL_LEQUAL);
 	_shader->bind();
 
 	_shader->setMat4("mvp", mvp);
 	_shader->setVec3("playerPosition", camera.getPosition());
-	_shader->setVec3("sunPosition", glm::xyz(rotMatrix * glm::vec4(1, 0, 0, 0)));
-	_shader->setFloat("time", time);
+	_shader->setVec3("sunPosition", getSunPosition());
+	_shader->setFloat("time", Game::dayTime);
 	_shader->setBool("isUnderwater", false);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
@@ -115,6 +113,11 @@ void Sky::draw(Camera& camera) {
 
 	_shader->unbind();
 	glDepthFunc(GL_LESS);
+}
+
+glm::vec3 Sky::getSunPosition() {
+	auto rotMatrix = glm::rotate(glm::identity<glm::mat4>(), glm::radians(Game::dayTime), glm::vec3(0, 0, 1));
+	return (glm::xyz(rotMatrix * glm::vec4(1, 0, 0, 0)));
 }
 
 

@@ -32,6 +32,7 @@ public:
 
 	void prepareDraw();
 	void addBlockFace(const ChunkSection* chunkSection, int xi, int yi, int zi, const BlockFace face, Block* block);
+	void addFloraBlock(const ChunkSection* chunkSection, int x, int y, int z, Block* block);
 
 	GLuint getVBO() const { return _VBO; }
 	GLuint getIBO() const { return _IBO; }

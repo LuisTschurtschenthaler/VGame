@@ -17,11 +17,12 @@
 ChunkManager::ChunkManager(World* world, TerrainGenerator* terrainGenerator, Camera* camera)
 	: terrainGenerator(terrainGenerator), _world(world), _camera(camera) {
 
-	_threads.emplace_back([&]() {
-		while(!_world->disposed) {
-			std::this_thread::sleep_for(std::chrono::microseconds(100));
-			_generateChunkData();
-		}
+	//for(int i = 0; i < 4; i++)
+		_threads.emplace_back([&]() {
+			while(!_world->disposed) {
+				std::this_thread::sleep_for(std::chrono::microseconds(100));
+				_generateChunkData();
+			}
 	});
 }
 
@@ -37,42 +38,67 @@ ChunkManager::~ChunkManager() {
 
 
 void ChunkManager::setPlayerSpawnPoint(Player& player) {
-	int chunkX = Random::get(0, 20), chunkZ = Random::get(0, 20);
-	int posX = 8, posZ = 8;
+	int posX = Random::get(0, CHUNK_SIZE - 1),
+		posZ = Random::get(0, CHUNK_SIZE - 1);
 
-	ChunkMap* map = getChunkMap({ chunkX, chunkZ });
-	int heightValue = map->heightMap.get(posX, posZ);
-	int height = (heightValue > WATER_LEVEL) ? heightValue : WATER_LEVEL + 1;
+	ChunkMap* map = getChunkMap({ 0, 0 });
+	int heightValue = map->heightMap.get(posX, posZ) + 3;
+	int height = (heightValue > WATER_LEVEL) ? heightValue : WATER_LEVEL + 2;
 
-	player.setSpawnPoint({ 8.5f, height, 8.5f });
+	player.setSpawnPoint({ posX + 0.5f, height + 10, posZ + 0.5f });
 }
 
-void ChunkManager::getNearbyChunks(ChunkCoordXZ coord, Chunk** chunkList) {
+std::vector<BlockPositionXYZ>* ChunkManager::getAdjacentBlocks(glm::vec3 blockCoord) {
+	std::vector<BlockPositionXYZ>* adjacentBlocks = new std::vector<BlockPositionXYZ>();
+	std::vector<glm::vec3> adjacents = {
+		{ -1,  0,  0 },
+		{  1,  0,  0 },
+		{  0, -1,  0 },
+		{  0,  1,  0 },
+		{  0,  0, -1 },
+		{  0,  0,  1 }
+	};
+
+	for(auto& adjacent : adjacents) {
+		blockCoord = blockCoord + adjacent;
+		int x = int(std::floor(blockCoord.x));
+		int y = int(std::floor(blockCoord.y));
+		int z = int(std::floor(blockCoord.z));
+
+		adjacentBlocks->push_back({ x, y, z });
+	}
+
+	return adjacentBlocks;
+}
+
+void ChunkManager::getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList) {
 	chunkList[CHUNK_RIGHT]	 = getChunk({ coord.x + 1, coord.z });
 	chunkList[CHUNK_LEFT]	 = getChunk({ coord.x - 1, coord.z });
 	chunkList[CHUNK_FRONT]	 = getChunk({ coord.x, coord.z + 1 });
 	chunkList[CHUNK_BACK]	 = getChunk({ coord.x, coord.z - 1 });
 }
 
-Chunk* ChunkManager::getChunk(ChunkCoordXZ coord) {
+Chunk* ChunkManager::getChunk(const ChunkCoordXZ& coord) {
+	chunkMapMutex.lock();
 	if(!chunkExists(coord))
 		chunks.emplace(coord, new Chunk(this, coord));
-	
+
+	chunkMapMutex.unlock();
 	return chunks[coord];
 }
 
-ChunkMap* ChunkManager::getChunkMap(ChunkCoordXZ coord) {
+ChunkMap* ChunkManager::getChunkMap(const ChunkCoordXZ& coord) {
 	if(!chunkMapExists(coord))
 		chunkMaps.emplace(coord, terrainGenerator->generateChunkMap(coord));
 	
 	return chunkMaps[coord];
 }
 
-bool ChunkManager::chunkExists(ChunkCoordXZ coord) {
+bool ChunkManager::chunkExists(const ChunkCoordXZ& coord) {
 	return (chunks.find(coord) != chunks.end());
 }
 
-bool ChunkManager::chunkMapExists(ChunkCoordXZ coord) {
+bool ChunkManager::chunkMapExists(const ChunkCoordXZ& coord) {
 	return (chunkMaps.find(coord) != chunkMaps.end());
 }
 
@@ -99,6 +125,16 @@ std::vector<Chunk*> ChunkManager::getChunksToRender() {
 	return chunksToRender;
 }
 
+BlockType ChunkManager::getBlock(const BlockPositionXYZ& coord) {
+	ChunkCoordXZ chunkCoord = getChunkCoord(coord);
+	BlockPositionXYZ bCoord = getBlockCoord(coord);
+
+	ChunkSection* section = getChunk(chunkCoord)->getChunkSection(coord.y / CHUNK_SIZE);
+	if(section == nullptr)
+		return BlockType::AIR;
+	else return section->getBlock(bCoord);
+}
+
 void ChunkManager::placeBlock(BlockPositionXYZ blockCoord, BlockType block) {
 	ChunkCoordXZ chunkCoord = getChunkCoord(blockCoord);
 	//BlockPositionXYZ bCoord = getBlockCoord(blockCoord);
@@ -106,44 +142,44 @@ void ChunkManager::placeBlock(BlockPositionXYZ blockCoord, BlockType block) {
 	getChunk(chunkCoord)->placeBlock(blockCoord, block);
 }
 
-
 ChunkCoordXZ ChunkManager::getChunkCoord(const BlockPositionXYZ& blockCoord) {
-	ChunkCoordXZ coord{ blockCoord.x / CHUNK_SIZE, blockCoord.z / CHUNK_SIZE };
-	if(blockCoord.x < 0) coord.x -= 1;
-	if(blockCoord.z < 0) coord.z -= 1;
-
-	return coord;
+	ChunkCoordXZ c{ blockCoord.x / CHUNK_SIZE, blockCoord.z / CHUNK_SIZE };
+	
+	if(c.x < 0)
+		c.x -= 1;
+	if(c.z < 0)
+		c.z -= 1;
+	
+	return c;
 }
 
 BlockPositionXYZ ChunkManager::getBlockCoord(const BlockPositionXYZ& blockCoord) {
-	BlockPositionXYZ coord{ blockCoord.x % CHUNK_SIZE, blockCoord.y % CHUNK_SIZE, blockCoord.z % CHUNK_SIZE };
-	if(blockCoord.x < 0) coord.x += CHUNK_SIZE;
-	if(blockCoord.y < 0) coord.y += CHUNK_SIZE;
-	if(blockCoord.z < 0) coord.z += CHUNK_SIZE;
+	BlockPositionXYZ c{ blockCoord.x % CHUNK_SIZE, blockCoord.y % CHUNK_SIZE, blockCoord.z % CHUNK_SIZE };
+	if(c.x < 0) c.x += CHUNK_SIZE;
+	if(c.y < 0) c.y += CHUNK_SIZE;
+	if(c.z < 0) c.z += CHUNK_SIZE;
 
-	return coord;
+	return c;
 }
 
 
 void ChunkManager::_generateChunkData() {
-	int xi = static_cast<int>(_camera->getPosition().x / CHUNK_SIZE);
-	int zi = static_cast<int>(_camera->getPosition().z / CHUNK_SIZE);
+	int currentChunkX = static_cast<int>(_camera->getPosition().x / CHUNK_SIZE);
+	int currentChunkZ = static_cast<int>(_camera->getPosition().z / CHUNK_SIZE);
 
-	for(int i = -RENDER_DISTANCE; i < RENDER_DISTANCE; i++) {
-		for(int j = -RENDER_DISTANCE; j < RENDER_DISTANCE; j++) {
-			int x = xi + i;
-			int z = zi + j;
+	for(int i = 0; i < RENDER_DISTANCE; i++) {
+		for(int x = currentChunkX - i; x <= currentChunkX + i; x++) {
+			for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
+				int chunkX = currentChunkX + x;
+				int chunkZ = currentChunkZ + z;
 
-			//if((_camera->getPosition().x + RENDER_DISTANCE) > x || (_camera->getPosition().x - RENDER_DISTANCE) < x
-			//   || (_camera->getPosition().z + RENDER_DISTANCE) > z || (_camera->getPosition().z - RENDER_DISTANCE) < z)
-			//	return;
+				Chunk* chunk = getChunk({ x, z });
+				if(!chunk->chunkDataGenerated)
+					chunk->generateChunkData(getChunkMap({ x, z }));
 
-			Chunk* chunk = getChunk({ x, z });
-			if(!chunk->chunkDataGenerated)
-				chunk->generateChunkData(getChunkMap({ x, z }));
-
-			if(!chunk->meshGenerated && chunk->chunkDataGenerated)
-				chunk->generateMesh();
+				if(!chunk->meshGenerated && chunk->chunkDataGenerated)
+					chunk->generateMesh();
+			}
 		}
 	}
 }

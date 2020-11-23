@@ -10,6 +10,8 @@
 ChunkSection::ChunkSection(ChunkManager* chunkManager, Chunk* chunk, const ChunkCoordXYZ& coord)
 	: coord(coord), areMeshesGenerated(false), chunkManager(chunkManager), _chunk(chunk) {
 
+	aabb = AABB({ CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE });
+	aabb.update({ coord.x * CHUNK_SIZE, coord.y * CHUNK_SIZE, coord.z * CHUNK_SIZE });
 	data.fill(BlockType::AIR);
 }
 
@@ -17,13 +19,12 @@ ChunkSection::~ChunkSection() {
 }
 
 
-void ChunkSection::placeBlock(BlockPositionXYZ blockCoord, const BlockType& block) {
-	if(_isOutOfChunkRange(blockCoord)) {
-		chunkManager->placeBlock(blockCoord, block);
-		return;
-	}
-
+void ChunkSection::placeBlock(const BlockPositionXYZ& blockCoord, const BlockType& block) {
 	data.set(blockCoord.x, blockCoord.y, blockCoord.z, block);
+}
+
+BlockType ChunkSection::getBlock(const BlockPositionXYZ& blockCoord) {
+	return data.get(blockCoord.x, blockCoord.y, blockCoord.z);
 }
 
 void ChunkSection::generateMesh() {
@@ -37,22 +38,22 @@ void ChunkSection::generateMesh() {
 					Block* block = BlockUtil::blocks[blockType];
 					switch(block->meshType) {
 						case MeshType::SOLID:
-							if(_getBlockRelative(x + 1, y, z)->isTransparent)
+							if(getBlockRelative(x + 1, y, z)->isTransparent)
 								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_RIGHT, block);
 
-							if(_getBlockRelative(x - 1, y, z)->isTransparent)
+							if(getBlockRelative(x - 1, y, z)->isTransparent)
 								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_LEFT, block);
 
-							if(_getBlockRelative(x, y + 1, z)->isTransparent)
+							if(getBlockRelative(x, y + 1, z)->isTransparent)
 								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_TOP, block);
 
-							if(_getBlockRelative(x, y - 1, z)->isTransparent)
+							if(getBlockRelative(x, y - 1, z)->isTransparent)
 								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_BOTTOM, block);
 
-							if(_getBlockRelative(x, y, z + 1)->isTransparent)
+							if(getBlockRelative(x, y, z + 1)->isTransparent)
 								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_FRONT, block);
 
-							if(_getBlockRelative(x, y, z - 1)->isTransparent)
+							if(getBlockRelative(x, y, z - 1)->isTransparent)
 								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_BACK, block);
 							break;
 
@@ -64,8 +65,11 @@ void ChunkSection::generateMesh() {
 
 
 						case MeshType::FLORA:
-							for(int i = 0; i < AMOUNT_OF_BLOCKFACES; i++)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
+							if(block->name == "Cactus" || block->name == "Oak leave") {
+								for(int i = 0; i < AMOUNT_OF_BLOCKFACES; i++)
+									_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
+							}
+							else _chunk->meshCollection[SOLID]->addFloraBlock(this, x, y, z, block);
 							break;
 					}
 				}
@@ -77,20 +81,7 @@ void ChunkSection::generateMesh() {
 	areMeshesGenerated = true;
 }
 
-
-bool ChunkSection::_isOutOfChunkRange(BlockPositionXYZ coord) {
-	return (_isOutOfChunkRange(coord.x) || _isOutOfChunkRange(coord.y) || _isOutOfChunkRange(coord.z));
-}
-
-bool ChunkSection::_isOutOfChunkRange(int nr) {
-	return (nr >= CHUNK_SIZE || nr < 0);
-}
-
-Block* ChunkSection::_getBlock(int x, int y, int z) {
-	return BlockUtil::blocks[data.get(x, y, z)];
-}
-
-Block* ChunkSection::_getBlockRelative(int x, int y, int z) {
+Block* ChunkSection::getBlockRelative(int x, int y, int z) {
 	// Right -> X+
 	if(x > CHUNK_SIZE - 1
 	   && y < CHUNK_SIZE
@@ -170,4 +161,17 @@ Block* ChunkSection::_getBlockRelative(int x, int y, int z) {
 	}
 
 	else return _getBlock(x, y, z);
+}
+
+
+bool ChunkSection::_isOutOfChunkRange(BlockPositionXYZ coord) {
+	return (_isOutOfChunkRange(coord.x) || _isOutOfChunkRange(coord.y) || _isOutOfChunkRange(coord.z));
+}
+
+bool ChunkSection::_isOutOfChunkRange(int nr) {
+	return (nr >= CHUNK_SIZE || nr < 0);
+}
+
+Block* ChunkSection::_getBlock(int x, int y, int z) {
+	return BlockUtil::blocks[data.get(x, y, z)];
 }

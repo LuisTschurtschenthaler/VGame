@@ -28,30 +28,31 @@ float noise3D(vec3 vector) {
 
 void main() {
 	// Sky
-	float lightness = max(0.f, 0.5f + sunPosition.y);
+	vec3 sunPos = normalize(sunPosition);
+	float lightness = max(0.f, sunPos.y + 0.5);
 
     float atmosphereDensity = pow(1.f - vs_pos.y, 2.f);
     float scatter = 1.f - clamp(lightness, 0.f, 1.f);
 
     vec3 scatterColor = mix(vec3(1.f), DUSK_COLOR, scatter);
-    vec3 skyDusk = mix(SKY_COLOR, scatterColor, atmosphereDensity / 1.3f);
+    vec3 skyDusk = mix(SKY_COLOR, scatterColor, atmosphereDensity / 1.5f);
 
+	
 	// Sun
-	float sun = dot(normalize(sunPosition), vs_pos);
-    sun = pow(max(0.f, sun), mix(50.f, 80.f, lightness)); // sun size
+	float sun = dot(sunPos, vs_pos);
+    sun = pow(max(0.f, sun), mix(50.f, 70.f, lightness));
 	
     float glow = sun;
     sun = pow(sun, 100.f) * 100.f;
     sun = clamp(sun, 0.f, 1.f);
 	
-    glow = pow(glow, 6.f * lightness);
+    glow = pow(glow, 10.f * lightness);
     glow = clamp(glow, 0.f, 1.f) * lightness;
 	
 	vec3 sky = lightness * skyDusk + scatterColor * (sun + glow);
 	
-	float a = 0.3f;
+	//float a = 0.3f;
 	//vec3 col = isUnderwater ? a * sky + (1.f - a) * WATER_COLOR : sky;
 	
-	vec3 col = sky;
 	color = vec4(sky, 1.f);
 }

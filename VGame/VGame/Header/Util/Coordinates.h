@@ -11,6 +11,8 @@
 struct ChunkCoordXZ {
 	int x, z;
 
+	ChunkCoordXZ() : x(0), z(0) { }
+
 	ChunkCoordXZ(int x, int z)
 		: x(x), z(z) { }
 
@@ -78,20 +80,14 @@ struct BlockPositionXYZ {
 	BlockPositionXYZ(int x, int y, int z)
 		: x(x), y(y), z(z) { }
 
-	BlockPositionXYZ toWorldPosition(const ChunkCoordXYZ& coord) {
-		int bx = x + coord.x * CHUNK_SIZE,
-			by = y + coord.y * CHUNK_SIZE,
-			bz = z + coord.z * CHUNK_SIZE;
-
-		return BlockPositionXYZ(bx, by, bz);
+	BlockPositionXYZ operator+(const BlockPositionXYZ& coord) {
+		return { x + coord.x, y + coord.y, z + coord.z };
 	}
 
 	friend std::ostream& operator<<(std::ostream& output, const BlockPositionXYZ& coord) {
 		return output << "BlockPositionXYZ(" << coord.x << ", " << coord.y << ", " << coord.z << ")";
 	}
 };
-
-
 
 
 namespace std {template<> struct hash<ChunkCoordXZ> {

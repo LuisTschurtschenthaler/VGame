@@ -13,6 +13,7 @@ Realistic::Realistic() :
 	TerrainGenerator() {
 
 	_seed = Random::get(1000, 999999);
+	std::cout << "Terrain-Seed: " << _seed << std::endl;
 }
 
 
@@ -42,9 +43,9 @@ void Realistic::_generateHeightMap(ChunkMap& chunkMap, ChunkCoordXZ coord) {
 	};
 
 	int bottomLeft	= heightAt(0, 0);
-	int bottomRight = heightAt(CHUNK_SIZE, 0);
-	int topLeft		= heightAt(0, CHUNK_SIZE);
-	int topRight	= heightAt(CHUNK_SIZE, CHUNK_SIZE);
+	int bottomRight = heightAt(CHUNK_SIZE - 1, 0);
+	int topLeft		= heightAt(0, CHUNK_SIZE - 1);
+	int topRight	= heightAt(CHUNK_SIZE - 1, CHUNK_SIZE - 1);
 
 	for(int x = 0; x < CHUNK_SIZE; x++) {
 		for(int z = 0; z < CHUNK_SIZE; z++) {

@@ -8,6 +8,7 @@
 #include <thread>
 #include <string>
 #include <queue>
+#include <GLM/glm.hpp>
 #include "Chunk.h"
 #include "Coordinates.h"
 class World;
@@ -29,7 +30,6 @@ private:
 	World* _world;
 	Camera* _camera;
 	std::vector<std::thread> _threads;
-	// std::queue -> chunkUpdates
 
 
 public:
@@ -37,16 +37,17 @@ public:
 	~ChunkManager();
 
 	void setPlayerSpawnPoint(Player& player);
+	std::vector<BlockPositionXYZ>* getAdjacentBlocks(glm::vec3 blockCoord);
 
-	void getNearbyChunks(ChunkCoordXZ coord, Chunk** chunkList);
-	Chunk* getChunk(ChunkCoordXZ coord);
-	ChunkMap* getChunkMap(ChunkCoordXZ coord);
+	void getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList);
+	Chunk* getChunk(const ChunkCoordXZ& coord);
+	ChunkMap* getChunkMap(const ChunkCoordXZ& coord);
 
-	bool chunkExists(ChunkCoordXZ coord);
-	bool chunkMapExists(ChunkCoordXZ coord);
+	bool chunkExists(const ChunkCoordXZ& coord);
+	bool chunkMapExists(const ChunkCoordXZ& coord);
 	std::vector<Chunk*> getChunksToRender();
 
-	// BlockType getBlock(Chunk& chunk, int x, int y, int z);
+	BlockType getBlock(const BlockPositionXYZ& coord);
 	void placeBlock(BlockPositionXYZ blockCoord, BlockType block);
 
 	static ChunkCoordXZ getChunkCoord(const BlockPositionXYZ& blockCoord);

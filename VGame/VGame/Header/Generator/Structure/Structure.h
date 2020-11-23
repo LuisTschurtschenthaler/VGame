@@ -22,6 +22,9 @@ class Structure {
 private:
 	std::vector<SturctureBlock> _structureBlocks;
 
+public:
+	static const int CROWN_RADIUS, BUSH_RADIUS;
+
 
 public:
 	void build(ChunkManager& chunkManager);
