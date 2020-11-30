@@ -29,7 +29,7 @@ float noise3D(vec3 vector) {
 void main() {
 	// Sky
 	vec3 sunPos = normalize(sunPosition);
-	float lightness = max(0.f, sunPos.y + 0.5);
+	float lightness = max(0.f, sunPos.y + 0.1);
 
     float atmosphereDensity = pow(1.f - vs_pos.y, 2.f);
     float scatter = 1.f - clamp(lightness, 0.f, 1.f);

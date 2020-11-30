@@ -20,7 +20,7 @@ BlockType Desert::getTopBlock() const {
 }
 
 BlockType Desert::getBelowTopBlock() const {
-	return BlockType::SANDSTONE;
+	return BlockType::SAND;
 }
 
 BlockType Desert::getUnderEarth() const {
@@ -37,7 +37,7 @@ void Desert::plantTree(ChunkSection& chunk, int x, int y, int z) {
 
 
 Grassland::Grassland(int seed)
-	: Biome(1000, 5, seed) {
+	: Biome(1000, 15, seed) {
 }
 
 std::string Grassland::getName() const {
@@ -46,7 +46,7 @@ std::string Grassland::getName() const {
 
 
 BlockType Grassland::getPlant() const {
-	return BlockType::GRASS2;
+	return (Random::get(0, 10) > 8) ? BlockType::TALL_GRASS : BlockType::GRASS2;
 }
 
 BlockType Grassland::getTopBlock() const {
@@ -71,7 +71,7 @@ void Grassland::plantTree(ChunkSection& chunk, int x, int y, int z) {
 
 
 Forest::Forest(int seed)
-	: Biome(150, 10, seed) {
+	: Biome(150, 15, seed) {
 }
 
 std::string Forest::getName() const {
@@ -79,7 +79,7 @@ std::string Forest::getName() const {
 }
 
 BlockType Forest::getPlant() const {
-	return BlockType::GRASS2;
+	return (Random::get(0, 10) > 8) ? BlockType::TALL_GRASS : BlockType::GRASS2;
 }
 
 BlockType Forest::getTopBlock() const {
@@ -104,7 +104,7 @@ void Forest::plantTree(ChunkSection& chunk, int x, int y, int z) {
 
 
 SnowForest::SnowForest(int seed)
-	: Biome(150, 10, seed) {
+	: Biome(150, 15, seed) {
 }
 
 std::string SnowForest::getName() const {
@@ -112,7 +112,7 @@ std::string SnowForest::getName() const {
 }
 
 BlockType SnowForest::getPlant() const {
-	return BlockType::GRASS2;
+	return (Random::get(0, 10) > 8) ? BlockType::TALL_GRASS : BlockType::GRASS2;
 }
 
 BlockType SnowForest::getTopBlock() const {

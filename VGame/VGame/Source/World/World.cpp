@@ -28,7 +28,7 @@ World::World(Game* game, TerrainGeneratorType type, const std::string& worldName
 
 	_chunkShader = new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag");
 	_skyShader = new Shader("sky.vert", "sky.frag");
-	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 4, 256, 16);
+	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 0);
 }
 
 World::~World() {
@@ -48,12 +48,8 @@ void World::draw() {
 	for(auto& chunk : _chunkManager->getChunksToRender()) {
 		for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {
 			
-			if(chunk->meshCollection[i]->indices.size() > 0) {
-				if(!chunk->isBuffered)
-					chunk->prepareDraw(i);
-
+			if(chunk->meshCollection[i]->indices.size() > 0)
 				chunk->draw(i);
-			}
 
 		}
 	}

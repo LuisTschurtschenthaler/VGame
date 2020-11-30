@@ -58,18 +58,24 @@ void ChunkSection::generateMesh() {
 							break;
 
 
-						case MeshType::FLUID:
-							if((y + coord.y * CHUNK_SIZE) == WATER_LEVEL)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_TOP, block);
-							break;
-
-
 						case MeshType::FLORA:
 							if(block->name == "Cactus" || block->name == "Oak leave") {
 								for(int i = 0; i < AMOUNT_OF_BLOCKFACES; i++)
-									_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
+									_chunk->meshCollection[FLORA]->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
 							}
-							else _chunk->meshCollection[SOLID]->addFloraBlock(this, x, y, z, block);
+							
+							else if(block->name == "Tall grass") {
+								_chunk->meshCollection[FLORA]->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
+								_chunk->meshCollection[FLORA]->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
+							}
+
+							else _chunk->meshCollection[FLORA]->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
+							break;
+
+
+						case MeshType::FLUID:
+							if((y + coord.y * CHUNK_SIZE) == WATER_LEVEL)
+								_chunk->meshCollection[FLUID]->addBlockFace(this, x, y, z, FACE_TOP, block);
 							break;
 					}
 				}

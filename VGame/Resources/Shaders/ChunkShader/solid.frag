@@ -18,8 +18,8 @@ uniform struct Light {
 uniform sampler2D textureAtlas;
 
 const float PI = 3.14159265359;
-const float dayLight = 0.8f;
-const float nightLight = 0.35f;
+const float dayLight = 1.f;
+const float nightLight = 0.45f;
 
 float calulateAmbient() {
     //if (dayTime >= 340 || dayTime <= 20) {
@@ -62,8 +62,8 @@ void main() {
 	//specular *= attenuation;
 
 	vec3 result = vec3(ambient);
-	if((dayTime >= 0 && dayTime <= 195) || dayTime >= 340)
-		result += vec3(diffuse);
+	//if((dayTime >= 0 && dayTime <= 195) || dayTime >= 340)
+	//	result += vec3(diffuse);
 
 	// Ambient occlusion
 	//int rd = renderDistance*16;

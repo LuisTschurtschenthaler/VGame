@@ -13,6 +13,7 @@ private:
 	NoiseGenerator* _noise;
 	int _treeFrequency, _plantFrequency;
 
+
 public:
 	Biome(int treeFrequency, int plantFrequency, int seed);
 	~Biome();
@@ -29,7 +30,6 @@ public:
 
 	int getTreeFrequency() const { return _treeFrequency; }
 	int getPlantFrequency() const { return _plantFrequency; }
-
 };
 
 #endif // BIOME_H

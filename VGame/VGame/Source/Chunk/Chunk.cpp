@@ -1,3 +1,4 @@
+#include <GLM/glm.hpp>
 #include "Chunk.h"
 #include "TerrainGenerator.h"
 #include "WorldConstants.h"
@@ -17,7 +18,7 @@
 
 Chunk::Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord)
 	: chunkManager(chunkManager), coord(coord),
-	chunkDataGenerated(false), meshGenerated(false), isBuffered(false) {
+	chunkDataGenerated(false), meshGenerated(false) {
 	
 	_aabb = AABB({ CHUNK_SIZE, CHUNK_SIZE * CHUNK_SECTIONS, CHUNK_SIZE });
 	_aabb.update({ coord.x * CHUNK_SIZE, 0, coord.z * CHUNK_SIZE });
@@ -52,7 +53,6 @@ void Chunk::placeBlock(const BlockPositionXYZ& bcoord, BlockType block) {
 	BlockPositionXYZ bCoord = chunkManager->getBlockCoord(bcoord);
 
 	getChunkSection(bcoord.y / CHUNK_SIZE)->placeBlock(bCoord, block);
-
 	/*
 	if(bcoord.x > CHUNK_SIZE - 1
 	   && bcoord.z < CHUNK_SIZE
@@ -113,8 +113,8 @@ void Chunk::generateMesh() {
 }
 
 void Chunk::generateFlora(ChunkMap* chunkMap) {
-	for(int x = 0; x < CHUNK_SIZE - 1; x++) {
-		for(int z = 0; z < CHUNK_SIZE - 1; z++) {
+	for(int x = 0; x < CHUNK_SIZE; x++) {
+		for(int z = 0; z < CHUNK_SIZE; z++) {
 
 			int height = chunkMap->heightMap.get(x, z);
 
@@ -125,45 +125,21 @@ void Chunk::generateFlora(ChunkMap* chunkMap) {
 					Structure structure;
 					if(instanceof<Desert>(biome))
 						structure.generateCactus({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
-					else
-						structure.generateTree({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
+					else structure.generateTree({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
+					
 					structure.build(*chunkManager);
 				}
 				else if(Random::isIntInRange(0, biome->getPlantFrequency()) == 5)
-					chunkManager->placeBlock({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE }, biome->getPlant());
+					chunkManager->placeBlock({ x + coord.x * CHUNK_SIZE, height + 1, z + coord.z * CHUNK_SIZE }, biome->getPlant());
 			}
 		}
 	}
 }
 
-void Chunk::prepareDraw(int meshtype) {
-	meshCollection[meshtype]->prepareDraw();
-	isBuffered = true;
-}
-
 void Chunk::draw(int meshtype) {
-	glBindBuffer(GL_ARRAY_BUFFER, meshCollection[meshtype]->getVBO());
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, position));
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, uvWithTextureID));
-	glEnableVertexAttribArray(2);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshCollection[meshtype]->getIBO());
-	glDrawElements(GL_TRIANGLES, meshCollection[meshtype]->indices.size(), GL_UNSIGNED_INT, (void*) 0);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	meshCollection[meshtype]->prepareDraw();
+	meshCollection[meshtype]->draw();
 }
-
 
 void Chunk::save() {
 

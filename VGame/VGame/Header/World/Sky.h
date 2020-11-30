@@ -5,13 +5,11 @@
 #include <vector>
 class Shader;
 class Camera;
-class Mesh;
 
 class Sky {
 
 private:
 	Shader* _shader;
-	Mesh* _sun;
 	std::vector<float> vertices;
 	std::vector<unsigned int> indices;
 

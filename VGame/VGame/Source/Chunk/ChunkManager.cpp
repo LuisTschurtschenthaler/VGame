@@ -137,18 +137,13 @@ BlockType ChunkManager::getBlock(const BlockPositionXYZ& coord) {
 
 void ChunkManager::placeBlock(BlockPositionXYZ blockCoord, BlockType block) {
 	ChunkCoordXZ chunkCoord = getChunkCoord(blockCoord);
-	//BlockPositionXYZ bCoord = getBlockCoord(blockCoord);
-
 	getChunk(chunkCoord)->placeBlock(blockCoord, block);
 }
 
 ChunkCoordXZ ChunkManager::getChunkCoord(const BlockPositionXYZ& blockCoord) {
 	ChunkCoordXZ c{ blockCoord.x / CHUNK_SIZE, blockCoord.z / CHUNK_SIZE };
-	
-	if(c.x < 0)
-		c.x -= 1;
-	if(c.z < 0)
-		c.z -= 1;
+	if(c.x < 0) c.x -= 1;
+	if(c.z < 0) c.z -= 1;
 	
 	return c;
 }
@@ -170,6 +165,8 @@ void ChunkManager::_generateChunkData() {
 	for(int i = 0; i < RENDER_DISTANCE; i++) {
 		for(int x = currentChunkX - i; x <= currentChunkX + i; x++) {
 			for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
+				if(x <= 0 || z <= 0) continue;
+
 				int chunkX = currentChunkX + x;
 				int chunkZ = currentChunkZ + z;
 

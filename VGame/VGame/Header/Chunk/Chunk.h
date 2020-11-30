@@ -21,7 +21,7 @@ public:
 
 	Chunk* nearbyChunks[AMOUNT_OF_NEARBY_CHUNKS];
 	std::vector<ChunkMesh*> meshCollection;
-	bool chunkDataGenerated, meshGenerated, isBuffered;
+	bool chunkDataGenerated, meshGenerated;
 	
 private:
 	AABB _aabb;
@@ -39,7 +39,6 @@ public:
 	void generateFlora(ChunkMap* chunkMap);
 	void generateMesh();
 
-	void prepareDraw(int meshtype);
 	void draw(int meshtype);
 	void save();
 

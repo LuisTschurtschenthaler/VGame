@@ -25,3 +25,7 @@ int Random::isIntInRange(int min, int max) {
 	std::uniform_int_distribution<int> dist(min, max);
 	return dist(_rd);
 }
+
+bool Random::getBool() {
+	return (0 + (rand() % (1 - 0 + 1)) == 1);
+}

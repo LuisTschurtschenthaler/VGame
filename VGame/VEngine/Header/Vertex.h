@@ -3,19 +3,24 @@
 
 #include <iostream>
 #include <GLM/glm.hpp>
+#include "TextureAtlas.h"
+
 
 struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
-	glm::vec3 uvWithTextureID;
+	glm::vec2 texCoords;
 
 
 	Vertex()
-		: position(glm::vec3(0.f)), normal(glm::vec3(0.f)), uvWithTextureID(glm::vec3(0.f)) { }
+		: position(glm::vec3(0.f)), normal(glm::vec3(0.f)), texCoords(glm::vec2(0.f)) { }
 
-	Vertex(glm::vec3 position, glm::vec3 normal, glm::vec3 uvWithTextureID)
-		: position(position), normal(normal), uvWithTextureID(uvWithTextureID) {
+	Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, int textureID)
+		: position(position), normal(normal) {
+
+		texCoords = TextureAtlas::getTextureCoords(uv, ((textureID == -1) ? 255 : textureID));
 	}
+
 
 	Vertex(glm::vec3 position, glm::vec3 normal)
 		: position(position), normal(normal) {

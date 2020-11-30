@@ -10,6 +10,7 @@
 #include "ChunkMesh.h"
 #include "ChunkManager.h"
 #include "Util.h"
+#include "FramerateCounter.h"
 
 
 bool TextRenderer::shouldShowText = false;
@@ -92,13 +93,10 @@ void TextRenderer::update(ChunkManager* chunkManager, Player* player) {
 
 	glm::vec3 playerPos = player->getPosition();
 
-	std::string title = "VGame";
+	std::string title = "VGame FPS: " + std::to_string(FramerateCounter::getFPS());
 
 	std::string time = "Time: " + std::to_string(Game::dayTime) + " " + Util::angleToTime(Game::dayTime)
 		+ ((Game::dayTime >= 270 || Game::dayTime <= 90) ? " am" : " pm");
-		//+ std::to_string(static_cast<int>(floor(Game::dayTime)))
-		//+ ":"
-		//+ std::to_string(static_cast<int>(floor((Game::dayTime - floor(Game::dayTime)) * 60)));
 
 	std::string pitch = std::to_string(player->camera->getPitch());
 	std::string yaw = std::to_string(player->camera->getYaw());

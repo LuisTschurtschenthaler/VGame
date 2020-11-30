@@ -17,7 +17,7 @@ void Structure::build(ChunkManager& chunkManager) {
 }
 
 void Structure::generateTree(const BlockPositionXYZ& pos) {
-	int height = Random::get(5, 6);
+	int height = Random::get(5, 7);
 
 	int y = pos.y + height;
 	fillXZ({ pos.x - CROWN_RADIUS, y - 1, pos.z - CROWN_RADIUS },
@@ -56,8 +56,8 @@ void Structure::fillY(const BlockPositionXYZ& start, BlockType block, int height
 }
 
 void Structure::clearEdges(const BlockPositionXYZ& pos, int distance) {
-	_structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z + distance, BlockType::AIR);
-	_structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z - distance, BlockType::AIR);
-	_structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z + distance, BlockType::AIR);
-	_structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z - distance, BlockType::AIR);
+	if(Random::get(0, 10) <= 8) _structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z + distance, BlockType::AIR);
+	if(Random::get(0, 10) <= 8) _structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z - distance, BlockType::AIR);
+	if(Random::get(0, 10) <= 8) _structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z + distance, BlockType::AIR);
+	if(Random::get(0, 10) <= 8) _structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z - distance, BlockType::AIR);
 }

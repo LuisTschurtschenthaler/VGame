@@ -12,12 +12,10 @@
 #include "Window.h"
 #include "WorldConstants.h"
 #include "Camera.h"
-#include "Mesh.h"
 
 
 Sky::Sky() {
 	_shader = new Shader("sky.vert", "sky.frag");
-	_sun = new Mesh("./Resources/Models/Sphere.obj", glm::vec3(0), glm::vec3(0), glm::vec3(100.f));
 }
 
 Sky::~Sky() {

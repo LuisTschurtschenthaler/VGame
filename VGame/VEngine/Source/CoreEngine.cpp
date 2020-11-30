@@ -8,6 +8,7 @@
 #include "Screenshot.h"
 #include "TextRenderer.h"
 #include "Random.h"
+#include "FramerateCounter.h"
 
 
 CoreEngine::CoreEngine(Game* game)
@@ -51,6 +52,7 @@ void CoreEngine::_run() {
 			stop();
 
 		Timer::update();
+		FramerateCounter::update();
 		Input::update();
 		_game->update();
 

@@ -22,6 +22,9 @@ enum BlockType {
 	DIAMOND_ORE = 17,
 	DEAD_BUSH = 18,
 	GRASS2 = 19,
+	TALL_GRASS = 20,
+	TNT = 21,
+	ERROR = 22,
 
 	AMOUNT_OF_BLOCKS
 };
