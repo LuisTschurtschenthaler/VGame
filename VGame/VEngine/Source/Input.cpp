@@ -1,9 +1,31 @@
 #include "Input.h"
 #include "Window.h"
 #include "SDLHandler.h"
-#include <SDL2/SDL.h>
 
 
+Key::Key(int key)
+	: key(key), wasPressed(false), isReleased(false) {
+}
+
+void Key::update() {
+	if(!wasPressed && Input::isKeyPressed(key))
+		wasPressed = true;
+
+	if(!isReleased && wasPressed && !Input::isKeyPressed(key))
+		isReleased = true;
+}
+
+bool Key::wasPressedAndReleased() {
+	if(wasPressed && isReleased) {
+		wasPressed = false;
+		isReleased = false;
+		return true;
+	}
+	return false;
+}
+
+
+Key Input::fullscreenKey = Key(KeyCode::KEY_F11);
 bool Input::_isEnabled = false;
 SDL_Event Input::_event;
 int Input::_mouseX = 0;
@@ -21,8 +43,10 @@ void Input::setup() {
 }
 
 void Input::update() {
-	while(SDL_PollEvent(&_event)) {
+	if(fullscreenKey.wasPressedAndReleased())
+		Window::setFullscreen();
 
+	while(SDL_PollEvent(&_event)) {
 		// Quit
 		if(_event.type == SDL_QUIT)
 			setCloseRequested(true);
@@ -55,6 +79,8 @@ void Input::update() {
 
 		// --------> SDL_MOUSEWHEEL
 	}
+
+	fullscreenKey.update();
 }
 
 bool Input::isKeyPressed(int key) {

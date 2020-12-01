@@ -14,14 +14,21 @@ out vec2 vs_texCoord;
 out vec3 vs_normal;
 
 uniform mat4 projectionView;
-uniform int atlasSize;
-uniform int tileSize;
+uniform float dayTime;
 
+
+vec3 getWorldPosition() {
+	vec3 inVert = vertex_position;
+    inVert.y -= 0.2;
+    inVert.y -= sin((dayTime + inVert.z) * 1.2f) / 10.f;
+    inVert.y += cos((dayTime + inVert.x) * 1.2f) / 8.f;
+    return inVert;
+}
 
 void main() {
 	vs_position = normalize(vertex_position);
 	vs_texCoord = vertex_texCoords;
 	vs_normal = vertex_normal;
 
-	gl_Position = projectionView * vec4(vertex_position, 1.f);
+	gl_Position = projectionView * vec4(getWorldPosition(), 1.f);
 }

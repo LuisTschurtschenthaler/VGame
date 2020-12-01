@@ -18,7 +18,7 @@ public:
 	CoreEngine(Game* game);
 	~CoreEngine();
 
-	void createWindow(int width, int height, const std::string& windowTitle);
+	void createWindow(int width, int height, bool fullscreen, const std::string& windowTitle);
 	void start();
 	void stop();
 

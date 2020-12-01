@@ -16,10 +16,13 @@ uniform struct Light {
 } light;
 
 uniform sampler2D textureAtlas;
+uniform bool isPlayerUnderwater;
+
 
 const float PI = 3.14159265359;
 const float dayLight = 1.f;
 const float nightLight = 0.45f;
+
 
 float calulateAmbient() {
     //if (dayTime >= 340 || dayTime <= 20) {
@@ -72,7 +75,6 @@ void main() {
 	//
 	//vec3 rs = (ambient) * texColor.xyz;
 	//vec3 c = rs * (clamp(dot(normal, lightDir), 0.05f, 0.5f)) * 1.f;
-	//vec3 ao = (c - (c - rs)) / (z / rd);
 	
 	color = (vec4(result, 1.f) * texColor);
 }

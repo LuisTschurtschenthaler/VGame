@@ -13,7 +13,7 @@ https://www.brawl.com/threads/67313/
 int main() {
 	Game game;
 	CoreEngine coreEngine(&game);
-	coreEngine.createWindow(1980, 1020, "VGame " + Game::version);
+	coreEngine.createWindow(1980, 1020, false, "VGame " + Game::version);
 	coreEngine.start();
 
 	return 0;

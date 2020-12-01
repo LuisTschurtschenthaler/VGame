@@ -17,12 +17,11 @@
 ChunkManager::ChunkManager(World* world, TerrainGenerator* terrainGenerator, Camera* camera)
 	: terrainGenerator(terrainGenerator), _world(world), _camera(camera) {
 
-	//for(int i = 0; i < 4; i++)
-		_threads.emplace_back([&]() {
-			while(!_world->disposed) {
-				std::this_thread::sleep_for(std::chrono::microseconds(100));
-				_generateChunkData();
-			}
+	_threads.emplace_back([&]() {
+		while(!_world->disposed) {
+			std::this_thread::sleep_for(std::chrono::microseconds(50));
+			_generateChunkData();
+		}
 	});
 }
 
@@ -105,7 +104,7 @@ bool ChunkManager::chunkMapExists(const ChunkCoordXZ& coord) {
 
 std::vector<Chunk*> ChunkManager::getChunksToRender() {
 	std::vector<Chunk*> chunksToRender = std::vector<Chunk*>();
-	
+
 	int playerX = static_cast<int>(_camera->getPosition().x / CHUNK_SIZE);
 	int playerZ = static_cast<int>(_camera->getPosition().z / CHUNK_SIZE);
 

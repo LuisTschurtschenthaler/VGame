@@ -14,8 +14,6 @@ out vec2 vs_texCoord;
 out vec3 vs_normal;
 
 uniform mat4 projectionView;
-uniform int atlasSize;
-uniform int tileSize;
 
 
 void main() {

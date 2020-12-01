@@ -2,8 +2,6 @@
 #define INPUT_H
 
 #include <map>
-#include <vector>
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <GLM/glm.hpp>
 #include "KeyCode.h"
@@ -12,9 +10,22 @@
 #define TOTAL_MOUSEBUTTONS 256
 
 
+struct Key {
+	int key;
+	bool wasPressed, isReleased;
+
+	Key(int key);
+
+	void update();
+	bool wasPressedAndReleased();
+};
+
+
 class Input {
 
 private:
+	static Key fullscreenKey;
+
 	static bool _isEnabled;
 	static SDL_Event _event;
 	static int _mouseX;
@@ -35,34 +46,6 @@ public:
 
 	static glm::vec2 getMousePosition() { return glm::vec2(_mouseX, _mouseY); }
 	static void setMousePosition(glm::vec2 position);
-
-};
-
-
-struct Key {
-	int key;
-	bool wasPressed, isReleased;
-
-	Key(int key)
-		: key(key), wasPressed(false), isReleased(false) {
-	}
-
-	void update() {
-		if (!wasPressed && Input::isKeyPressed(key))
-			wasPressed = true;
-
-		if (!isReleased && wasPressed && !Input::isKeyPressed(key))
-			isReleased = true;
-	}
-
-	bool wasPressedAndReleased() {
-		if (wasPressed && isReleased) {
-			wasPressed = false;
-			isReleased = false;
-			return true;
-		}
-		return false;
-	}
 
 };
 

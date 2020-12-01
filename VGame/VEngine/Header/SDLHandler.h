@@ -7,7 +7,7 @@ bool getCloseRequested();
 void setCloseRequested(bool value);
 void SDLcreateWindow(const char* title, int x, int y, int width, int height, bool fullscreen);
 void swapBuffers();
-void setFullscreen(bool value);
+void SDLsetFullscreen(bool value);
 void destroyWindow();
 void SDLSetMousePosition(int x, int y);
 void SDLSetWindowSize(int width, int height);

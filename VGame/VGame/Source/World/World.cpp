@@ -70,8 +70,6 @@ void World::draw() {
 
 
 void World::_updateUniforms(const MeshType& meshType) {
-	/* BIND ONCE AFTER INIT */
-	//_textureAtlas->updateUniforms(_meshShader[shader]);
 	_textureAtlas->getTexture().bind();
 	_meshShader[meshType]->setInt("textureAtlas", _textureAtlas->getTextureID());
 	_meshShader[meshType]->setMat4("projectionView", _player->camera->getProjectionView());

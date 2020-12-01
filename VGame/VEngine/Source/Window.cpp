@@ -1,28 +1,23 @@
+#include <SDL2/SDL.h>
+#include <GLEW/GL/glew.h>
 #include "Window.h"
 #include "SDLHandler.h"
-#include <GLEW/GL/glew.h>
-#include <SDL2/SDL.h>
+
 
 int Window::_width = 0;
 int Window::_height = 0;
+bool Window::_fullscreen = false;
 std::string Window::_title = "";
 
 
-void Window::create(int width, int height, const std::string& title) {
+void Window::create(int width, int height, bool fullscreen, const std::string& title) {
 	_width = width;
 	_height = height;
+	_fullscreen = fullscreen;
 	_title = title;
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	SDLcreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, false);
+	SDLcreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, fullscreen);
 	
 	GLenum res = glewInit();
 	if(res != GLEW_OK)
@@ -44,7 +39,12 @@ bool Window::shouldClose() {
 }
 
 float Window::getAspect() {
-	return static_cast<float>(_width) / static_cast<float>(_height);
+	return (static_cast<float>(_width) / static_cast<float>(_height));
+}
+
+void Window::setFullscreen() {
+	_fullscreen = !_fullscreen;
+	SDLsetFullscreen(_fullscreen);
 }
 
 void Window::setWindowHeight(int width, int height) {
