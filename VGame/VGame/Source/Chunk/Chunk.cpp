@@ -14,6 +14,7 @@
 #include "ChunkMap.h"
 #include "Util.h"
 #include "AABB.h"
+#include "World.h"
 
 
 Chunk::Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord)
@@ -27,7 +28,7 @@ Chunk::Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord)
 		_sections.push_back(new ChunkSection(chunkManager, this, { coord.x, y, coord.z }));
 
 	for(int i = 0; i < AMOUNT_OF_MESH_TYPES; i++)
-		meshCollection.push_back(new ChunkMesh(this));
+		meshCollection.push_back(new SolidMesh(this));
 }
 
 Chunk::~Chunk() {
@@ -142,7 +143,6 @@ void Chunk::draw(int meshtype) {
 }
 
 void Chunk::save() {
-
 }
 
 int Chunk::getWorldPositionX(int x) const {

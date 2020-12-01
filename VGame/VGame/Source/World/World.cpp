@@ -26,9 +26,15 @@ World::World(Game* game, TerrainGeneratorType type, const std::string& worldName
 	_chunkManager = new ChunkManager(this, terrainGenerator, _player->camera);
 	_chunkManager->setPlayerSpawnPoint(*_player);
 
-	_chunkShader = new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag");
+	//_chunkShader = new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag");
 	_skyShader = new Shader("sky.vert", "sky.frag");
 	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 0);
+
+	_meshShader.insert(_meshShader.begin(), {
+		new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag"),
+		new Shader("ChunkShader/flora.vert", "ChunkShader/flora.frag"),
+		new Shader("ChunkShader/fluid.vert", "ChunkShader/fluid.frag")
+	});
 }
 
 World::~World() {
@@ -41,35 +47,54 @@ void World::update() {
 }
 
 void World::draw() {
-	_chunkShader->bind();
-	_updateUniforms();
 	_chunkManager->chunkMapMutex.lock();
-	
+
+	for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {
+		_meshShader[i]->bind();
+		_updateUniforms(static_cast<MeshType>(i));
+		_meshShader[i]->unbind();
+	}
+
 	for(auto& chunk : _chunkManager->getChunksToRender()) {
 		for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {
-			
+			_meshShader[i]->bind();
 			if(chunk->meshCollection[i]->indices.size() > 0)
 				chunk->draw(i);
-
+			_meshShader[i]->unbind();
 		}
 	}
 	
 	_chunkManager->chunkMapMutex.unlock();
-	_chunkShader->unbind();
 	Texture::unbind();
 }
 
 
-void World::_updateUniforms() {
-	_textureAtlas->updateUniforms(_chunkShader);
-	_chunkShader->setMat4("projectionView", _player->camera->getProjectionView());
+void World::_updateUniforms(const MeshType& meshType) {
+	/* BIND ONCE AFTER INIT */
+	//_textureAtlas->updateUniforms(_meshShader[shader]);
+	_textureAtlas->getTexture().bind();
+	_meshShader[meshType]->setInt("textureAtlas", _textureAtlas->getTextureID());
+	_meshShader[meshType]->setMat4("projectionView", _player->camera->getProjectionView());
 
-	_chunkShader->setFloat("dayTime", Game::dayTime);
-	_chunkShader->setVec3("cameraPosition", _player->getPosition()); 
-	_chunkShader->setInt("renderDistance", RENDER_DISTANCE);
+	_meshShader[meshType]->setFloat("dayTime", Game::dayTime);
+	_meshShader[meshType]->setVec3("cameraPosition", _player->getPosition());
+	_meshShader[meshType]->setInt("renderDistance", RENDER_DISTANCE);
 
-	_chunkShader->setVec3("light.direction", _game->getSky()->getSunPosition());
-	_chunkShader->setVec3("light.ambient", glm::vec3(0.6f, 0.6f, 0.2f));
-	_chunkShader->setVec3("light.diffuse", glm::vec3(0.5f));
-	_chunkShader->setVec3("light.specular", glm::vec3(0.5f));
+	_meshShader[meshType]->setVec3("light.direction", _game->getSky()->getSunPosition());
+	_meshShader[meshType]->setVec3("light.ambient", glm::vec3(0.6f, 0.6f, 0.2f));
+	_meshShader[meshType]->setVec3("light.diffuse", glm::vec3(0.5f));
+	_meshShader[meshType]->setVec3("light.specular", glm::vec3(0.5f));
+
+
+	switch(meshType) {
+		case MeshType::SOLID:
+			break;
+
+		case MeshType::FLORA:
+			break;
+
+		case MeshType::FLUID:
+			_meshShader[meshType]->setInt("isPlayerUnderwater", _player->isUnderwater);
+			break;
+	}
 }

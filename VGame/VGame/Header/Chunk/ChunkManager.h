@@ -37,7 +37,7 @@ public:
 	~ChunkManager();
 
 	void setPlayerSpawnPoint(Player& player);
-	std::vector<BlockPositionXYZ>* getAdjacentBlocks(glm::vec3 blockCoord);
+	//std::vector<BlockPositionXYZ>* getAdjacentBlocks(glm::vec3 blockCoord);
 
 	void getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList);
 	Chunk* getChunk(const ChunkCoordXZ& coord);
@@ -49,6 +49,8 @@ public:
 
 	BlockType getBlock(const BlockPositionXYZ& coord);
 	void placeBlock(BlockPositionXYZ blockCoord, BlockType block);
+
+	World* getWorld() const { return _world; }
 
 	static ChunkCoordXZ getChunkCoord(const BlockPositionXYZ& blockCoord);
 	static BlockPositionXYZ getBlockCoord(const BlockPositionXYZ& blockCoord);

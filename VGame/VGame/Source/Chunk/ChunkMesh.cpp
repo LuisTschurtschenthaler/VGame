@@ -1,11 +1,12 @@
 #include "ChunkMesh.h"
 #include "WorldConstants.h"
-#include "Shader.h"
 #include "Chunk.h"
 #include "ChunkSection.h"
+#include "Game.h"
+#include "Sky.h"
+#include "Player.h"
 
 
-std::map<MeshType, Shader*> ChunkMesh::meshShaders;
 int ChunkMesh::amountOfVertices = 0;
 int ChunkMesh::amountOfIndices = 0;
 
@@ -279,3 +280,30 @@ void ChunkMesh::addFloraBlock(const ChunkSection* chunkSection, int xi, int yi, 
 		v5, v6, v7, v8
 	});
 }
+
+
+
+SolidMesh::SolidMesh(Chunk* chunk)
+	: ChunkMesh(chunk) {
+
+	_shader = new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag");
+}
+
+SolidMesh::~SolidMesh() {
+}
+
+/*
+void SolidMesh::updateUniforms(Game& game) {
+	game.getWorld()->getTextureAtlas()->updateUniforms(_shader);
+	_shader->setMat4("projectionView", game.getPlayer()->camera->getProjectionView());
+
+	_shader->setFloat("dayTime", Game::dayTime);
+	_shader->setVec3("cameraPosition", game.getPlayer()->getPosition());
+	_shader->setInt("renderDistance", RENDER_DISTANCE);
+
+	_shader->setVec3("light.direction", game.getSky()->getSunPosition());
+	_shader->setVec3("light.ambient", glm::vec3(0.6f, 0.6f, 0.2f));
+	_shader->setVec3("light.diffuse", glm::vec3(0.5f));
+	_shader->setVec3("light.specular", glm::vec3(0.5f));
+}
+*/

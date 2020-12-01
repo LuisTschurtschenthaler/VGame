@@ -42,6 +42,7 @@ public:
 
 	void setCoreEngine(CoreEngine* coreEngine) { _coreEngine = coreEngine; }
 	Player* getPlayer() const { return _player; }
+	World* getWorld() const { return _world; }
 	Sky* getSky() const { return _sky; }
 
 	static bool isDay() { return (Game::dayTime >= 0 && Game::dayTime <= 180); }

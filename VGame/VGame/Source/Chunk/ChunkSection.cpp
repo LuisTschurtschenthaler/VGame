@@ -38,30 +38,17 @@ void ChunkSection::generateMesh() {
 					Block* block = BlockUtil::blocks[blockType];
 					switch(block->meshType) {
 						case MeshType::SOLID:
-							if(getBlockRelative(x + 1, y, z)->isTransparent)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_RIGHT, block);
-
-							if(getBlockRelative(x - 1, y, z)->isTransparent)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_LEFT, block);
-
-							if(getBlockRelative(x, y + 1, z)->isTransparent)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_TOP, block);
-
-							if(getBlockRelative(x, y - 1, z)->isTransparent)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_BOTTOM, block);
-
-							if(getBlockRelative(x, y, z + 1)->isTransparent)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_FRONT, block);
-
-							if(getBlockRelative(x, y, z - 1)->isTransparent)
-								_chunk->meshCollection[SOLID]->addBlockFace(this, x, y, z, FACE_BACK, block);
+							_addBlockFaces(x, y, z, MeshType::SOLID, block);
 							break;
 
 
 						case MeshType::FLORA:
-							if(block->name == "Cactus" || block->name == "Oak leave") {
-								for(int i = 0; i < AMOUNT_OF_BLOCKFACES; i++)
-									_chunk->meshCollection[FLORA]->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
+							if(block->name == "Oak leave") {
+								//for(int i = 0; i < AMOUNT_OF_BLOCKFACES; i++)
+								//	_chunk->meshCollection[FLORA]->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
+
+								_addBlockFaces(x, y, z, MeshType::FLORA, block);
+								break;
 							}
 							
 							else if(block->name == "Tall grass") {
@@ -169,6 +156,32 @@ Block* ChunkSection::getBlockRelative(int x, int y, int z) {
 	else return _getBlock(x, y, z);
 }
 
+
+void ChunkSection::_addBlockFaces(int x, int y, int z, MeshType meshType, Block* block) {
+	Block* relativeBlock = getBlockRelative(x + 1, y, z);
+	if(relativeBlock->isTransparent || relativeBlock->meshType == MeshType::FLORA)
+		_chunk->meshCollection[meshType]->addBlockFace(this, x, y, z, FACE_RIGHT, block);
+
+	relativeBlock = getBlockRelative(x - 1, y, z);
+	if(relativeBlock->isTransparent || relativeBlock ->meshType == MeshType::FLORA)
+		_chunk->meshCollection[meshType]->addBlockFace(this, x, y, z, FACE_LEFT, block);
+
+	relativeBlock = getBlockRelative(x, y + 1, z);
+	if(relativeBlock->isTransparent || relativeBlock->meshType == MeshType::FLORA)
+		_chunk->meshCollection[meshType]->addBlockFace(this, x, y, z, FACE_TOP, block);
+
+	relativeBlock = getBlockRelative(x, y - 1, z);
+	if(relativeBlock->isTransparent || relativeBlock->meshType == MeshType::FLORA)
+		_chunk->meshCollection[meshType]->addBlockFace(this, x, y, z, FACE_BOTTOM, block);
+
+	relativeBlock = getBlockRelative(x, y, z + 1);
+	if(relativeBlock->isTransparent || relativeBlock->meshType == MeshType::FLORA)
+		_chunk->meshCollection[meshType]->addBlockFace(this, x, y, z, FACE_FRONT, block);
+
+	relativeBlock = getBlockRelative(x, y, z - 1);
+	if(relativeBlock->isTransparent || relativeBlock->meshType == MeshType::FLORA)
+		_chunk->meshCollection[meshType]->addBlockFace(this, x, y, z, FACE_BACK, block);
+}
 
 bool ChunkSection::_isOutOfChunkRange(BlockPositionXYZ coord) {
 	return (_isOutOfChunkRange(coord.x) || _isOutOfChunkRange(coord.y) || _isOutOfChunkRange(coord.z));

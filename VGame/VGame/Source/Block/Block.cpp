@@ -16,7 +16,7 @@ Block* BlockUtil::blocks[AMOUNT_OF_BLOCKS] = {
 	new Block{ "Oak leave",		{  9,  9,  9,  9,  9,  9 }, 0.f, 0.f, FLORA,  true, true },
 	new Block{ "Sand",			{ 10, 10, 10, 10, 10, 10 }, 0.f, 0.f, SOLID, false, true },
 	new Block{ "Sandstone",		{ 11, 11, 12, 12, 11, 11 }, 0.f, 0.f, SOLID, false, true },
-	new Block{ "Cactus",		{ 13, 13, 15, 14, 13, 13 }, 1.f, 0.f, FLORA,  true, true },
+	new Block{ "Cactus",		{ 13, 13, 15, 14, 13, 13 }, 1.f, 0.f, SOLID,  true, true },
 	new Block{ "Gravel",		{ 16, 16, 16, 16, 16, 16 }, 0.f, 0.f, SOLID, false, true },
 	new Block{ "Coal ore",		{ 17, 17, 17, 17, 17, 17 }, 0.f, 0.f, SOLID, false, true },
 	new Block{ "Iton ore",		{ 18, 18, 18, 18, 18, 18 }, 0.f, 0.f, SOLID, false, true },
@@ -28,7 +28,7 @@ Block* BlockUtil::blocks[AMOUNT_OF_BLOCKS] = {
 	new Block{ "Tall grass",	{ -1, -1, 24, 25, -1, -1 }, 0.f, 0.f, FLORA,  true, true },
 	new Block{ "TNT",			{ 27, 27, 28, 26, 27, 27 }, 0.f, 0.f, SOLID, false, true },
 	
-	new Block{ "Error",			{ 255, 255, 255, 255, 255, 255}, 0.f,  0.f, SOLID, false, true }
+	new Block{ "Error",			{ 255, 255, 255, 255, 255, 255 }, 0.f,  0.f, SOLID, false, true }
 };
 
 AABB BlockUtil::getBlockAABB(const BlockPositionXYZ& pos) {

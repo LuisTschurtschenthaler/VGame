@@ -2,10 +2,11 @@
 #include "Timer.h"
 #include "Input.h"
 #include "ChunkManager.h"
+#include "Block.h"
 
 
 Player::Player() 
-	: isFlying(false), isFalling(false), isJumping(false), isSwimming(false),
+	: isFlying(false), isFalling(false), isJumping(false), isUnderwater(false),
 	_cardinalPointRange(22.5), lastChunkPosition({ 0.f }) {
 
 	camera = new Camera({ 0.f, 0.f, 0.f });
@@ -17,6 +18,9 @@ Player::~Player() {
 
 
 void Player::update(ChunkManager* chunkManager) {
+	glm::vec3 pos = camera->getPosition();
+	isUnderwater = (chunkManager->getBlock(BlockPositionXYZ(pos.x, pos.y + 0.5f, pos.z)) == BlockType::WATER);
+
 	float playerSpeed = isFlying ? FLY_SPEED : WALK_SPEED;
 
 	camera->handleMouseInputs(MOUSE_SENSITIVITY);

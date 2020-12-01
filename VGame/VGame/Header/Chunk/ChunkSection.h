@@ -6,6 +6,7 @@
 #include "NearbyChunks.h"
 #include "Array3D.h"
 #include "AABB.h"
+#include "MeshTypes.h"
 class ChunkManager;
 class ChunkMap;
 class Chunk;
@@ -34,6 +35,7 @@ public:
 	Block* getBlockRelative(int x, int y, int z);
 
 private:
+	void _addBlockFaces(int x, int y, int z, MeshType meshType, Block* block);
 	bool _isOutOfChunkRange(BlockPositionXYZ coord);
 	bool _isOutOfChunkRange(int nr);
 	Block* _getBlock(int x, int y, int z);

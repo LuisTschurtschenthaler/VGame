@@ -19,7 +19,8 @@ public:
 
 private:
 	Game* _game;
-	Shader* _chunkShader;
+	//Shader* _chunkShader;
+	std::vector<Shader*> _meshShader;
 	Shader* _skyShader;
 	Player* _player;
 	ChunkManager* _chunkManager;
@@ -34,14 +35,16 @@ public:
 
 	void update();
 	void draw();
-	
-	Player* getPlayer() { return _player; }
-	ChunkManager* getChunkManager() { return _chunkManager; }
-	TextureAtlas* getTextureAtlas() { return _textureAtlas; }
+
 	const std::string& const getName() { return _worldName; }
+	
+	Game* getGame() const { return _game; };
+	Player* getPlayer() const { return _player; }
+	ChunkManager* getChunkManager() const { return _chunkManager; }
+	TextureAtlas* getTextureAtlas() const { return _textureAtlas; }
 
 private:
-	void _updateUniforms();
+	void _updateUniforms(const MeshType& meshType);
 
 };
 

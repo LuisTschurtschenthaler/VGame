@@ -48,6 +48,7 @@ void ChunkManager::setPlayerSpawnPoint(Player& player) {
 	player.setSpawnPoint({ posX + 0.5f, height + 10, posZ + 0.5f });
 }
 
+/*
 std::vector<BlockPositionXYZ>* ChunkManager::getAdjacentBlocks(glm::vec3 blockCoord) {
 	std::vector<BlockPositionXYZ>* adjacentBlocks = new std::vector<BlockPositionXYZ>();
 	std::vector<glm::vec3> adjacents = {
@@ -69,7 +70,7 @@ std::vector<BlockPositionXYZ>* ChunkManager::getAdjacentBlocks(glm::vec3 blockCo
 	}
 
 	return adjacentBlocks;
-}
+}*/
 
 void ChunkManager::getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList) {
 	chunkList[CHUNK_RIGHT]	 = getChunk({ coord.x + 1, coord.z });

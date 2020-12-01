@@ -20,9 +20,10 @@ public:
 	static glm::vec2 getTextureCoords(glm::vec2 uv, const int textureID);
 	void updateUniforms(Shader* shader);
 
-	unsigned int getID() const { return _textureAtlas->getID(); }
-	int getAtlasSize() const { return _atlasSize; }
-	int getTileSize() const { return _tileSize; }
+	Texture& getTexture() const { return *_textureAtlas; }
+	const unsigned int getTextureID() const { return _textureAtlas->getID(); }
+	const int getAtlasSize() const { return _atlasSize; }
+	const int getTileSize() const { return _tileSize; }
 
 };
 
