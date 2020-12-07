@@ -19,9 +19,10 @@ uniform float dayTime;
 
 vec3 getWorldPosition() {
 	vec3 inVert = vertex_position;
-    inVert.x += sin((dayTime + inVert.z + inVert.y) * 2.f) / 15.f;
-    inVert.z -= cos((dayTime + inVert.x + inVert.y) * 2.f) / 15.f;
-    inVert.y += 0.01;
+    inVert.x -= sin((dayTime + inVert.z + inVert.y) * 2.f) / 20.f;
+    //inVert.y += 0.01 - (sin((dayTime + inVert.z + inVert.y) * 2.f) / 20.f);
+    inVert.y += 0.001;
+    inVert.z -= cos((dayTime + inVert.x + inVert.y) * 2.f) / 20.f;
     return inVert;
 }
 

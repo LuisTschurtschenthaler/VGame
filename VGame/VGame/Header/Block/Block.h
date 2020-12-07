@@ -31,7 +31,7 @@ class BlockUtil {
 
 public:
 	static Block* blocks[AMOUNT_OF_BLOCKS];
-	static AABB getBlockAABB(const BlockPositionXYZ& pos);
+	static AABB& getBlockAABB(const BlockPositionXYZ& pos);
 
 };
 

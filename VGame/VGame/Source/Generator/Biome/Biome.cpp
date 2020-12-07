@@ -1,17 +1,18 @@
 #include "Biome.h"
 #include "Random.h"
 
+
 Biome::Biome(int treeFrequency, int plantFrequency, int seed)
 	: _treeFrequency(treeFrequency), _plantFrequency(plantFrequency) {
 
 	_noise = new NoiseGenerator(seed);
 
 	NoiseSettings settings;
-	settings.octaves = 7;
-	settings.amplitude = 70;
-	settings.smoothness = 235;
-	settings.offset = -5;
-	settings.roughness = 0.53;
+	settings.octaves = 6;
+	settings.amplitude = 50;
+	settings.smoothness = 145;
+	settings.offset = 0;
+	settings.roughness = 0.45;
 	_noise->setNoiseSettings(settings);
 }
 

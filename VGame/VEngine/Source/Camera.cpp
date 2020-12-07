@@ -22,6 +22,9 @@ Camera::Camera(const glm::vec3& position)
 	_right = glm::vec3(0.f);
 	_up = glm::vec3(0.f, 1.f, 0.f);
 	_worldUp = glm::vec3(0.f, 1.f, 0.f);
+
+	_velocity = glm::vec3(0.f);
+	_speed = 1.f;
 }
 
 
@@ -41,6 +44,36 @@ glm::mat4 Camera::getProjection() {
 
 glm::mat4 Camera::getProjectionView() {
 	return (getProjection() * getView());
+}
+
+void Camera::update(ChunkManager* chunkManager, Player* player) {
+	/*
+	float cameraSpeed = 0.01f  * _speed;
+	_position += _velocity * cameraSpeed;
+	std::vector<BlockPositionXYZ>* adjacentBlocks = chunkManager->getAdjacentBlocks(_position);
+
+	for(int i = 0; i < (*adjacentBlocks).size(); i++) {
+		BlockPositionXYZ blockPosition = (*adjacentBlocks)[i];
+		Block* block = BlockUtil::blocks[chunkManager->getBlock(blockPosition)];
+
+		if(!block->hasHitbox)
+			continue;
+
+		glm::vec3 blockPos = glm::vec3(blockPosition.x, blockPosition.y, blockPosition.z);
+
+		if(AABB::hit(blockPos, _position)) {
+			std::cout << "HIT: " << block->name << std::endl;
+			switch(i) {
+				case 0: _position.x = blockPosition.x + BLOCK_SIZE * 1.5f; break;
+				case 1: _position.x = blockPosition.x - BLOCK_SIZE * 1.5f; break;
+				case 2: _position.y = blockPosition.y + BLOCK_SIZE * 1.5f; break;
+				case 3: _position.y = blockPosition.y - BLOCK_SIZE * 1.5f; break;
+				case 4: _position.z = blockPosition.z + BLOCK_SIZE * 1.5f; break;
+				case 5: _position.z = blockPosition.z - BLOCK_SIZE * 1.5f; break;
+				default: break;
+			}
+		}
+	}*/
 }
 
 void Camera::handleMouseInputs(float mouseSensitivity) {
@@ -89,6 +122,55 @@ void Camera::handleMouseInputs(float mouseSensitivity) {
 	}
 }
 
+void Camera::handleKeyboardInputs(ChunkManager* chunkManager, Player* player) {
+	//glm::vec3 change(0.f);
+
+	//if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
+	//	_velocity *= 2.f;
+
+	float velocity = 0.01f * Timer::getDelta();
+		
+	if(Input::isKeyPressed(KeyCode::KEY_W)) {
+		glm::vec3 move = _toHorizontal(_front * velocity);
+		if(!player->aabb->collision(chunkManager, player, _position + move))
+			_position += move;
+	}
+	
+	if(Input::isKeyPressed(KeyCode::KEY_A)) {
+		glm::vec3 move = _toHorizontal(_right * velocity);
+		if(!player->aabb->collision(chunkManager, player, _position - move))
+			_position -= move;
+	}
+
+	if(Input::isKeyPressed(KeyCode::KEY_S)) {
+		glm::vec3 move = _toHorizontal(_front * velocity);
+		if(!player->aabb->collision(chunkManager, player, _position - move))
+			_position -= move;
+	}
+
+	if(Input::isKeyPressed(KeyCode::KEY_D)) {
+		glm::vec3 move = _toHorizontal(_right * velocity);
+		if(!player->aabb->collision(chunkManager, player, _position + move))
+			_position += move;
+	}
+
+
+	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {
+		glm::vec3 move = glm::vec3(0.f, 1.5f, 0.f);
+		if(!player->aabb->collision(chunkManager, player, _position + move))
+			_position += move;
+	}
+
+
+	if(!player->aabb->collision(chunkManager, player, _position + glm::vec3(0.f, -GRAVITY, 0.f)))
+		_position.y -= GRAVITY;
+
+	//_position += change;
+	//_position.x *= 0.95f;
+	//_position.z *= 0.95f;
+}
+
+/*
 void Camera::move(Direction direction, float movementSpeed) {
 	float velocity = movementSpeed * Timer::getDelta();
 
@@ -101,119 +183,7 @@ void Camera::move(Direction direction, float movementSpeed) {
 		case DOWN:		_position -= _worldUp * velocity; break;
 	}
 }
-
-/*
-void Camera::handleKeyboardInputs(ChunkManager* chunkManager, Player* player, float movementSpeed) {
-	_velocity.x *= 0.7f;
-	_velocity.y  = 0.f;
-	_velocity.z *= 0.7f;
-
-	if(player->isFlying)
-		_velocity.y = GRAVITY * 0.6f;
-	else if(player->isSwimming)
-		_velocity -= GRAVITY * 0.3f;
-	else
-		_velocity -= GRAVITY;
-
-	//if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
-	//	_velocity *= 2.f;
-
-	glm::vec3 updateVelocity = movementSpeed * _velocity * float(Timer::getDelta());
-	//std::cout << updateVelocity.x << " " << updateVelocity.y << " " << updateVelocity.z << std::endl;
-	
-	_position.y += updateVelocity.y;
-	if(player->aabb->collision(chunkManager, _position)) {
-		updateVelocity.y = 0;
-		_position.y -= updateVelocity.y;
-	}
-
-	
-	if(Input::isKeyPressed(KeyCode::KEY_W)) {
-		_position -= _front * updateVelocity;
-		if(player->aabb->collision(chunkManager, _position))
-			_position += _front * updateVelocity;
-	}
-	
-	if(Input::isKeyPressed(KeyCode::KEY_A)) {
-		_position += _right * updateVelocity;
-		if(player->aabb->collision(chunkManager, _position))
-			_position -= _right * updateVelocity;
-	}
-
-	if(Input::isKeyPressed(KeyCode::KEY_S)) {
-		_position += _front * updateVelocity;
-		if(player->aabb->collision(chunkManager, _position))
-			_position -= _front * updateVelocity;
-	}
-
-	if(Input::isKeyPressed(KeyCode::KEY_D)) {
-		_position -= _right * updateVelocity;
-		if(player->aabb->collision(chunkManager, _position))
-			_position += _right * updateVelocity;
-	}
-
-	if(Input::isKeyPressed(KeyCode::KEY_SPACE))
-		_position -= _worldUp * updateVelocity * glm::vec3(1, GRAVITY*2, 1);
-
-	if(Input::isKeyPressed(KeyCode::KEY_C))
-		positionChange -= _worldUp * velocity;
-
-	if(Input::isKeyPressed(KeyCode::KEY_SPACE))
-		positionChange += _worldUp * velocity;
-}
-
-void Camera::updatePhysics(ChunkManager* chunkManager, AABB* box) {
-	box->update(_position);
- 	BlockPositionXYZ playerPosition = { int(_position.x), int(_position.y), int(_position.z) };
-
-	for(int x = box->min.x; x < box->max.x; x++) {
-		for(int y = box->min.y; y < box->max.y; y++) {
-			for(int z = box->min.z; z < box->max.z; z++) {
-				BlockPositionXYZ blockPos(x, y, z);
-				Block* block = BlockUtil::blocks[chunkManager->getBlock(blockPos)];
-
-				if(block->meshType != MeshType::SOLID) continue;
-				AABB blockAABB = BlockUtil::getBlockAABB(blockPos);
-
-				if(box->hitsBlock(blockAABB))
-					std::cout << "HIT: " << std::endl;
-
-			}
-		}
-	}
-
-	/*
-	std::vector<BlockPositionXYZ> adjacents = {
-		{ -1,  0,  0 },
-		{  1,  0,  0 },
-		{  0, -1,  0 },
-		{  0,  1,  0 },
-		{  0,  0, -1 },
-		{  0,  0,  1 }
-	};
-
-	for(int i = 0; i < 6; i++) {
-		BlockPositionXYZ toCheck = playerPosition + adjacents[i];
-		//std::cout << toCheck << std::endl;
-		Block* block = BlockUtil::blocks[chunkManager->getBlock(toCheck)];
-
-		if(block->meshType != MeshType::SOLID) continue;
-		AABB blockAABB = BlockUtil::getBlockAABB(toCheck);
-
-		if(playerAABB->hitsBlock(blockAABB)) {
-			switch(i) {
-				case 0: _position.x = toCheck.x + BLOCK_SIZE * 1.5; break;
-				case 1: _position.x = toCheck.x - BLOCK_SIZE * 0.5; break;
-				case 2: _position.y = toCheck.y + BLOCK_SIZE * 1.5; break;
-				case 3: _position.y = toCheck.y - BLOCK_SIZE * 0.5; break;
-				case 4: _position.z = toCheck.z + BLOCK_SIZE * 1.5; break;
-				case 5: _position.z = toCheck.z - BLOCK_SIZE * 0.5; break;
-				default: break;
-			}
-		}
-	} /*
-}*/
-
+*/
 
 glm::vec3 Camera::_toHorizontal(const glm::vec3& vec) {
 	return { vec.x, 0.f, vec.z };

@@ -17,15 +17,15 @@ public:
 	}
 
 	T& get(int x, int y) {
-		//if(_isOutOfRange(x) || _isOutOfRange(y))
-		//	return _data[0];
+		if(_isOutOfRange(x) || _isOutOfRange(y))
+			return _data[0][0];
 
 		return _data[x][y];
 	}
 
 	void set(int x, int y, const T& value) {
-		//if(_isOutOfRange(x) || _isOutOfRange(y))
-		//	return;
+		if(_isOutOfRange(x) || _isOutOfRange(y))
+			return;
 
 		_data[x][y] = value;
 	}

@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 
+
 bool getCloseRequested();
 void setCloseRequested(bool value);
 void SDLcreateWindow(const char* title, int x, int y, int width, int height, bool fullscreen);

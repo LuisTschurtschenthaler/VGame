@@ -64,7 +64,6 @@ void Input::update() {
 		if(_event.type == SDL_KEYUP)
 			_keys[_event.key.keysym.scancode] = false;
 
-
 		// Mouse
 		if(_event.type == SDL_MOUSEMOTION) {
 			_mouseX = _event.motion.x;

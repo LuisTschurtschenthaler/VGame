@@ -18,14 +18,21 @@ Player::~Player() {
 
 
 void Player::update(ChunkManager* chunkManager) {
-	glm::vec3 pos = camera->getPosition();
-	isUnderwater = (chunkManager->getBlock(BlockPositionXYZ(pos.x, pos.y + 0.5f, pos.z)) == BlockType::WATER);
+	camera->handleMouseInputs(MOUSE_SENSITIVITY);
+	camera->handleKeyboardInputs(chunkManager, this);
 
+	camera->update(chunkManager, this);
+	
+	if((camera->getPosition() - lastChunkPosition).length() > 1)
+		lastChunkPosition = camera->getPosition();
+}
+
+void Player::keyoardInput() {
+	/*
 	float playerSpeed = isFlying ? FLY_SPEED : WALK_SPEED;
 
 	camera->handleMouseInputs(MOUSE_SENSITIVITY);
 	//camera->handleKeyboardInputs(chunkManager, this, isFlying ? FLY_SPEED : WALK_SPEED);
-
 	if(Input::isKeyPressed(KeyCode::KEY_W))
 		camera->move(Camera::FORWARD, playerSpeed);
 	if(Input::isKeyPressed(KeyCode::KEY_A))
@@ -38,10 +45,7 @@ void Player::update(ChunkManager* chunkManager) {
 	if(Input::isKeyPressed(KeyCode::KEY_SPACE))
 		camera->move(Camera::UP, playerSpeed);
 	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
-		camera->move(Camera::DOWN, playerSpeed);
-
-	if((camera->getPosition() - lastChunkPosition).length() > 1)
-		lastChunkPosition = camera->getPosition();
+		camera->move(Camera::DOWN, playerSpeed);*/
 }
 
 std::string Player::yawToCardinalPoint() {

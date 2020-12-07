@@ -14,6 +14,7 @@ public:
 private:
 	void _generateBiomeMap(ChunkMap& chunkMap, ChunkCoordXZ coord);
 	void _generateHeightMap(ChunkMap& chunkMap, ChunkCoordXZ coord);
+	void _getHeightIn(ChunkMap& chunkMap, ChunkCoordXZ coord, int xMin, int zMin, int xMax, int zMax);
 
 };
 

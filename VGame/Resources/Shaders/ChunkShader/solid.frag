@@ -66,7 +66,7 @@ void main() {
 	//	result += vec3(diffuse);
 
 	// Ambient occlusion
-	//int rd = renderDistance*16;
+	//int rd = renderDistance;
 	//float z = min(gl_FragCoord.z / gl_FragCoord.w + 1.f, rd);
 	//vec3 normal = normalize(texColor.xyz * 2.f - 1.f);
 	//

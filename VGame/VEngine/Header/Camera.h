@@ -24,6 +24,9 @@ private:
 	float _yaw, _pitch, _roll;
 	bool _mouseLocked;
 
+	glm::vec3 _velocity;
+	float _speed;
+
 public:
 	enum Direction {
 		FORWARD,
@@ -34,14 +37,16 @@ public:
 		DOWN
 	};
 
+
 public:
 	Camera(const glm::vec3& position);
 	~Camera() { }
 
+	void update(ChunkManager* chunkManager, Player* player);
+	void handleKeyboardInputs(ChunkManager* chunkManager, Player* player);
 	void handleMouseInputs(float mouseSensitivity);
-	void move(Direction direction, float movementSpeed);
 	
-	//void handleKeyboardInputs(ChunkManager* chunkManager, Player* player, float movementSpeed);
+	//void move(Direction direction, float movementSpeed);
 	//void updatePhysics(ChunkManager* chunkManager, AABB* playerAABB);
 
 	glm::mat4 getView();

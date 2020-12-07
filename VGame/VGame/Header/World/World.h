@@ -34,6 +34,7 @@ public:
 	~World();
 
 	void update();
+	void prepareDraw();
 	void draw();
 
 	const std::string& const getName() { return _worldName; }

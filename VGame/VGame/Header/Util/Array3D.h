@@ -25,8 +25,8 @@ public:
 	}
 
 	void set(int x, int y, int z, const T& value) {
-		//if(_isOutOfRange(x) || _isOutOfRange(y) || _isOutOfRange(z))
-		//	return;
+		if(_isOutOfRange(x) || _isOutOfRange(y) || _isOutOfRange(z))
+			return;
 
 		_data[x][y][z] = value;
 	}

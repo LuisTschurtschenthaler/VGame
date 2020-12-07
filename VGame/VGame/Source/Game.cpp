@@ -55,7 +55,9 @@ void Game::update() {
 void Game::render() {
 	RenderUtil::clearScreen();
 	
+	_world->prepareDraw();
 	_world->draw();
+
 	_sky->draw(*_player->camera);
 	_textRenderer->draw();
 }

@@ -3,8 +3,9 @@
 
 #include <GLM/glm.hpp>
 #include "Vertex.h"
-
+class Player;
 class ChunkManager;
+
 
 // AABB = Axis-Aligned Bounding Boxes
 // https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
@@ -19,10 +20,12 @@ public:
 	AABB(const glm::vec3& dimension);
 	~AABB();
 
+	static bool hit(glm::vec3& block, glm::vec3& player);
+
 	void draw();
-	void update(const glm::vec3& pos);
+	void update(glm::vec3 pos);
 	
-	bool collision(ChunkManager* chunkManager, const glm::vec3& pos);
+	bool collision(ChunkManager* chunkManager, Player* player, glm::vec3 pos);
 	bool hitsBlock(AABB& block);
 
 	bool intersectsWith(const AABB& other) const;

@@ -3,6 +3,7 @@
 #include "AABB.h"
 #include "WorldConstants.h"
 #include "ChunkManager.h"
+#include "Player.h"
 
 
 AABB::AABB() 
@@ -17,26 +18,40 @@ AABB::~AABB() {
 }
 
 
-void AABB::update(const glm::vec3& pos) {
+bool AABB::hit(glm::vec3& block, glm::vec3& player) {
+	return (block.x < player.x + BLOCK_SIZE && block.x + BLOCK_SIZE > player.x - BLOCK_SIZE)
+		&& (block.y < player.y + BLOCK_SIZE && block.y + BLOCK_SIZE > player.y - BLOCK_SIZE)
+		&& (block.z < player.z + BLOCK_SIZE && block.z + BLOCK_SIZE > player.z - BLOCK_SIZE);
+}				   
+
+
+void AABB::update(glm::vec3 pos) {
+	pos.z += 1;
+
 	min = pos;
-	max = min + dimension;
+	max = pos + dimension;
 }
 
-bool AABB::collision(ChunkManager* chunkManager, const glm::vec3& pos) {
-	update(pos - (dimension / 2.f));
-	BlockPositionXYZ playerPosition = { int(std::floor(pos.x)), int(std::floor(pos.y)), int(std::floor(pos.z)) };
+bool AABB::collision(ChunkManager* chunkManager, Player* player, glm::vec3 pos) {
+	update(pos);
 
 	for(int x = min.x; x < max.x; x++) {
-		for(int y = min.y - 1.5; y < max.y; y++) {
+		for(int y = min.y - 1.75; y < max.y; y++) {
 			for(int z = min.z; z < max.z; z++) {
-				BlockPositionXYZ blockPos(x, y, z);
-				Block* block = BlockUtil::blocks[chunkManager->getBlock(blockPos)];
+				glm::vec3 blockPos(x, y, z);
+				BlockPositionXYZ blockPos2(x, y, z);
 
+				Block* block = BlockUtil::blocks[chunkManager->getBlock(blockPos2)];
 				if(!block->hasHitbox) continue;
-				AABB blockAABB = BlockUtil::getBlockAABB(blockPos);
 
-				if(hitsBlock(blockAABB))
+				glm::vec3 p1 = pos + glm::vec3(0.5, 0, 0.5);
+				glm::vec3 p2 = pos - glm::vec3(0.5, 0, 0.5);
+
+				if(hit(blockPos, p1) || hit(blockPos, p2)) {
+				//if(player->aabb->hitsBlock(BlockUtil::getBlockAABB(blockPos2))) {
+					std::cout << "HIT: " << block->name << std::endl;
 					return true;
+				}
 			}
 		}
 	}
@@ -44,9 +59,14 @@ bool AABB::collision(ChunkManager* chunkManager, const glm::vec3& pos) {
 }
 
 bool AABB::hitsBlock(AABB& block) {
-	return (min.x <= block.max.x && max.x >= block.min.x)
-		&& (min.y <= block.max.y && max.y >= block.min.y)
-		&& (min.z <= block.max.z && max.z >= block.min.z);
+	return (block.min.x < min.x + BLOCK_SIZE && block.max.x + BLOCK_SIZE > max.x - BLOCK_SIZE)
+		&& (block.min.y < min.y + BLOCK_SIZE && block.max.y + BLOCK_SIZE > max.y - BLOCK_SIZE)
+		&& (block.min.z < min.z + BLOCK_SIZE && block.max.z + BLOCK_SIZE > max.z - BLOCK_SIZE);
+	/*
+	return (min.x < block.max.x && max.x > block.min.x)
+		&& (min.y < block.max.y && max.y > block.min.y)
+		&& (min.z < block.max.z && max.z > block.min.z);
+		*/
 }
 
 void AABB::draw() {

@@ -32,7 +32,6 @@ public:
 	~Chunk();
 
 	ChunkSection* getChunkSection(int y);
-
 	void placeBlock(const BlockPositionXYZ& coord, BlockType block);
 
 	void generateChunkData(ChunkMap* chunkMap);

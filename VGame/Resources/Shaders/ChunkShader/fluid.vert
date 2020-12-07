@@ -14,14 +14,15 @@ out vec2 vs_texCoord;
 out vec3 vs_normal;
 
 uniform mat4 projectionView;
+uniform vec3 cameraPosition;
 uniform float dayTime;
 
 
 vec3 getWorldPosition() {
 	vec3 inVert = vertex_position;
-    inVert.y -= 0.2;
-    inVert.y -= sin((dayTime + inVert.z) * 1.2f) / 10.f;
-    inVert.y += cos((dayTime + inVert.x) * 1.2f) / 8.f;
+    inVert.y -= 0.25;
+    inVert.y -= sin((dayTime + inVert.z)) / 8.f;
+    inVert.y += cos((dayTime + inVert.x)) / 5.f;
     return inVert;
 }
 
@@ -30,5 +31,7 @@ void main() {
 	vs_texCoord = vertex_texCoords;
 	vs_normal = vertex_normal;
 
-	gl_Position = projectionView * vec4(getWorldPosition(), 1.f);
+	vec3 worldPos = getWorldPosition();
+	vec3 finalVec = (distance(worldPos, cameraPosition) <= 40) ? worldPos : vertex_position;
+	gl_Position = projectionView * vec4(finalVec, 1.f);
 }

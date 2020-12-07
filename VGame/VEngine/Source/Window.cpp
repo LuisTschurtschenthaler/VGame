@@ -38,10 +38,6 @@ bool Window::shouldClose() {
 	return getCloseRequested();
 }
 
-float Window::getAspect() {
-	return (static_cast<float>(_width) / static_cast<float>(_height));
-}
-
 void Window::setFullscreen() {
 	_fullscreen = !_fullscreen;
 	SDLsetFullscreen(_fullscreen);

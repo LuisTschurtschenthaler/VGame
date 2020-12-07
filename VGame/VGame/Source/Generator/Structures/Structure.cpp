@@ -39,7 +39,7 @@ void Structure::generateTree(const BlockPositionXYZ& pos) {
 }
 
 void Structure::generateCactus(const BlockPositionXYZ& pos) {
-	fillY({ pos.x, pos.y, pos.z }, BlockType::CACTUS, Random::get(3, 5));
+	fillY({ pos.x, pos.y, pos.z }, BlockType::CACTUS, Random::get(3, 4));
 }
 
 

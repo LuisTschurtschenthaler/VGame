@@ -21,7 +21,7 @@ uniform bool isPlayerUnderwater;
 
 const float PI = 3.14159265359;
 const float dayLight = 1.f;
-const float nightLight = 0.45f;
+const float nightLight = 0.65f;
 
 
 float calulateAmbient() {

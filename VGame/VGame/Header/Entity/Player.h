@@ -29,6 +29,8 @@ public:
 	~Player();
 
 	void update(ChunkManager* chunkManager);
+	void keyoardInput();
+
 	std::string yawToCardinalPoint();
 
 	void setSpawnPoint(glm::vec3 spawnPoint);

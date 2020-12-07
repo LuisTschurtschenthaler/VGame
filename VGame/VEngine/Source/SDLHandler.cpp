@@ -20,7 +20,7 @@ void SDLcreateWindow(const char* title, int x, int y, int width, int height, boo
 	int mode = 0;
 	if(fullscreen) mode = SDL_WINDOW_FULLSCREEN;
 	window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 
-							  SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | /*SDL_WINDOW_RESIZABLE |*/ mode);
+							  SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | mode);
 
 	context = SDL_GL_CreateContext(window);
 	SDL_GL_SetSwapInterval(1);

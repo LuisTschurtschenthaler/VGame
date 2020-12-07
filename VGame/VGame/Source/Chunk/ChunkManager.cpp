@@ -12,6 +12,7 @@
 #include "ChunkSection.h"
 #include "FileManager.h"
 #include "Structure.h"
+#include "AABB.h"
 
 
 ChunkManager::ChunkManager(World* world, TerrainGenerator* terrainGenerator, Camera* camera)
@@ -47,9 +48,9 @@ void ChunkManager::setPlayerSpawnPoint(Player& player) {
 	player.setSpawnPoint({ posX + 0.5f, height + 10, posZ + 0.5f });
 }
 
-/*
 std::vector<BlockPositionXYZ>* ChunkManager::getAdjacentBlocks(glm::vec3 blockCoord) {
 	std::vector<BlockPositionXYZ>* adjacentBlocks = new std::vector<BlockPositionXYZ>();
+
 	std::vector<glm::vec3> adjacents = {
 		{ -1,  0,  0 },
 		{  1,  0,  0 },
@@ -69,7 +70,7 @@ std::vector<BlockPositionXYZ>* ChunkManager::getAdjacentBlocks(glm::vec3 blockCo
 	}
 
 	return adjacentBlocks;
-}*/
+}
 
 void ChunkManager::getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList) {
 	chunkList[CHUNK_RIGHT]	 = getChunk({ coord.x + 1, coord.z });
@@ -166,6 +167,7 @@ void ChunkManager::_generateChunkData() {
 		for(int x = currentChunkX - i; x <= currentChunkX + i; x++) {
 			for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
 				if(x <= 0 || z <= 0) continue;
+				//if(x >= 2 || z >= 2) continue;
 
 				int chunkX = currentChunkX + x;
 				int chunkZ = currentChunkZ + z;

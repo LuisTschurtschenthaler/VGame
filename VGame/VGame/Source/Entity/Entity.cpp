@@ -12,5 +12,4 @@ bool Entity::isColliding(ChunkManager* chunkManager, const glm::vec3& pos) {
 
 	return false;
 }
-
 */

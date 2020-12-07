@@ -46,14 +46,16 @@ void World::update() {
 	_player->update(_chunkManager);
 }
 
-void World::draw() {
-	_chunkManager->chunkMapMutex.lock();
-
+void World::prepareDraw() {
 	for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {
 		_meshShader[i]->bind();
 		_updateUniforms(static_cast<MeshType>(i));
 		_meshShader[i]->unbind();
 	}
+}
+
+void World::draw() {
+	_chunkManager->chunkMapMutex.lock();
 
 	for(auto& chunk : _chunkManager->getChunksToRender()) {
 		for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {

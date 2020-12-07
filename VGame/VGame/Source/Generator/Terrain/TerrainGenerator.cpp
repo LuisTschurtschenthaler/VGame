@@ -30,7 +30,7 @@ TerrainGenerator::TerrainGenerator() {
 	_snowForest = new SnowForest(seed);
 	_highLands = new HighLands(seed);
 
-	_biomeNoise = new NoiseGenerator(seed);
+	_biomeNoise = new NoiseGenerator(Random::get(1000, 999999));
 }
 
 TerrainGenerator::~TerrainGenerator() {
@@ -56,6 +56,8 @@ void TerrainGenerator::generateBlockData(ChunkSection& chunkSection, ChunkMap* c
 					if(iy >= WATER_LEVEL) {
 						if(iy == BEACH_LEVEL)
 							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 5) ? BlockType::SAND : static_cast<BlockType>(biome->getTopBlock()));
+						else if(iy == BEACH_LEVEL - 1)
+							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockType::SAND : static_cast<BlockType>(biome->getTopBlock()));
 						else if(iy < BEACH_LEVEL)
 							chunkSection.data.set(x, y, z, BlockType::SAND);
 						else chunkSection.data.set(x, y, z, static_cast<BlockType>(biome->getTopBlock()));
