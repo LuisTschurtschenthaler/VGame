@@ -21,7 +21,7 @@ enum BlockFace {
 struct Block {
 	const char* name;
 	int textures[6];
-	float texturePixelOffset, lightLevel;
+	float texturePixelOffset, lightLevel; //float walkDrag;
 	int meshType;
 	bool isTransparent, hasHitbox;
 };
@@ -31,7 +31,6 @@ class BlockUtil {
 
 public:
 	static Block* blocks[AMOUNT_OF_BLOCKS];
-	static AABB& getBlockAABB(const BlockPositionXYZ& pos);
 
 };
 

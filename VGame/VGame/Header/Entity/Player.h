@@ -1,44 +1,41 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#define WALK_SPEED 0.05f
-#define FLY_SPEED 0.075f
-#define JUMP_TIME 1.f
-#define MOUSE_SENSITIVITY 0.1f
-
 #include <GLM/glm.hpp>
+#include "Entity.h"
 #include "Camera.h"
 #include "AABB.h"
 
 class ChunkManager;
 
-class Player {
+
+class Player : public Entity {
 
 public:
+	AABB box;
 	Camera* camera;
-	AABB* aabb;
-	glm::vec3 lastChunkPosition;
-	bool isFlying, isFalling, isJumping, isUnderwater;
+	glm::vec3 velocity;
+	bool isFlying, isOnGround, isJumping, isSwimming;
 
 private:
-	const float _cardinalPointRange;
+	glm::vec3 _lastChunkPosition;
+	bool _mouseLocked;
 
 
 public:
 	Player();
 	~Player();
 
+	void input(ChunkManager* chunkManager);
 	void update(ChunkManager* chunkManager);
-	void keyoardInput();
-
-	std::string yawToCardinalPoint();
+	void doCollision(ChunkManager* chunkManager);
 
 	void setSpawnPoint(glm::vec3 spawnPoint);
-	glm::vec3 getPosition() const { return camera->getPosition(); }
-	glm::vec3 getFront() const { return camera->getFront(); }
 
 private:
-	bool _isInRange(float yaw, int numberToCheckPos, int numberToCheckNeg = 0);
+	void _handleKeyboardInputs(ChunkManager* chunkManager);
+	void _handleMouseInputs();
+	glm::vec3 _toHorizontal(const glm::vec3& vec);
 
 };
 

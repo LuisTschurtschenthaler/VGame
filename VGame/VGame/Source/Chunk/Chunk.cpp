@@ -52,42 +52,7 @@ ChunkSection* Chunk::getChunkSection(int y) {
 
 void Chunk::placeBlock(const BlockPositionXYZ& bcoord, BlockType block) {
 	BlockPositionXYZ bCoord = chunkManager->getBlockCoord(bcoord);
-
 	getChunkSection(bcoord.y / CHUNK_SIZE)->placeBlock(bCoord, block);
-	/*
-	if(bcoord.x > CHUNK_SIZE - 1
-	   && bcoord.z < CHUNK_SIZE
-	   && bcoord.z >= 0) {
-
-		chunkManager->getChunk({ coord.x + 1, coord.z })->getChunkSection(section)->placeBlock(blockPos, block);
-		//nearbyChunks[CHUNK_RIGHT]->getChunkSection(section)->placeBlock(blockPos, block);
-	}
-
-	else if(bcoord.x < 0
-			&& bcoord.z < CHUNK_SIZE
-			&& bcoord.z >= 0) {
-
-		chunkManager->getChunk({ coord.x - 1, coord.z })->getChunkSection(section)->placeBlock(blockPos, block);
-		//nearbyChunks[CHUNK_LEFT]->getChunkSection(section)->placeBlock(blockPos, block);
-	}
-
-	else if(bcoord.x < CHUNK_SIZE
-			&& bcoord.y >= 0
-			&& bcoord.z > CHUNK_SIZE - 1) {
-
-		chunkManager->getChunk({ coord.x, coord.z + 1 })->getChunkSection(section)->placeBlock(blockPos, block);
-		//nearbyChunks[CHUNK_FRONT]->getChunkSection(section)->placeBlock(blockPos, block);
-	}
-
-	else if(bcoord.x < CHUNK_SIZE
-			&& bcoord.x >= 0
-			&& bcoord.z < 0) {
-
-		chunkManager->getChunk({ coord.x, coord.z - 1 })->getChunkSection(section)->placeBlock(blockPos, block);
-		//nearbyChunks[CHUNK_BACK]->getChunkSection(section)->placeBlock(blockPos, block);
-	}
-	else getChunkSection(section)->placeBlock(bcoord, block);
-	*/
 }
 
 void Chunk::generateChunkData(ChunkMap* chunkMap) {

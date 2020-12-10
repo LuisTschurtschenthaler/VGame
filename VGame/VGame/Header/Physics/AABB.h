@@ -3,6 +3,8 @@
 
 #include <GLM/glm.hpp>
 #include "Vertex.h"
+#include "Coordinates.h"
+
 class Player;
 class ChunkManager;
 
@@ -13,24 +15,15 @@ class AABB {
 	
 public:
 	glm::vec3 min, max;
-	glm::vec3 dimension;
+	glm::vec3 dimensions;
 
 public:
 	AABB();
 	AABB(const glm::vec3& dimension);
 	~AABB();
 
-	static bool hit(glm::vec3& block, glm::vec3& player);
-
-	void draw();
+	void collision(ChunkManager* chunkManager, Player& player, const glm::vec3& velocity);
 	void update(glm::vec3 pos);
-	
-	bool collision(ChunkManager* chunkManager, Player* player, glm::vec3 pos);
-	bool hitsBlock(AABB& block);
-
-	bool intersectsWith(const AABB& other) const;
-	bool touches(const AABB& other, float delta) const;
-	bool isPointInsideAABB(const glm::vec3& point, const AABB& other) const;
 
 };
 

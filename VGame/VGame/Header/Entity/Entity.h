@@ -2,24 +2,11 @@
 #define ENTITY_H
 
 #include <GLM/glm.hpp>
-#include "AABB.h"
-
-class ChunkManager;
-
-class Entity {
-
-protected:
-	glm::vec3 position, rotation, velocity;
-	AABB aabb;
 
 
-public:
-	//Entity();
-	//~Entity();
-
-	//void update();
-	//bool isColliding(ChunkManager* chunkManager, const glm::vec3& pos);
-
+struct Entity {
+	glm::vec3 position;
+	float yaw, pitch;
 };
 
 #endif // ENTITY_H

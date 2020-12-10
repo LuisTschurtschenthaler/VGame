@@ -26,7 +26,6 @@ World::World(Game* game, TerrainGeneratorType type, const std::string& worldName
 	_chunkManager = new ChunkManager(this, terrainGenerator, _player->camera);
 	_chunkManager->setPlayerSpawnPoint(*_player);
 
-	//_chunkShader = new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag");
 	_skyShader = new Shader("sky.vert", "sky.frag");
 	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 0);
 
@@ -43,7 +42,9 @@ World::~World() {
  
 
 void World::update() {
+	_player->input(_chunkManager);
 	_player->update(_chunkManager);
+	_player->doCollision(_chunkManager);
 }
 
 void World::prepareDraw() {
@@ -77,7 +78,7 @@ void World::_updateUniforms(const MeshType& meshType) {
 	_meshShader[meshType]->setMat4("projectionView", _player->camera->getProjectionView());
 
 	_meshShader[meshType]->setFloat("dayTime", Game::dayTime);
-	_meshShader[meshType]->setVec3("cameraPosition", _player->getPosition());
+	_meshShader[meshType]->setVec3("cameraPosition", _player->position);
 	_meshShader[meshType]->setInt("renderDistance", RENDER_DISTANCE);
 
 	_meshShader[meshType]->setVec3("light.direction", _game->getSky()->getSunPosition());
@@ -94,7 +95,7 @@ void World::_updateUniforms(const MeshType& meshType) {
 			break;
 
 		case MeshType::FLUID:
-			_meshShader[meshType]->setInt("isPlayerUnderwater", _player->isUnderwater);
+			_meshShader[meshType]->setInt("isPlayerUnderwater", _player->isSwimming);
 			break;
 	}
 }

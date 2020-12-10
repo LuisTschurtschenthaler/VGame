@@ -41,35 +41,11 @@ void ChunkManager::setPlayerSpawnPoint(Player& player) {
 	int posX = Random::get(0, CHUNK_SIZE - 1),
 		posZ = Random::get(0, CHUNK_SIZE - 1);
 
-	ChunkMap* map = getChunkMap({ 0, 0 });
+	ChunkMap* map = getChunkMap({ 1, 1 });
 	int heightValue = map->heightMap.get(posX, posZ) + 3;
 	int height = (heightValue > WATER_LEVEL) ? heightValue : WATER_LEVEL + 2;
 
-	player.setSpawnPoint({ posX + 0.5f, height + 10, posZ + 0.5f });
-}
-
-std::vector<BlockPositionXYZ>* ChunkManager::getAdjacentBlocks(glm::vec3 blockCoord) {
-	std::vector<BlockPositionXYZ>* adjacentBlocks = new std::vector<BlockPositionXYZ>();
-
-	std::vector<glm::vec3> adjacents = {
-		{ -1,  0,  0 },
-		{  1,  0,  0 },
-		{  0, -1,  0 },
-		{  0,  1,  0 },
-		{  0,  0, -1 },
-		{  0,  0,  1 }
-	};
-
-	for(auto& adjacent : adjacents) {
-		blockCoord = blockCoord + adjacent;
-		int x = int(std::floor(blockCoord.x));
-		int y = int(std::floor(blockCoord.y));
-		int z = int(std::floor(blockCoord.z));
-
-		adjacentBlocks->push_back({ x, y, z });
-	}
-
-	return adjacentBlocks;
+	player.setSpawnPoint({ posX + CHUNK_SIZE + 0.5f, height, posZ + CHUNK_SIZE + 0.5f });
 }
 
 void ChunkManager::getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList) {
@@ -106,8 +82,8 @@ bool ChunkManager::chunkMapExists(const ChunkCoordXZ& coord) {
 std::vector<Chunk*> ChunkManager::getChunksToRender() {
 	std::vector<Chunk*> chunksToRender = std::vector<Chunk*>();
 
-	int playerX = static_cast<int>(_camera->getPosition().x / CHUNK_SIZE);
-	int playerZ = static_cast<int>(_camera->getPosition().z / CHUNK_SIZE);
+	int playerX = static_cast<int>(_camera->position.x / CHUNK_SIZE);
+	int playerZ = static_cast<int>(_camera->position.z / CHUNK_SIZE);
 
 	for(std::pair<ChunkCoordXZ, Chunk*> it : chunks) {
 		if(!it.second->meshGenerated)
@@ -160,8 +136,8 @@ BlockPositionXYZ ChunkManager::getBlockCoord(const BlockPositionXYZ& blockCoord)
 
 
 void ChunkManager::_generateChunkData() {
-	int currentChunkX = static_cast<int>(_camera->getPosition().x / CHUNK_SIZE);
-	int currentChunkZ = static_cast<int>(_camera->getPosition().z / CHUNK_SIZE);
+	int currentChunkX = static_cast<int>(_camera->position.x / CHUNK_SIZE);
+	int currentChunkZ = static_cast<int>(_camera->position.z / CHUNK_SIZE);
 
 	for(int i = 0; i < RENDER_DISTANCE; i++) {
 		for(int x = currentChunkX - i; x <= currentChunkX + i; x++) {

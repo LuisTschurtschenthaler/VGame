@@ -19,7 +19,6 @@ public:
 
 private:
 	Game* _game;
-	//Shader* _chunkShader;
 	std::vector<Shader*> _meshShader;
 	Shader* _skyShader;
 	Player* _player;

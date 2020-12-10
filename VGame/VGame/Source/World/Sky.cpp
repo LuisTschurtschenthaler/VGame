@@ -95,7 +95,7 @@ void Sky::draw(Camera& camera) {
 	_shader->bind();
 
 	_shader->setMat4("mvp", mvp);
-	_shader->setVec3("playerPosition", camera.getPosition());
+	_shader->setVec3("playerPosition", camera.position);
 	_shader->setVec3("sunPosition", getSunPosition());
 	_shader->setFloat("time", Game::dayTime);
 	_shader->setBool("isUnderwater", false);

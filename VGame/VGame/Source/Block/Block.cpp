@@ -31,10 +31,3 @@ Block* BlockUtil::blocks[AMOUNT_OF_BLOCKS] = {
 	
 	new Block{ "Error",			{ 255, 255, 255, 255, 255, 255 }, 0.f,  0.f, SOLID, false, true }
 };
-
-AABB& BlockUtil::getBlockAABB(const BlockPositionXYZ& pos) {
-	AABB aabb = AABB(glm::vec3(BLOCK_SIZE));
-	aabb.update(glm::vec3(pos.x, pos.y, pos.z));
-
-	return aabb;
-}

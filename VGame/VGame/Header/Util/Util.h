@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <string>
+#include "WorldConstants.h"
 
 template<typename Base, typename T>
 inline bool instanceof(const T* ptr) {
@@ -14,21 +15,48 @@ class Util {
 public:
 	static std::string angleToTime(float angle) {
 		std::string time = "";
-
-		float decimalValue = 3.f - (1.f / 30.f) * (static_cast<int>(angle) % 360);
-		if(decimalValue < 0)
-			decimalValue += 12.f;
-
-		int hours = static_cast<int>(decimalValue);
-		if(hours == 0) hours = 12;
-	
-		time += (hours < 10 ? "0" + std::to_string(hours) : std::to_string(hours)) + ":";
-	
-		int minutes = (int) (decimalValue * 60) % 60;
-		time += minutes < 10 ? "0" + std::to_string(minutes) : std::to_string(minutes);
 		return time;
 	}
-};
 
+	static std::string yawToCardinalPoint(float yaw) {
+		if(_isInRange(yaw, 0, 0) || _isInRange(yaw, 360, -360))
+			return "N";
+
+		else if(_isInRange(yaw, 315, -45))
+			return "NW";
+
+		else if(_isInRange(yaw, 270, -90))
+			return "W";
+
+		else if(_isInRange(yaw, 225, -135))
+			return "SW";
+
+		else if(_isInRange(yaw, 180, -180))
+			return "S";
+
+		else if(_isInRange(yaw, 135, -225))
+			return "SE";
+
+		else if(_isInRange(yaw, 90, -270))
+			return "E";
+
+		else if(_isInRange(yaw, 45, -315))
+			return "NE";
+
+		else return "N/A";
+	}
+
+
+
+private:
+	static bool _isInRange(float yaw, int numberToCheckPos, int numberToCheckNeg) {
+		float minPos = numberToCheckPos - CARDIAL_POINT_RANGE,
+			  maxPos = numberToCheckPos + CARDIAL_POINT_RANGE;
+		float minNeg = numberToCheckNeg - CARDIAL_POINT_RANGE,
+			  maxNeg = numberToCheckNeg + CARDIAL_POINT_RANGE;
+
+		return ((yaw >= minPos) && (yaw <= maxPos) || (yaw >= minNeg) && (yaw <= maxNeg));
+	}
+};
 
 #endif // UTIL_H
