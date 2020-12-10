@@ -29,7 +29,8 @@ Game::~Game() {
 void Game::init() {
 	_player = new Player();
 	_world = new World(this, REALISTIC, "TEST"); // FLATLAND REALISTIC
-	
+	_player->setToWorld(_world);
+
 	_sky = new Sky();
 	_sky->init();
 	

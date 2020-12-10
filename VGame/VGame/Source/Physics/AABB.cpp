@@ -1,4 +1,3 @@
-#include <cmath>
 #include <GLEW/GL/glew.h>
 #include "AABB.h"
 #include "WorldConstants.h"
@@ -20,7 +19,7 @@ AABB::~AABB() {
 
 void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3& velocity) {
 	for(int x = player.position.x - dimensions.x; x < player.position.x + dimensions.x; x++) {
-		for(int y = player.position.y - dimensions.y; y < player.position.y + 0.5; y++) {
+		for(int y = player.position.y - dimensions.y; y < player.position.y + 0.25; y++) {
 			for(int z = player.position.z - dimensions.z; z < player.position.z + dimensions.z; z++) {
 
 				Block* block = BlockUtil::blocks[chunkManager->getBlock({ x, y, z + 1 })];
@@ -54,8 +53,6 @@ void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3
 }
 
 void AABB::update(glm::vec3 pos) {
-	//pos.z += 1;
-
 	min = pos;
 	max = min + dimensions;
 }

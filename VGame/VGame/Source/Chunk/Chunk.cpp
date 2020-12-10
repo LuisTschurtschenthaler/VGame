@@ -78,6 +78,7 @@ void Chunk::generateMesh() {
 	meshGenerated = true;
 }
 
+/* IMPROVE THIS SHIT */
 void Chunk::generateFlora(ChunkMap* chunkMap) {
 	for(int x = 0; x < CHUNK_SIZE; x++) {
 		for(int z = 0; z < CHUNK_SIZE; z++) {

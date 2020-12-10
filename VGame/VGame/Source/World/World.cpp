@@ -17,6 +17,9 @@
 #include "Sky.h"
 
 
+bool World::gravityEnabled = true;
+
+
 World::World(Game* game, TerrainGeneratorType type, const std::string& worldName)
 	: _game(game), _worldName(worldName), disposed(false) {
 
@@ -42,9 +45,9 @@ World::~World() {
  
 
 void World::update() {
-	_player->input(_chunkManager);
-	_player->update(_chunkManager);
-	_player->doCollision(_chunkManager);
+	_player->input();
+	_player->update();
+	_player->doCollision();
 }
 
 void World::prepareDraw() {
@@ -85,6 +88,7 @@ void World::_updateUniforms(const MeshType& meshType) {
 	_meshShader[meshType]->setVec3("light.ambient", glm::vec3(0.6f, 0.6f, 0.2f));
 	_meshShader[meshType]->setVec3("light.diffuse", glm::vec3(0.5f));
 	_meshShader[meshType]->setVec3("light.specular", glm::vec3(0.5f));
+	_meshShader[meshType]->setInt("isPlayerUnderwater", _player->isSwimming);
 
 
 	switch(meshType) {
@@ -95,7 +99,6 @@ void World::_updateUniforms(const MeshType& meshType) {
 			break;
 
 		case MeshType::FLUID:
-			_meshShader[meshType]->setInt("isPlayerUnderwater", _player->isSwimming);
 			break;
 	}
 }

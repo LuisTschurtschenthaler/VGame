@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include "FramerateCounter.h"
 
+
 int FramerateCounter::_frames = 0;
 double FramerateCounter::_startTime = 0.0;
 bool FramerateCounter::_first = 0;
@@ -8,7 +9,6 @@ float FramerateCounter::_fps = 0.f;
 
 
 void FramerateCounter::init() {
-
 }
 
 void FramerateCounter::update() {
@@ -20,9 +20,8 @@ void FramerateCounter::update() {
 	}
 
 	double timePassed = SDL_GetTicks();
-	if(timePassed - _startTime > 1000)
-	{
-		_fps = (double) _frames / (timePassed - _startTime);
+	if(timePassed - _startTime > 1000) {
+		_fps = static_cast<float>(_frames / (timePassed - _startTime));
 		_startTime = timePassed;
 		_frames = 0;
 	}

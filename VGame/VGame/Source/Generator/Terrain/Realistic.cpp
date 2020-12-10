@@ -73,10 +73,10 @@ void Realistic::_getHeightIn(ChunkMap& chunkMap, ChunkCoordXZ coord, int xMin, i
 		return std::ceil(biome->getHeight(x, z, coord.x, coord.z));
 	};
 
-	int bottomLeft = heightAt(xMin, zMin);
+	int bottomLeft	= heightAt(xMin, zMin);
 	int bottomRight = heightAt(xMax, zMin);
-	int topLeft = heightAt(xMin, zMax);
-	int topRight = heightAt(xMax , zMax);
+	int topLeft		= heightAt(xMin, zMax);
+	int topRight	= heightAt(xMax , zMax);
 
 	for(int x = xMin; x < xMax; x++) {
 		for(int z = zMin; z < zMax; z++) {

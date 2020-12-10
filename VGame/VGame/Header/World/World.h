@@ -5,15 +5,19 @@
 #include <string>
 #include "TerrainGenerator.h"
 #include "Chunk.h"
+
 class Game;
 class Shader;
 class Player;
 class ChunkManager;
 class TextureAtlas;
 
+
 class World {
 
 public:
+	static bool gravityEnabled;
+
 	TerrainGenerator* terrainGenerator;
 	bool disposed;
 
@@ -36,7 +40,7 @@ public:
 	void prepareDraw();
 	void draw();
 
-	const std::string& const getName() { return _worldName; }
+	const std::string& const getName() const { return _worldName; }
 	
 	Game* getGame() const { return _game; };
 	Player* getPlayer() const { return _player; }

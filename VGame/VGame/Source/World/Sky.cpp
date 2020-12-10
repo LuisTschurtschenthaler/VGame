@@ -114,7 +114,10 @@ void Sky::draw(Camera& camera) {
 }
 
 glm::vec3 Sky::getSunPosition() {
-	auto rotMatrix = glm::rotate(glm::identity<glm::mat4>(), glm::radians(Game::dayTime), glm::vec3(0, 0, 1));
+	glm::mat4 rotMatrix(1.f);
+	rotMatrix = glm::rotate(rotMatrix, glm::radians(-90.f), glm::vec3(0, 1, 0));
+	rotMatrix = glm::rotate(rotMatrix, glm::radians(Game::dayTime), glm::vec3(0, 0, 1));
+
 	return (glm::xyz(rotMatrix * glm::vec4(1, 0, 0, 0)));
 }
 

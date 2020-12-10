@@ -6,18 +6,22 @@
 #include "Camera.h"
 #include "AABB.h"
 
+class Timer;
+class World;
 class ChunkManager;
 
 
 class Player : public Entity {
 
 public:
-	AABB box;
 	Camera* camera;
 	glm::vec3 velocity;
 	bool isFlying, isOnGround, isJumping, isSwimming;
 
 private:
+	AABB _box;
+	Timer* jumpTimer;
+	ChunkManager* _chunkManager;
 	glm::vec3 _lastChunkPosition;
 	bool _mouseLocked;
 
@@ -26,11 +30,12 @@ public:
 	Player();
 	~Player();
 
-	void input(ChunkManager* chunkManager);
-	void update(ChunkManager* chunkManager);
-	void doCollision(ChunkManager* chunkManager);
-
 	void setSpawnPoint(glm::vec3 spawnPoint);
+	void setToWorld(World* world);
+	
+	void input();
+	void doCollision();
+	void update();
 
 private:
 	void _handleKeyboardInputs(ChunkManager* chunkManager);

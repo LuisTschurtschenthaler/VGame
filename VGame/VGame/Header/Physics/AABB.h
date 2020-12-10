@@ -2,15 +2,11 @@
 #define AABB_H
 
 #include <GLM/glm.hpp>
-#include "Vertex.h"
-#include "Coordinates.h"
 
 class Player;
 class ChunkManager;
 
 
-// AABB = Axis-Aligned Bounding Boxes
-// https://developer.mozilla.org/en-US/docs/Games/Techniques/3D_collision_detection
 class AABB {
 	
 public:

@@ -1,17 +1,25 @@
+#include <SDL2/SDL.h>
 #include "Timer.h"
-#include <string>
-#include <iostream>
 
-double Timer::_last = 0.f;
-double Timer::_delta = 0.f;
 
-void Timer::setup() {
-	_last = static_cast<float>(SDL_GetTicks());
-	_delta = 0;
+Timer::Timer() {
+	_time = static_cast<double>(SDL_GetTicks());
+	_deltaTime = 0;
 }
 
+Timer::~Timer() {
+}
+
+
 void Timer::update() {
-	double now = static_cast<float>(SDL_GetTicks());
-	_delta = now - _last;
-	_last = now;
+	double currentTime = static_cast<double>(SDL_GetTicks());
+	_deltaTime = currentTime - _time;
+	_time = currentTime;
+}
+
+#include <iostream>
+double Timer::elapse() {
+	double currentTime = static_cast<double>(SDL_GetTicks());
+	//std::cout << (currentTime - _time) << std::endl;
+	return ((currentTime - _time) / 1000);
 }

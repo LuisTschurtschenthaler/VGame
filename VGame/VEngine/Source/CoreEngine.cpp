@@ -2,17 +2,20 @@
 #include "RenderUtil.h"
 #include "Window.h"
 #include "Input.h"
-#include "Timer.h"
 #include "Game.h"
 #include "Log.h"
+#include "Random.h"
 #include "Screenshot.h"
 #include "TextRenderer.h"
-#include "Random.h"
 #include "FramerateCounter.h"
+#include "Timer.h"
+
+
+Timer* CoreEngine::gameTimer = new Timer();
 
 
 CoreEngine::CoreEngine(Game* game)
-	: _game(game), _settings(nullptr), _isRunning(false) {
+	: _game(game), _isRunning(false) {
 
 	_game->setCoreEngine(this);
 }
@@ -27,7 +30,6 @@ void CoreEngine::createWindow(int width, int height, bool fullscreen, const std:
 	RenderUtil::initGraphics();
 	Log::setFile("./VGame.log");
 	Input::setup();
-	Timer::setup();
 	Random::init();
 }
 
@@ -49,8 +51,9 @@ void CoreEngine::_run() {
 		if(Window::shouldClose())
 			stop();
 
-		Timer::update();
+		gameTimer->update();
 		FramerateCounter::update();
+
 		Input::update();
 		_game->update();
 

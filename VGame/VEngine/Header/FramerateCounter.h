@@ -1,6 +1,7 @@
 #ifndef FRAMERATE_COUNTER_H
 #define FRAMERATE_COUNTER_H
 
+
 class FramerateCounter {
 
 private:
@@ -13,7 +14,7 @@ private:
 public:
 	static void init();
 	static void update();
-	static const float getFPS() { return _fps * 1000; }
+	static const float getFPS() { return (_fps * 1000); }
 
 };
 

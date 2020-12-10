@@ -2,15 +2,19 @@
 #define CORE_ENGINE_H
 
 #include <string>
+
+class Timer;
 class Game;
 class Window;
-class Settings;
+
 
 class CoreEngine {
 
+public:
+	static Timer* gameTimer;
+
 private:
 	Game* _game;
-	Settings* _settings;
 	bool _isRunning;
 
 
