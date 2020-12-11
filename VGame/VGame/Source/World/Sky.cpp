@@ -87,7 +87,7 @@ void Sky::init() {
 }
 
 void Sky::draw(Camera& camera) {
-	glm::mat4 mvp = glm::infinitePerspective(glm::radians(FOV), Window::getAspect(), NEAR_PLANE);
+	glm::mat4 mvp = glm::infinitePerspective(glm::radians(camera.fov), Window::getAspect(), NEAR_PLANE);
 	mvp *= camera.getView();
 	mvp *= glm::mat4(1.f);
 

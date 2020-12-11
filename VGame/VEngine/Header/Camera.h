@@ -18,12 +18,12 @@ class ChunkManager;
 class Camera : public Entity {
 
 public:
+	float fov;
 	glm::vec3 front, right, up;
 
 private:
 	const Player* _player;
 	const glm::vec3 _WORLD_UP;
-
 	glm::mat4 _projection;
 	glm::mat4 _view;
 
@@ -34,7 +34,7 @@ public:
 
 	void update();
 	void updateVectors();
-	
+
 	glm::mat4 getView();
 	glm::mat4 getProjection();
 	glm::mat4 getProjectionView();

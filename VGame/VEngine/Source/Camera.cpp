@@ -11,6 +11,8 @@
 Camera::Camera(Player* player)
 	: _player(player), _WORLD_UP(glm::vec3(0.f, 1.f, 0.f)) {
 
+	fov = FOV_MAX;
+	
 	front = glm::vec3(0.f, 0.f, 1.f);
 	right = glm::vec3(0.f);
 	up = glm::vec3(0.f, 1.f, 0.f);
@@ -35,7 +37,7 @@ glm::mat4 Camera::getView() {
 
 glm::mat4 Camera::getProjection() {
 	glm::mat4 _projection = glm::mat4(1.f);
-	_projection = glm::perspective(glm::radians(FOV), Window::getAspect(), NEAR_PLANE, FAR_PLANE);
+	_projection = glm::perspective(glm::radians(fov), Window::getAspect(), NEAR_PLANE, FAR_PLANE);
 
 	return _projection;
 }

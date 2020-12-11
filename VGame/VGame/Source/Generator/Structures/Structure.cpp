@@ -12,8 +12,10 @@ const int Structure::BUSH_RADIUS = 2;
 
 
 void Structure::build(ChunkManager& chunkManager) {
-	for(auto& structureBlock : _structureBlocks)
-		chunkManager.placeBlock(structureBlock.position, structureBlock.block);
+	for(auto& structureBlock : _structureBlocks) {
+		//if(chunkManager.getBlock(structureBlock.position) == BlockType::AIR)
+			chunkManager.placeBlock(structureBlock.position, structureBlock.block);
+	}
 }
 
 void Structure::generateTree(const BlockPositionXYZ& pos) {

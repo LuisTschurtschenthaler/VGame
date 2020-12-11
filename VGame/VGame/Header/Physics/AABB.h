@@ -14,12 +14,11 @@ public:
 	glm::vec3 dimensions;
 
 public:
-	AABB();
 	AABB(const glm::vec3& dimension);
 	~AABB();
 
-	void collision(ChunkManager* chunkManager, Player& player, const glm::vec3& velocity);
 	void update(glm::vec3 pos);
+	void collision(ChunkManager* chunkManager, Player& player, const glm::vec3& velocity);
 
 };
 

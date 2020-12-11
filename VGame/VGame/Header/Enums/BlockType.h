@@ -24,7 +24,10 @@ enum BlockType {
 	GRASS2 = 19,
 	TALL_GRASS = 20,
 	TNT = 21,
-	ERROR = 22,
+	DANDELION = 22,
+	POPPY = 23,
+	BLUE_ORCHID = 24,
+	ERROR = 25,
 
 	AMOUNT_OF_BLOCKS
 };

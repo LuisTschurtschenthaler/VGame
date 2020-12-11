@@ -31,8 +31,10 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 
 
 	if(Input::isKeyPressed(KeyCode::KEY_LCTRL))
-		change.y -= movementSpeed;
+		if(isFlying && !isOnGround)
+			change.y -= movementSpeed;
 
+	//if(Input::isKeyDoublePressed(KeyCode::KEY_SPACE)) else if
 	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {
 		/*
 		if(isFlying)
@@ -47,9 +49,10 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 		}
 	}
 
+
 	/* Gravity */
 	if(World::gravityEnabled) {
-		//if(!isFlying) {
+		if(!isFlying) {
 			/*if(!isOnGround && !isSwimming)
 				velocity.y -= gravity;
 
@@ -60,12 +63,13 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 			change.y -= gravity;
 
 			if(isJumping) {
-				change.y += (1 - jumpTimer->elapse() / JUMP_DURATION) * 0.175;
-				isJumping = (jumpTimer->elapse() >= JUMP_DURATION);
+				change.y += (1 - jumpTimer->elapse() / JUMP_DURATION) * 0.165;
 
+				if(jumpTimer->elapse() >= JUMP_DURATION);
+					isJumping = false;
 				isOnGround = false;
 			}
-		//}
+		}
 	}
 
 	velocity += change;

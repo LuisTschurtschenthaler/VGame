@@ -6,7 +6,7 @@
 
 
 Player::Player()
-	: _box({ 0.5f, 1.75f, 0.5f }), _lastChunkPosition({ 0.f }) {
+	: _box({ 0.5f, 1.7f, 0.5f }), _lastChunkPosition({ 0.f }) {
 
 	isFlying = false;
 	isOnGround = false;
@@ -38,12 +38,12 @@ void Player::input() {
 }
 
 void Player::update() {
-	_box.update(position);
-	camera->update();
-
 	velocity.x *= 0.85;
 	if(isFlying) velocity.y *= 0.85;
 	velocity.z *= 0.85;
+
+	_box.update(position);
+	camera->update();
 
 	if((position - _lastChunkPosition).length() > 1)
 		_lastChunkPosition = position;

@@ -28,6 +28,9 @@ Block* BlockUtil::blocks[AMOUNT_OF_BLOCKS] = {
 	new Block{ "Grass",			{ -1, -1, -1, -1, 23, 23 }, 0.f, 0.f, FLORA, true, false },
 	new Block{ "Tall grass",	{ -1, -1, 24, 25, -1, -1 }, 0.f, 0.f, FLORA, true, false },
 	new Block{ "TNT",			{ 27, 27, 28, 26, 27, 27 }, 0.f, 0.f, SOLID, false, true },
-	
+	new Block{ "Dandelion",		{ -1, -1, -1, -1, 29, 29 }, 0.f, 0.f, FLORA, true, false },
+	new Block{ "Poppy",			{ -1, -1, -1, -1, 30, 30 }, 0.f, 0.f, FLORA, true, false },
+	new Block{ "Blue Orchid",	{ -1, -1, -1, -1, 31, 31 }, 0.f, 0.f, FLORA, true, false },
+
 	new Block{ "Error",			{ 255, 255, 255, 255, 255, 255 }, 0.f,  0.f, SOLID, false, true }
 };

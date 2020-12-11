@@ -46,7 +46,18 @@ std::string Grassland::getName() const {
 
 
 BlockType Grassland::getPlant() const {
-	return (Random::get(0, 10) > 8) ? BlockType::TALL_GRASS : BlockType::GRASS2;
+	int random = Random::get(0, 10);
+
+	if(random <= 2)
+		return BlockType::TALL_GRASS;
+	if(random <= 4)
+		return BlockType::GRASS2;
+	if(random <= 6)
+		return BlockType::DANDELION;
+	if(random <= 8)
+		return BlockType::POPPY;
+	else
+		return BlockType::BLUE_ORCHID;
 }
 
 BlockType Grassland::getTopBlock() const {

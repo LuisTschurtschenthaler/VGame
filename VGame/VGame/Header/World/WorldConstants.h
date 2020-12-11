@@ -17,12 +17,13 @@
 
 #define  MOUSE_SENSITIVITY  0.075f
 #define  WALK_SPEED			0.01f
-#define  FLY_SPEED			0.030f
+#define  FLY_SPEED			0.015f
 #define  JUMP_DURATION		1.f
 
 
 /* Camera */
-#define FOV					110.f
+#define FOV_MIN				50.f
+#define FOV_MAX				110.f
 #define NEAR_PLANE			0.001f
 #define FAR_PLANE			1000.f
 
