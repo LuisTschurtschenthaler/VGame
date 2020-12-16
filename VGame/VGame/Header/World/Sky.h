@@ -4,7 +4,7 @@
 #include <GLM/glm.hpp>
 #include <vector>
 class Shader;
-class Camera;
+class Player;
 
 class Sky {
 
@@ -22,7 +22,7 @@ public:
 	~Sky();
 
 	void init();
-	void draw(Camera& camera);
+	void draw(Player* player);
 
 	glm::vec3 getSunPosition();
 

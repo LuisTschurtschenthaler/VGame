@@ -44,7 +44,7 @@ void main() {
 	if(texColor.a == 0.f) discard;
 
 	// Ambient
-	float ambient = calulateAmbient();
+	float ambient = 1.f; //calulateAmbient();
 	
 	// Diffuse
 	vec3 lightDir = normalize(light.direction);

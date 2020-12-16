@@ -16,7 +16,7 @@ Player::Player()
 
 	_mouseLocked = false;
 	camera = new Camera(this);
-	jumpTimer = new Timer();
+	_jump = 0;
 }
 
 Player::~Player() {
@@ -38,12 +38,13 @@ void Player::input() {
 }
 
 void Player::update() {
-	velocity.x *= 0.85;
-	if(isFlying) velocity.y *= 0.85;
-	velocity.z *= 0.85;
 
 	_box.update(position);
 	camera->update();
+
+	velocity.x *= 0.85;
+	if(isFlying) velocity.y *= 0.85;
+	velocity.z *= 0.85;
 
 	if((position - _lastChunkPosition).length() > 1)
 		_lastChunkPosition = position;

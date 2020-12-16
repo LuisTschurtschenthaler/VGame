@@ -22,7 +22,7 @@
 
 
 /* Camera */
-#define FOV_MIN				50.f
+#define FOV_MIN				70.f
 #define FOV_MAX				110.f
 #define NEAR_PLANE			0.001f
 #define FAR_PLANE			1000.f
@@ -38,8 +38,8 @@
 
 #define BLOCK_SIZE			1.f
 
-#define CHUNK_SECTIONS		8
-#define CHUNK_SIZE			32
+#define CHUNK_SECTIONS		16
+#define CHUNK_SIZE			16
 #define CHUNK_SIZE_R		(CHUNK_SIZE - 1)
 #define HALF_CHUNK_SIZE		(CHUNK_SIZE / 2)
 #define HALF_CHUNK_SIZE_R	(HALF_CHUNK_SIZE - 1)

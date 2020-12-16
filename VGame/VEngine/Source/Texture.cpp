@@ -1,7 +1,8 @@
-#include "Texture.h"
-#include "Log.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include <STB/stb_image.h>
+#include <GLEW/GL/glew.h>
+#include "Texture.h"
+#include "Log.h"
 
 Texture::Texture(const char* filename, int unit)
 	: _unit(unit) {

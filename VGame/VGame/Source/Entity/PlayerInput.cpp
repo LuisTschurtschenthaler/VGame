@@ -10,9 +10,9 @@
 
 void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 	float movementSpeed = WALK_SPEED + ((GRAVITY / MAX_FPS) * CoreEngine::gameTimer->getDeltaTime());
-	float gravity = GRAVITY * CoreEngine::gameTimer->getDeltaTime() / 17;
+	float gravity = GRAVITY * CoreEngine::gameTimer->getDeltaTime() / 20;
 
-	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT)) movementSpeed *= 1.5f;
+	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT)) movementSpeed *= 1.2f;
 	if(isSwimming) movementSpeed /= 1.2f;
 
 	/* Input */
@@ -44,8 +44,8 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 			change.y += movementSpeed + 0.3f;
 		*/
 		if(!isJumping && isOnGround) {
-			jumpTimer->update();
 			isJumping = true;
+			_jump = 0;
 		}
 	}
 
@@ -53,20 +53,22 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 	/* Gravity */
 	if(World::gravityEnabled) {
 		if(!isFlying) {
+			change.y -= gravity;
+
 			/*if(!isOnGround && !isSwimming)
 				velocity.y -= gravity;
 
 			if(isSwimming)
 				velocity.y -= gravity + 0.05;
 			isOnGround = false;*/
-
-			change.y -= gravity;
-
+			
 			if(isJumping) {
-				change.y += (1 - jumpTimer->elapse() / JUMP_DURATION) * 0.165;
+				_jump += 0.15;
+				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.015;
 
-				if(jumpTimer->elapse() >= JUMP_DURATION);
+				if(_jump >= JUMP_DURATION)
 					isJumping = false;
+
 				isOnGround = false;
 			}
 		}

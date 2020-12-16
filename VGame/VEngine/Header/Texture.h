@@ -4,13 +4,12 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <GLEW/GL/glew.h>
 
 class Texture {
 
 private:
-	int _unit;
-	GLuint _id;
+	unsigned int _unit;
+	unsigned int _id;
 	int _width, _height;
 
 
@@ -20,9 +19,11 @@ public:
 	~Texture();
 
 	void bind();
+	
 	static void unbind();
 	static unsigned int loadCubemap(std::vector<std::string> textures);
-	GLuint getID() const { return _unit; }
+
+	unsigned int getID() const { return _unit; }
 
 };
 

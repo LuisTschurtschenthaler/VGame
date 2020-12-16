@@ -21,14 +21,11 @@ Chunk::Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord)
 	: chunkManager(chunkManager), coord(coord),
 	chunkDataGenerated(false), meshGenerated(false) {
 	
-	_aabb = AABB({ CHUNK_SIZE, CHUNK_SIZE * CHUNK_SECTIONS, CHUNK_SIZE });
-	_aabb.update({ coord.x * CHUNK_SIZE, 0, coord.z * CHUNK_SIZE });
-
 	for(int y = 0; y < CHUNK_SECTIONS; y++)
 		_sections.push_back(new ChunkSection(chunkManager, this, { coord.x, y, coord.z }));
 
 	for(int i = 0; i < AMOUNT_OF_MESH_TYPES; i++)
-		meshCollection.push_back(new SolidMesh(this));
+		meshCollection.push_back(new ChunkMesh(this));
 }
 
 Chunk::~Chunk() {
@@ -80,24 +77,23 @@ void Chunk::generateMesh() {
 
 /* IMPROVE THIS SHIT */
 void Chunk::generateFlora(ChunkMap* chunkMap) {
-	for(int x = 0; x < CHUNK_SIZE; x++) {
-		for(int z = 0; z < CHUNK_SIZE; z++) {
-			int height = chunkMap->heightMap.get(x, z);
+	for(int x = 0; x < CHUNK_SIZE; x++)
+	for(int z = 0; z < CHUNK_SIZE; z++) {
+		int height = chunkMap->heightMap.get(x, z);
 
-			if(height > WATER_LEVEL + 2) {
-				Biome* biome = chunkManager->terrainGenerator->getBiome(chunkMap, x, z);
+		if(height > WATER_LEVEL + 2) {
+			Biome* biome = chunkManager->terrainGenerator->getBiome(chunkMap, x, z);
 
-				if(Random::isIntInRange(0, biome->getTreeFrequency()) == 5) {
-					Structure structure;
-					if(instanceof<Desert>(biome))
-						structure.generateCactus({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
-					else structure.generateTree({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
-					
-					structure.build(*chunkManager);
-				}
-				else if(Random::isIntInRange(0, biome->getPlantFrequency()) == 5)
-					chunkManager->placeBlock({ x + coord.x * CHUNK_SIZE, height + 1, z + coord.z * CHUNK_SIZE }, biome->getPlant());
+			if(Random::isIntInRange(0, biome->getTreeFrequency()) == 5) {
+				Structure structure;
+				if(instanceof<Desert>(biome))
+					structure.generateCactus({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
+				else structure.generateTree({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
+				
+				structure.build(*chunkManager);
 			}
+			else if(Random::isIntInRange(0, biome->getPlantFrequency()) == 5)
+				chunkManager->placeBlock({ x + coord.x * CHUNK_SIZE, height + 1, z + coord.z * CHUNK_SIZE }, biome->getPlant());
 		}
 	}
 }
@@ -121,8 +117,4 @@ int Chunk::getWorldPositionZ(int z) const {
 
 bool Chunk::_isOutOfRange(const BlockPositionXYZ& coord) {
 	return ((coord.x >= CHUNK_SIZE || coord.x < 0) || (coord.y >= CHUNK_SIZE || coord.y < 0) || (coord.z >= CHUNK_SIZE || coord.z < 0));
-}
-
-float Chunk::_vertexAO(bool side1, bool side2, bool corner) {
-	return (side1 && side2) ? 0.f : static_cast<float>(3 - (side1 + side2 + corner));
 }

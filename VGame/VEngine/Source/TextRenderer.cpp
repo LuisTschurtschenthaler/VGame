@@ -95,8 +95,7 @@ void TextRenderer::update(ChunkManager* chunkManager, Player* player) {
 
 	std::string title = "VGame FPS: " + std::to_string(FramerateCounter::getFPS());
 
-	std::string time = "Time: " + std::to_string(Game::dayTime) + " " + Util::angleToTime(Game::dayTime)
-		+ ((Game::dayTime >= 270 || Game::dayTime <= 90) ? " am" : " pm");
+	std::string time = "Time: " + std::to_string(Game::dayTime) + " " + Util::angleToTime(Game::dayTime);
 
 	std::string pitch = std::to_string(player->pitch);
 	std::string yaw = std::to_string(player->yaw);

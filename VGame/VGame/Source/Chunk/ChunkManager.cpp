@@ -1,5 +1,4 @@
 #include "ChunkManager.h"
-#include "Camera.h"
 #include "World.h"
 #include "WorldConstants.h"
 #include "TerrainGenerator.h"
@@ -15,8 +14,8 @@
 #include "AABB.h"
 
 
-ChunkManager::ChunkManager(World* world, TerrainGenerator* terrainGenerator, Camera* camera)
-	: terrainGenerator(terrainGenerator), _world(world), _camera(camera) {
+ChunkManager::ChunkManager(World* world, TerrainGenerator* terrainGenerator, Player* player)
+	: terrainGenerator(terrainGenerator), _world(world), _player(player) {
 
 	_threads.emplace_back([&]() {
 		while(!_world->disposed) {
@@ -38,8 +37,8 @@ ChunkManager::~ChunkManager() {
 
 
 void ChunkManager::setPlayerSpawnPoint(Player& player) {
-	int posX = Random::get(0, CHUNK_SIZE - 1),
-		posZ = Random::get(0, CHUNK_SIZE - 1);
+	int posX = Random::get(0, CHUNK_SIZE_R),
+		posZ = Random::get(0, CHUNK_SIZE_R);
 
 	ChunkMap* map = getChunkMap({ 1, 1 });
 	int heightValue = map->heightMap.get(posX, posZ) + 3;
@@ -82,8 +81,8 @@ bool ChunkManager::chunkMapExists(const ChunkCoordXZ& coord) {
 std::vector<Chunk*> ChunkManager::getChunksToRender() {
 	std::vector<Chunk*> chunksToRender = std::vector<Chunk*>();
 
-	int playerX = static_cast<int>(_camera->position.x / CHUNK_SIZE);
-	int playerZ = static_cast<int>(_camera->position.z / CHUNK_SIZE);
+	int playerX = static_cast<int>(_player->position.x / CHUNK_SIZE);
+	int playerZ = static_cast<int>(_player->position.z / CHUNK_SIZE);
 
 	for(std::pair<ChunkCoordXZ, Chunk*> it : chunks) {
 		if(!it.second->meshGenerated)
@@ -104,12 +103,12 @@ std::vector<Chunk*> ChunkManager::getChunksToRender() {
 
 BlockType ChunkManager::getBlock(const BlockPositionXYZ& coord) {
 	ChunkCoordXZ chunkCoord = getChunkCoord(coord);
-	BlockPositionXYZ bCoord = getBlockCoord(coord);
 
 	ChunkSection* section = getChunk(chunkCoord)->getChunkSection(coord.y / CHUNK_SIZE);
 	if(section == nullptr)
 		return BlockType::AIR;
-	else return section->getBlock(bCoord);
+
+	else return section->getBlock(getBlockCoord(coord));
 }
 
 void ChunkManager::placeBlock(BlockPositionXYZ blockCoord, BlockType block) {
@@ -136,14 +135,14 @@ BlockPositionXYZ ChunkManager::getBlockCoord(const BlockPositionXYZ& blockCoord)
 
 
 void ChunkManager::_generateChunkData() {
-	int currentChunkX = static_cast<int>(_camera->position.x / CHUNK_SIZE);
-	int currentChunkZ = static_cast<int>(_camera->position.z / CHUNK_SIZE);
+	int currentChunkX = static_cast<int>(_player->position.x / CHUNK_SIZE);
+	int currentChunkZ = static_cast<int>(_player->position.z / CHUNK_SIZE);
 
 	for(int i = 0; i < RENDER_DISTANCE; i++) {
 		for(int x = currentChunkX - i; x <= currentChunkX + i; x++) {
 			for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
 				if(x <= 0 || z <= 0) continue;
-				//if(x >= 2 || z >= 2) continue;
+				//if(x >= 4 || z >= 4) continue;
 
 				int chunkX = currentChunkX + x;
 				int chunkZ = currentChunkZ + z;

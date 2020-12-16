@@ -4,6 +4,7 @@ out vec4 color;
 in vec3 vs_position;
 in vec2 vs_texCoord;
 in vec3 vs_normal;
+in float vs_ambientOcclusion;
 
 uniform float dayTime;
 uniform vec3 cameraPosition;
@@ -41,12 +42,12 @@ void main() {
 	if(texColor.a == 0.f) discard;
 
 	// Ambient
-	float ambient = calulateAmbient();
+	float ambient = clamp((vs_ambientOcclusion + 1.f) / 4.f, 0.5f, 1.f);
 	
 	// Diffuse
 	vec3 lightDir = normalize(light.direction);
-	float diff = max(dot(vs_normal, lightDir), 0.f);
-	vec3 diffuse = light.diffuse * diff;
+	//float diff = max(dot(vs_normal, lightDir), 0.f);
+	//vec3 diffuse = light.diffuse * diff;
 	
 	// Specular
 	//vec3 viewDir = normalize(cameraPosition - vs_position);
@@ -55,10 +56,9 @@ void main() {
 	//vec3 specular = light.specular * spec;
 	
 	// Attenuation
-	float dist = length(lightDir - vs_position);
-	float attenuation = 1.f / (1.f + 0.09f * dist + 0.0032f * (dist * dist));
-	ambient *= attenuation;
-	diffuse *= attenuation;
+	//float dist = length(lightDir - vs_position);
+	//float attenuation = 1.f / (1.f + 0.09f * dist + 0.0032f * (dist * dist));
+	//ambient *= attenuation;
 	//specular *= attenuation;
 
 	vec3 result = vec3(ambient);

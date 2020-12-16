@@ -12,27 +12,16 @@ private:
 
 public:
 	void fill(const T& value) {
-		for(int x = 0; x < CHUNK_SIZE; x++)
+		for(int x = 0; x < SIZE; x++)
 			_data[x].fill(value);
 	}
 
-	T& get(int x, int y) {
-		if(_isOutOfRange(x) || _isOutOfRange(y))
-			return _data[0][0];
-
+	const T& get(int x, int y) const {
 		return _data[x][y];
 	}
 
 	void set(int x, int y, const T& value) {
-		if(_isOutOfRange(x) || _isOutOfRange(y))
-			return;
-
 		_data[x][y] = value;
-	}
-
-private:
-	bool _isOutOfRange(int i) {
-		return (i >= SIZE) || (i < 0);
 	}
 
 };

@@ -4,6 +4,7 @@ out vec4 color;
 in vec3 vs_position;
 in vec2 vs_texCoord;
 in vec3 vs_normal;
+in float vs_ambientOcclusion;
 
 uniform float dayTime;
 uniform vec3 cameraPosition;
@@ -36,43 +37,19 @@ float calulateAmbient() {
 }
 
 
+const float MAX_LIGHT_LEVEL = 15.f;
+
+
 void main() {
 	vec4 texColor = texture(textureAtlas, vs_texCoord.xy);
 	if(texColor.a == 0.f) discard;
+	
+	float ambient = clamp(vs_ambientOcclusion/3, 0.5f, 1.f);
+		
 
-	// Ambient
-	float ambient = calulateAmbient();
-	
-	// Diffuse
-	vec3 lightDir = normalize(light.direction);
-	float diff = max(dot(vs_normal, lightDir), 0.f);
-	vec3 diffuse = light.diffuse * diff;
-	
-	// Specular
-	//vec3 viewDir = normalize(cameraPosition - vs_position);
-	//vec3 reflectDir = normalize(reflect(lightDir, vs_normal));
-	//float spec = pow(max(dot(viewDir, reflectDir), 0.f), 20.f);
-	//vec3 specular = light.specular * spec;
-	
-	// Attenuation
-	float dist = length(lightDir - vs_position);
-	float attenuation = 1.f / (1.f + 0.09f * dist + 0.0032f * (dist * dist));
-	ambient *= attenuation;
-	diffuse *= attenuation;
-	//specular *= attenuation;
+	//float light = clamp(15.f / MAX_LIGHT_LEVEL, 0.f, 1.f);	
+	//float sun = clamp((15.f / MAX_LIGHT_LEVEL) * ((sin(dayTime * 0.01f) + 1.f) / 2.f), 0.2f, 1.f);
 
-	vec3 result = vec3(ambient);
-	//if((dayTime >= 0 && dayTime <= 195) || dayTime >= 340)
-	//	result += vec3(diffuse);
-
-	// Ambient occlusion
-	//int rd = renderDistance;
-	//float z = min(gl_FragCoord.z / gl_FragCoord.w + 1.f, rd);
-	//vec3 normal = normalize(texColor.xyz * 2.f - 1.f);
-	//
-	//vec3 rs = (ambient) * texColor.xyz;
-	//vec3 c = rs * (clamp(dot(normal, lightDir), 0.05f, 0.5f)) * 1.f;
-	//vec3 ao = (c - (c - rs)) / (z / rd);
-	
-	color = (vec4(result, 1.f) * texColor);
+	vec3 result = (texColor.rgb * ambient);
+	color = (vec4(result, texColor.a));
 }

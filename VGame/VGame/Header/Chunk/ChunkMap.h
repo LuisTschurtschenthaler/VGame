@@ -13,15 +13,15 @@ class ChunkMap {
 public:
 	Array2D<int, CHUNK_SIZE> heightMap;
 	Array2D<int, CHUNK_SIZE> biomeMap;
-	//std::vector<BlockPositionXYZ> treePositions;
-	//std::vector<BlockPositionXYZ> plantPositions;
+	//Array2D<unsigned char, CHUNK_SIZE> lightMap;
 	int max;
 
 	ChunkMap()
 		: max(WATER_LEVEL) {
 
-		heightMap.fill(BlockType::AIR);
-		biomeMap.fill(BlockType::AIR);
+		heightMap.fill(0);
+		biomeMap.fill(0);
+		//lightMap.fill(MIN_LIGHT_LEVEL);
 	}
 };
 

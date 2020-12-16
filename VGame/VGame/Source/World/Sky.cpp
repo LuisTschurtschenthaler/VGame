@@ -86,16 +86,16 @@ void Sky::init() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), &indices[0], GL_STATIC_DRAW);
 }
 
-void Sky::draw(Camera& camera) {
-	glm::mat4 mvp = glm::infinitePerspective(glm::radians(camera.fov), Window::getAspect(), NEAR_PLANE);
-	mvp *= camera.getView();
+void Sky::draw(Player* player) {
+	glm::mat4 mvp = glm::infinitePerspective(glm::radians(player->camera->fov), Window::getAspect(), NEAR_PLANE);
+	mvp *= player->camera->getView();
 	mvp *= glm::mat4(1.f);
 
 	glDepthFunc(GL_LEQUAL);
 	_shader->bind();
 
 	_shader->setMat4("mvp", mvp);
-	_shader->setVec3("playerPosition", camera.position);
+	_shader->setVec3("playerPosition", player->position);
 	_shader->setVec3("sunPosition", getSunPosition());
 	_shader->setFloat("time", Game::dayTime);
 	_shader->setBool("isUnderwater", false);

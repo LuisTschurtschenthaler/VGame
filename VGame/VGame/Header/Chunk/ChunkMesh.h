@@ -22,13 +22,11 @@ public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
 
-protected:
-	Shader* _shader;
-
 private:
 	Chunk* _chunk;
 	GLuint _VBO, _IBO;
 	bool _isBuffered;
+
 
 public:
 	ChunkMesh(Chunk* chunk);
@@ -40,21 +38,11 @@ public:
 	void addBlockFace(const ChunkSection* chunkSection, int xi, int yi, int zi, const BlockFace face, Block* block);
 	void addFloraBlock(const ChunkSection* chunkSection, int x, int y, int z, const BlockFace face, Block* block);
 
-	Shader& getShader() const { return *_shader; }
-
 	GLuint getVBO() const { return _VBO; }
 	GLuint getIBO() const { return _IBO; }
-};
 
-
-class SolidMesh
-	: public ChunkMesh {
-	
-public:
-	SolidMesh(Chunk* chunk);
-	~SolidMesh();
-
-	//void updateUniforms(Game& game) ;
+private:
+	float _vertexAO(bool corner, bool side1, bool side2);
 
 };
 

@@ -74,9 +74,9 @@ void Realistic::_getHeightIn(ChunkMap& chunkMap, ChunkCoordXZ coord, int xMin, i
 	};
 
 	int bottomLeft	= heightAt(xMin, zMin);
-	int bottomRight = heightAt(xMax, zMin);
-	int topLeft		= heightAt(xMin, zMax);
-	int topRight	= heightAt(xMax , zMax);
+	int bottomRight = heightAt(xMax - 1, zMin);
+	int topLeft		= heightAt(xMin, zMax - 1);
+	int topRight	= heightAt(xMax - 1, zMax - 1);
 
 	for(int x = xMin; x < xMax; x++) {
 		for(int z = zMin; z < zMax; z++) {

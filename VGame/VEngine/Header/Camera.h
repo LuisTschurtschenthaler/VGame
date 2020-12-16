@@ -1,12 +1,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <vector>
 #include <GLM/glm.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtx/euler_angles.hpp>
-#include "AABB.h"
-#include "Entity.h"
 
 class CoreEngine;
 class RenderEngine;
@@ -15,7 +12,7 @@ class Player;
 class ChunkManager;
 
 
-class Camera : public Entity {
+class Camera {
 
 public:
 	float fov;
@@ -33,7 +30,6 @@ public:
 	~Camera();
 
 	void update();
-	void updateVectors();
 
 	glm::mat4 getView();
 	glm::mat4 getProjection();

@@ -53,6 +53,9 @@ void ChunkMesh::draw() {
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, texCoords));
 	glEnableVertexAttribArray(2);
 
+	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, ambientOcclusion));
+	glEnableVertexAttribArray(3);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*) 0);
 
@@ -65,9 +68,9 @@ void ChunkMesh::draw() {
 }
 
 void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, int zi, const BlockFace face, Block* block) {
-	float x = (xi + chunkSection->coord.x * CHUNK_SIZE) * BLOCK_SIZE;
-	float y = (yi + chunkSection->coord.y * CHUNK_SIZE) * BLOCK_SIZE;
-	float z = (zi + chunkSection->coord.z * CHUNK_SIZE) * BLOCK_SIZE;
+	int x = (xi + chunkSection->coord.x * CHUNK_SIZE);
+	int y = (yi + chunkSection->coord.y * CHUNK_SIZE);
+	int z = (zi + chunkSection->coord.z * CHUNK_SIZE);
 	float txOffset = block->texturePixelOffset / 16;
 
 	amountOfVertices += 4;
@@ -81,116 +84,261 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 	switch(face) {
 		case FACE_RIGHT: textureID = block->textures[FACE_RIGHT];
 			v1 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - txOffset, y, z - BLOCK_SIZE),
+				glm::vec3(x + BLOCK_SIZE - txOffset, y, z + BLOCK_SIZE),
 				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID);
+				glm::vec2(1.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+				)
+			);
 			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - txOffset, y + BLOCK_SIZE, z - BLOCK_SIZE),
+				glm::vec3(x + BLOCK_SIZE - txOffset, y + BLOCK_SIZE, z + BLOCK_SIZE),
 				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID);
+				glm::vec2(1.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+				)
+			);
 			v3 = Vertex(
 				glm::vec3(x + BLOCK_SIZE - txOffset, y, z),
 				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID);
+				glm::vec2(0.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+					)
+				);
+
 			v4 = Vertex(
 				glm::vec3(x + BLOCK_SIZE - txOffset, y + BLOCK_SIZE, z),
 				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID);
+				glm::vec2(0.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi - 1)->hasHitbox
+					)
+				);
 			break;
 
 		case FACE_LEFT: textureID = block->textures[FACE_LEFT];
 			v1 = Vertex(
-				glm::vec3(x + txOffset, y, z - BLOCK_SIZE),
+				glm::vec3(x + txOffset, y, z + BLOCK_SIZE),
 				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID);
+				glm::vec2(1.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+				)
+			);
 			v2 = Vertex(
 				glm::vec3(x + txOffset, y, z),
 				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID);
+				glm::vec2(0.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+				)
+			);
 			v3 = Vertex(
-				glm::vec3(x + txOffset, y + BLOCK_SIZE, z - BLOCK_SIZE),
+				glm::vec3(x + txOffset, y + BLOCK_SIZE, z + BLOCK_SIZE),
 				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID);
+				glm::vec2(1.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+				)
+			);
 			v4 = Vertex(
 				glm::vec3(x + txOffset, y + BLOCK_SIZE, z),
 				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID);
+				glm::vec2(0.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi - 1)->hasHitbox
+				)
+			);
 			break;
 
 		case FACE_TOP: textureID = block->textures[FACE_TOP];
 			v1 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE, z - BLOCK_SIZE),
+				glm::vec3(x, y + BLOCK_SIZE, z + BLOCK_SIZE),
 				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID);
+				glm::vec2(1.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+				)
+			);
 			v2 = Vertex(
 				glm::vec3(x, y + BLOCK_SIZE, z),
 				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID);
+				glm::vec2(1.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi - 1)->hasHitbox
+				)
+			);
 			v3 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z - BLOCK_SIZE),
+				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + BLOCK_SIZE),
 				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID);
+				glm::vec2(0.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+				)
+			);
 			v4 = Vertex(
 				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z),
 				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID);
+				glm::vec2(0.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox
+				)
+			);
 			break;
 
 		case FACE_BOTTOM: textureID = block->textures[FACE_BOTTOM];
 			v1 = Vertex(
-				glm::vec3(x, y, z - BLOCK_SIZE),
+				glm::vec3(x, y, z + BLOCK_SIZE),
 				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID);
+				glm::vec2(1.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+				)
+			);
 			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y, z - BLOCK_SIZE),
+				glm::vec3(x + BLOCK_SIZE, y, z + BLOCK_SIZE),
 				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID);
+				glm::vec2(1.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+				)
+			);
 			v3 = Vertex(
 				glm::vec3(x, y, z),
 				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID);
+				glm::vec2(0.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+				)
+			);
 			v4 = Vertex(
 				glm::vec3(x + BLOCK_SIZE, y, z),
 				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID);
+				glm::vec2(0.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+				)
+			);
 			break;
 
 		case FACE_FRONT: textureID = block->textures[FACE_FRONT];
 			v1 = Vertex(
-				glm::vec3(x, y, z - txOffset),
+				glm::vec3(x, y, z + BLOCK_SIZE - txOffset),
 				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(1.f, 1.f), textureID);
+				glm::vec2(1.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+				)
+			);
 			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y, z - txOffset),
+				glm::vec3(x + BLOCK_SIZE, y, z + BLOCK_SIZE - txOffset),
 				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(0.f, 1.f), textureID);
+				glm::vec2(0.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+				)
+			);
 			v3 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE, z - txOffset),
+				glm::vec3(x, y + BLOCK_SIZE, z + BLOCK_SIZE - txOffset),
 				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(1.f, 0.f), textureID);
+				glm::vec2(1.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+				)
+			);
 			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z - txOffset),
+				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + BLOCK_SIZE - txOffset),
 				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(0.f, 0.f), textureID);
+				glm::vec2(0.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+				)
+			);
 			break;
 
 		case FACE_BACK: textureID = block->textures[FACE_BACK];
 			v1 = Vertex(
-				glm::vec3(x, y, z - BLOCK_SIZE + txOffset),
+				glm::vec3(x, y, z + txOffset),
 				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(1.f, 1.f), textureID);
+				glm::vec2(1.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+				)
+			);
 			v2 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE, z - BLOCK_SIZE + txOffset),
+				glm::vec3(x, y + BLOCK_SIZE, z + txOffset),
 				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(1.f, 0.f), textureID);
+				glm::vec2(1.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi - 1)->hasHitbox
+				)
+			);
 			v3 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y, z - BLOCK_SIZE + txOffset),
+				glm::vec3(x + BLOCK_SIZE, y, z + txOffset),
 				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(0.f, 1.f), textureID);
+				glm::vec2(0.f, 1.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+				)
+			);
 			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z - BLOCK_SIZE + txOffset),
+				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + txOffset),
 				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(0.f, 0.f), textureID);
+				glm::vec2(0.f, 0.f), textureID,
+				_vertexAO(
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi - 1)->hasHitbox
+				)
+			);
 			break;
 	}
 	
@@ -223,7 +371,7 @@ void ChunkMesh::addFloraBlock(const ChunkSection* chunkSection, int xi, int yi, 
 		glm::vec3(0.f, 0.f, 1.f),
 		glm::vec2(1.f, 1.f), textureID);
 	Vertex v2(
-		glm::vec3(x + BLOCK_SIZE, y, z - BLOCK_SIZE),
+		glm::vec3(x + BLOCK_SIZE, y, z + BLOCK_SIZE),
 		glm::vec3(0.f, 0.f, 0.f),
 		glm::vec2(0.f, 1.f), textureID);
 	Vertex v3(
@@ -231,7 +379,7 @@ void ChunkMesh::addFloraBlock(const ChunkSection* chunkSection, int xi, int yi, 
 		glm::vec3(0.f, 0.f, 0.f),
 		glm::vec2(1.f, 0.f), textureID);
 	Vertex v4(
-		glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z - BLOCK_SIZE),
+		glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + BLOCK_SIZE),
 		glm::vec3(0.f, 0.f, 0.f),
 		glm::vec2(0.f, 0.f), textureID);
 
@@ -240,7 +388,7 @@ void ChunkMesh::addFloraBlock(const ChunkSection* chunkSection, int xi, int yi, 
 		glm::vec3(0.f, 0.f, 0.f),
 		glm::vec2(1.f, 1.f), textureID);
 	Vertex v6(
-		glm::vec3(x, y, z - BLOCK_SIZE),
+		glm::vec3(x, y, z + BLOCK_SIZE),
 		glm::vec3(0.f, 0.f, 0.f),
 		glm::vec2(0.f, 1.f), textureID);
 	Vertex v7(
@@ -248,7 +396,7 @@ void ChunkMesh::addFloraBlock(const ChunkSection* chunkSection, int xi, int yi, 
 		glm::vec3(0.f, 0.f, 0.f),
 		glm::vec2(1.f, 0.f), textureID);
 	Vertex v8(
-		glm::vec3(x, y + BLOCK_SIZE, z - BLOCK_SIZE),
+		glm::vec3(x, y + BLOCK_SIZE, z + BLOCK_SIZE),
 		glm::vec3(0.f, 0.f, 0.f),
 		glm::vec2(0.f, 0.f), textureID);
 
@@ -281,29 +429,6 @@ void ChunkMesh::addFloraBlock(const ChunkSection* chunkSection, int xi, int yi, 
 	});
 }
 
-
-
-SolidMesh::SolidMesh(Chunk* chunk)
-	: ChunkMesh(chunk) {
-
-	_shader = new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag");
+float ChunkMesh::_vertexAO(bool corner, bool side1, bool side2) {
+	return (side1 && side2) ? 0.f : static_cast<float>(3.f - (side1 + side2 + corner));
 }
-
-SolidMesh::~SolidMesh() {
-}
-
-/*
-void SolidMesh::updateUniforms(Game& game) {
-	game.getWorld()->getTextureAtlas()->updateUniforms(_shader);
-	_shader->setMat4("projectionView", game.getPlayer()->camera->getProjectionView());
-
-	_shader->setFloat("dayTime", Game::dayTime);
-	_shader->setVec3("cameraPosition", game.getPlayer()->getPosition());
-	_shader->setInt("renderDistance", RENDER_DISTANCE);
-
-	_shader->setVec3("light.direction", game.getSky()->getSunPosition());
-	_shader->setVec3("light.ambient", glm::vec3(0.6f, 0.6f, 0.2f));
-	_shader->setVec3("light.diffuse", glm::vec3(0.5f));
-	_shader->setVec3("light.specular", glm::vec3(0.5f));
-}
-*/

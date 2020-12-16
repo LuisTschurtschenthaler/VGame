@@ -1,3 +1,4 @@
+#include <GLEW/GL/glew.h>
 #include "Game.h"
 #include "Camera.h"
 #include "CoreEngine.h"
@@ -11,6 +12,7 @@
 #include "World.h"
 #include "Player.h"
 #include "Timer.h"
+#include "Crosshair.h"
 
 
 std::string Game::version = "V1.0.0";
@@ -20,6 +22,8 @@ float Game::dayTime = 0;
 Game::Game() 
 	: _coreEngine(nullptr), _textRenderer(nullptr), _sky(nullptr), 
 	_player(nullptr), _world(nullptr) {
+
+	Crosshair::init();
 }
 
 Game::~Game() {
@@ -59,6 +63,6 @@ void Game::render() {
 	_world->prepareDraw();
 	_world->draw();
 
-	_sky->draw(*_player->camera);
+	_sky->draw(_player);
 	_textRenderer->draw();
 }

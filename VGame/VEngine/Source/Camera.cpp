@@ -23,15 +23,20 @@ Camera::~Camera() {
 
 
 void Camera::update() {
-	position = _player->position;
-	pitch = _player->pitch;
-	yaw = _player->yaw;
+	glm::vec3 _front;
+	_front.x = cos(glm::radians(_player->yaw)) * cos(glm::radians(_player->pitch));
+	_front.y = sin(glm::radians(_player->pitch));
+	_front.z = sin(glm::radians(_player->yaw)) * cos(glm::radians(_player->pitch));
+
+	front = glm::normalize(_front);
+	right = glm::normalize(glm::cross(front, _WORLD_UP));
+	up = glm::normalize(glm::cross(right, front));
 };
 
 glm::mat4 Camera::getView() {
-	updateVectors();
+	update();
 
-	_view = glm::lookAt(position, position + front, up);
+	_view = glm::lookAt(_player->position, _player->position + front, up);
 	return _view;
 }
 
@@ -47,15 +52,4 @@ glm::mat4 Camera::getProjectionView() {
 	auto view = getView();
 
 	return (proj * view);
-}
-
-void Camera::updateVectors() {
-	glm::vec3 _front;
-	_front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	_front.y = sin(glm::radians(pitch));
-	_front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-
-	front = glm::normalize(_front);
-	right = glm::normalize(glm::cross(front, _WORLD_UP));
-	up = glm::normalize(glm::cross(right, front));
 }

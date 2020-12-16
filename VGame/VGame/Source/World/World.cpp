@@ -26,7 +26,7 @@ World::World(Game* game, TerrainGeneratorType type, const std::string& worldName
 	terrainGenerator = TerrainGenerator::generators[type];
 	
 	_player = _game->getPlayer();
-	_chunkManager = new ChunkManager(this, terrainGenerator, _player->camera);
+	_chunkManager = new ChunkManager(this, terrainGenerator, _player);
 	_chunkManager->setPlayerSpawnPoint(*_player);
 
 	_skyShader = new Shader("sky.vert", "sky.frag");

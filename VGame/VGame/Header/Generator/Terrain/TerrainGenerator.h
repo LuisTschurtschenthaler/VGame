@@ -2,7 +2,6 @@
 #define TERRAIN_GENERATOR_H
 
 #include <cstdlib>
-#include <iostream>
 #include <ctime>
 #include <GLM/glm.hpp>
 #include "Coordinates.h"

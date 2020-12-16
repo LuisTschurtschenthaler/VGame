@@ -55,9 +55,9 @@ void TerrainGenerator::generateBlockData(ChunkSection& chunkSection, ChunkMap* c
 				else if(iy == height) {
 					if(iy >= WATER_LEVEL) {
 						if(iy == BEACH_LEVEL)
-							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 5) ? BlockType::SAND : static_cast<BlockType>(biome->getTopBlock()));
+							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockType::SAND : biome->getTopBlock());
 						else if(iy == BEACH_LEVEL - 1)
-							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockType::SAND : static_cast<BlockType>(biome->getTopBlock()));
+							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockType::SAND : biome->getTopBlock());
 						else if(iy < BEACH_LEVEL)
 							chunkSection.data.set(x, y, z, BlockType::SAND);
 						else chunkSection.data.set(x, y, z, static_cast<BlockType>(biome->getTopBlock()));

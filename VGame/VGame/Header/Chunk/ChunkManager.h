@@ -13,7 +13,6 @@
 #include "Coordinates.h"
 class World;
 class TerrainGenerator;
-class Camera;
 class Player;
 class ChunkMap;
 
@@ -28,12 +27,12 @@ public:
 
 private:
 	World* _world;
-	Camera* _camera;
+	Player* _player;
 	std::vector<std::thread> _threads;
 
 
 public:
-	ChunkManager(World* world, TerrainGenerator* terrainGenerator, Camera* camera);
+	ChunkManager(World* world, TerrainGenerator* terrainGenerator, Player* player);
 	~ChunkManager();
 
 	void setPlayerSpawnPoint(Player& player);

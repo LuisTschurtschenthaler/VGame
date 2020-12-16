@@ -6,7 +6,6 @@
 #include "Camera.h"
 #include "AABB.h"
 
-class Timer;
 class World;
 class ChunkManager;
 
@@ -20,10 +19,10 @@ public:
 
 private:
 	AABB _box;
-	Timer* jumpTimer;
 	ChunkManager* _chunkManager;
 	glm::vec3 _lastChunkPosition;
 	bool _mouseLocked;
+	float _jump;
 
 
 public:
