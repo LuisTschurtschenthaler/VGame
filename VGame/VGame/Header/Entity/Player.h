@@ -39,6 +39,7 @@ public:
 private:
 	void _handleKeyboardInputs(ChunkManager* chunkManager);
 	void _handleMouseInputs();
+	void _processInput();
 	glm::vec3 _toHorizontal(const glm::vec3& vec);
 
 };

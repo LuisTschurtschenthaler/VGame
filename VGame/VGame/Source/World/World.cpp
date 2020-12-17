@@ -78,7 +78,8 @@ void World::draw() {
 void World::_updateUniforms(const MeshType& meshType) {
 	_textureAtlas->getTexture().bind();
 	_meshShader[meshType]->setInt("textureAtlas", _textureAtlas->getTextureID());
-	_meshShader[meshType]->setMat4("projectionView", _player->camera->getProjectionView());
+	_meshShader[meshType]->setMat4("projection", _player->camera->getProjection());
+	_meshShader[meshType]->setMat4("view", _player->camera->getView());
 
 	_meshShader[meshType]->setFloat("dayTime", Game::dayTime);
 	_meshShader[meshType]->setVec3("cameraPosition", _player->position);

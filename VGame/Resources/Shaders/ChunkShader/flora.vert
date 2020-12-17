@@ -15,9 +15,12 @@ out vec2 vs_texCoord;
 out vec3 vs_normal;
 out float vs_ambientOcclusion;
 
-uniform mat4 projectionView;
+uniform mat4 projection;
+uniform mat4 view;
+
 uniform vec3 cameraPosition;
 uniform float dayTime;
+
 
 vec3 getWorldPosition() {
 	vec3 inVert = vertex_position;
@@ -28,6 +31,7 @@ vec3 getWorldPosition() {
     return inVert;
 }
 
+
 void main() {
 	vs_position = normalize(vertex_position);
 	vs_texCoord = vertex_texCoords;
@@ -36,5 +40,5 @@ void main() {
 
 	vec3 worldPos = getWorldPosition();
 	vec3 finalVec = (distance(worldPos, cameraPosition) <= 20) ? worldPos : vertex_position;
-	gl_Position = projectionView * vec4(finalVec, 1.f);
+	gl_Position = projection * view * vec4(finalVec, 1.f);
 }

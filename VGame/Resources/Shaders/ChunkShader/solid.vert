@@ -13,16 +13,19 @@ layout(location = 3) in float vertex_ambientOcclusion;
 out vec3 vs_position;
 out vec2 vs_texCoord;
 out vec3 vs_normal;
+out vec3 vs_viewNormal;
 out float vs_ambientOcclusion;
 
-uniform mat4 projectionView;
+uniform mat4 projection;
+uniform mat4 view;
 
 
 void main() {
 	vs_position = normalize(vertex_position);
 	vs_texCoord = vertex_texCoords;
 	vs_normal = vertex_normal;
+	vs_viewNormal = mat3(view) * vertex_normal;
 	vs_ambientOcclusion = vertex_ambientOcclusion;
 
-	gl_Position = projectionView * vec4(vertex_position, 1.f);
+	gl_Position = projection * view * vec4(vertex_position, 1.f);
 }

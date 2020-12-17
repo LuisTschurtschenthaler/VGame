@@ -52,6 +52,11 @@ void ChunkManager::getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList)
 	chunkList[CHUNK_LEFT]	 = getChunk({ coord.x - 1, coord.z });
 	chunkList[CHUNK_FRONT]	 = getChunk({ coord.x, coord.z + 1 });
 	chunkList[CHUNK_BACK]	 = getChunk({ coord.x, coord.z - 1 });
+
+	chunkList[CHUNK_RF]	 = getChunk({ coord.x + 1, coord.z + 1 });
+	chunkList[CHUNK_RB]	 = getChunk({ coord.x + 1, coord.z - 1 });
+	chunkList[CHUNK_LF]	 = getChunk({ coord.x - 1, coord.z + 1 });
+	chunkList[CHUNK_LB]	 = getChunk({ coord.x - 1, coord.z - 1 });
 }
 
 Chunk* ChunkManager::getChunk(const ChunkCoordXZ& coord) {

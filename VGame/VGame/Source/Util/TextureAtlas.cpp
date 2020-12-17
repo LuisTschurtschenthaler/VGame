@@ -38,6 +38,4 @@ void TextureAtlas::updateUniforms(Shader* shader) {
 	_textureAtlas->bind();
 
 	shader->setInt("textureAtlas", _textureAtlas->getID());
-	shader->setInt("atlasSize", _atlasSize);
-	shader->setInt("tileSize", _tileSize);
 }

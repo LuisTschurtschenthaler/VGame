@@ -16,7 +16,7 @@
 #define RENDER_DISTANCE		6
 
 #define  MOUSE_SENSITIVITY  0.075f
-#define  WALK_SPEED			0.01f
+#define  WALK_SPEED			0.0125f
 #define  FLY_SPEED			0.015f
 #define  JUMP_DURATION		1.f
 

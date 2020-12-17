@@ -9,8 +9,8 @@
 
 
 void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
-	float movementSpeed = WALK_SPEED + ((GRAVITY / MAX_FPS) * CoreEngine::gameTimer->getDeltaTime());
 	float gravity = GRAVITY * CoreEngine::gameTimer->getDeltaTime() / 20;
+	float movementSpeed = WALK_SPEED + (gravity * CoreEngine::gameTimer->getDeltaTime());
 
 	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT)) movementSpeed *= 1.2f;
 	if(isSwimming) movementSpeed /= 1.2f;
@@ -31,15 +31,14 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 
 
 	if(Input::isKeyPressed(KeyCode::KEY_LCTRL))
-		if(isFlying && !isOnGround)
-			change.y -= movementSpeed;
+		if(isFlying)
+			change.y += -movementSpeed - 0.05;
 
 	//if(Input::isKeyDoublePressed(KeyCode::KEY_SPACE)) else if
 	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {
-		/*
 		if(isFlying)
-			change.y += movementSpeed + 1;
-
+			change.y += movementSpeed + 0.05;
+		/*
 		else if(isSwimming)
 			change.y += movementSpeed + 0.3f;
 		*/
@@ -64,7 +63,7 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 			
 			if(isJumping) {
 				_jump += 0.15;
-				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.015;
+				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0165;
 
 				if(_jump >= JUMP_DURATION)
 					isJumping = false;
@@ -106,6 +105,18 @@ void Player::_handleMouseInputs() {
 		
 		camera->update();
 		Input::setMousePosition(centerMousePosition);
+	}
+}
+
+void Player::_processInput() {
+	// Break block
+	if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
+
+	}
+
+	// Place block
+	else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_RIGHT)) {
+
 	}
 }
 

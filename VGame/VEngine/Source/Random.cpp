@@ -1,8 +1,8 @@
 #include "Random.h"
 
 
-
 std::mt19937 Random::_rd;
+
 
 void Random::init() {
 	_rd.seed(std::time(0));

@@ -13,7 +13,6 @@ int ChunkMesh::amountOfIndices = 0;
 
 ChunkMesh::ChunkMesh(Chunk* chunk)
 	: _chunk(chunk), _isBuffered(false) {
-
 }
 
 ChunkMesh::~ChunkMesh() {
@@ -32,7 +31,7 @@ void ChunkMesh::prepareDraw() {
 	if(!_isBuffered) {
 		glGenBuffers(1, &_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(),&vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 		glGenBuffers(1, &_IBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);
@@ -102,7 +101,7 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox,
 					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
 				)
-			);
+				);
 			v3 = Vertex(
 				glm::vec3(x + BLOCK_SIZE - txOffset, y, z),
 				glm::vec3(1.f, 0.f, 0.f),
@@ -111,8 +110,8 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 					chunkSection->getBlockRelative(xi + 1, yi, zi - 1)->hasHitbox,
 					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
 					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
-					)
-				);
+				)
+			);
 
 			v4 = Vertex(
 				glm::vec3(x + BLOCK_SIZE - txOffset, y + BLOCK_SIZE, z),
@@ -122,8 +121,8 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 					chunkSection->getBlockRelative(xi + 1, yi + 1, zi - 1)->hasHitbox,
 					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox,
 					chunkSection->getBlockRelative(xi, yi + 1, zi - 1)->hasHitbox
-					)
-				);
+				)
+			);
 			break;
 
 		case FACE_LEFT: textureID = block->textures[FACE_LEFT];
@@ -228,9 +227,9 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 				glm::vec3(0.f, -1.f, 0.f),
 				glm::vec2(1.f, 0.f), textureID,
 				_vertexAO(
-					chunkSection->getBlockRelative(xi - 1, yi, zi - 1)->hasHitbox,
-					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
-					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+					chunkSection->getBlockRelative(xi + 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
 				)
 			);
 			v3 = Vertex(
@@ -238,9 +237,9 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 				glm::vec3(0.f, -1.f, 0.f),
 				glm::vec2(0.f, 1.f), textureID,
 				_vertexAO(
-					chunkSection->getBlockRelative(xi - 1, yi + 1, zi + 1)->hasHitbox,
-					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
-					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+					chunkSection->getBlockRelative(xi - 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
 				)
 			);
 			v4 = Vertex(
@@ -248,9 +247,9 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 				glm::vec3(0.f, -1.f, 0.f),
 				glm::vec2(0.f, 0.f), textureID,
 				_vertexAO(
-					chunkSection->getBlockRelative(xi - 1, yi + 1, zi - 1)->hasHitbox,
-					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
-					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
+					chunkSection->getBlockRelative(xi + 1, yi, zi - 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
 				)
 			);
 			break;
@@ -271,9 +270,9 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 				glm::vec3(0.f, 0.f, 1.f),
 				glm::vec2(0.f, 1.f), textureID,
 				_vertexAO(
-					chunkSection->getBlockRelative(xi - 1, yi, zi - 1)->hasHitbox,
-					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
-					chunkSection->getBlockRelative(xi, yi, zi - 1)->hasHitbox
+					chunkSection->getBlockRelative(xi + 1, yi, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
 				)
 			);
 			v3 = Vertex(
@@ -281,9 +280,9 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 				glm::vec3(0.f, 0.f, 1.f),
 				glm::vec2(1.f, 0.f), textureID,
 				_vertexAO(
-					chunkSection->getBlockRelative(xi - 1, yi, zi + 1)->hasHitbox,
-					chunkSection->getBlockRelative(xi - 1, yi, zi)->hasHitbox,
-					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi - 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
 				)
 			);
 			v4 = Vertex(
@@ -291,9 +290,9 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 				glm::vec3(0.f, 0.f, 1.f),
 				glm::vec2(0.f, 0.f), textureID,
 				_vertexAO(
-					chunkSection->getBlockRelative(xi + 1, yi, zi + 1)->hasHitbox,
-					chunkSection->getBlockRelative(xi + 1, yi, zi)->hasHitbox,
-					chunkSection->getBlockRelative(xi, yi, zi + 1)->hasHitbox
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi + 1)->hasHitbox,
+					chunkSection->getBlockRelative(xi + 1, yi + 1, zi)->hasHitbox,
+					chunkSection->getBlockRelative(xi, yi + 1, zi + 1)->hasHitbox
 				)
 			);
 			break;
