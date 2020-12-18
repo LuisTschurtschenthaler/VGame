@@ -5,7 +5,6 @@
 
 class Timer;
 class Game;
-class Window;
 
 
 class CoreEngine {
@@ -22,7 +21,6 @@ public:
 	CoreEngine(Game* game);
 	~CoreEngine();
 
-	void createWindow(int width, int height, bool fullscreen, const std::string& windowTitle);
 	void start();
 	void stop();
 

@@ -10,14 +10,14 @@ bool Window::_fullscreen = false;
 std::string Window::_title = "";
 
 
-void Window::create(int width, int height, bool fullscreen, const std::string& title) {
+void Window::create(int width, int height, bool fullscreen, bool vSync, const std::string& title) {
 	_width = width;
 	_height = height;
 	_fullscreen = fullscreen;
 	_title = title;
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDLcreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, fullscreen);
+	SDLcreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, fullscreen, vSync);
 	
 	GLenum res = glewInit();
 	if(res != GLEW_OK)
@@ -43,7 +43,7 @@ void Window::setFullscreen() {
 	SDLsetFullscreen(_fullscreen);
 }
 
-void Window::setWindowHeight(int width, int height) {
+void Window::setWindowSize(int width, int height) {
 	SDLSetWindowSize(width, height);
 	glViewport(0, 0, width, height);
 	_width = width;

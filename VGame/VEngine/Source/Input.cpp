@@ -34,7 +34,7 @@ std::map<int, bool> Input::_keys;
 std::map<int, bool> Input::_mousebuttons;
 
 
-void Input::setup() {
+void Input::init() {
 	for(int i = 0; i < TOTAL_KEYS; i++)
 		_keys[i] = false;
 
@@ -54,7 +54,7 @@ void Input::update() {
 		// Window
 		if(_event.type == SDL_WINDOWEVENT) {
 			if(_event.window.event == SDL_WINDOWEVENT_RESIZED)
-				Window::setWindowHeight(_event.window.data1, _event.window.data2);
+				Window::setWindowSize(_event.window.data1, _event.window.data2);
 		} 
 
 		// Keyboard

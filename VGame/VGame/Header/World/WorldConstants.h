@@ -13,17 +13,18 @@
 
 
 /* Player */
-#define RENDER_DISTANCE		6
+#define RENDER_DISTANCE		5
 
-#define  MOUSE_SENSITIVITY  0.075f
-#define  WALK_SPEED			0.0125f
-#define  FLY_SPEED			0.015f
-#define  JUMP_DURATION		1.f
+#define MOUSE_SENSITIVITY   0.075f
+#define WALK_SPEED			0.75f
+#define FLY_SPEED			2.f
+#define JUMP_DURATION		1.f
 
 
 /* Camera */
-#define FOV_MIN				70.f
-#define FOV_MAX				110.f
+#define FOV					110.f
+#define FOV_SPRINT			(FOV + 10.f)
+#define FOV_SPRINT_STEPS	2.f
 #define NEAR_PLANE			0.001f
 #define FAR_PLANE			1000.f
 
@@ -34,12 +35,12 @@
 
 /* World */
 #define MIN_LIGHT_LEVEL		0
-#define MAX_LIGHT_LEVEL		10
+#define MAX_LIGHT_LEVEL		15
 
 #define BLOCK_SIZE			1.f
 
-#define CHUNK_SECTIONS		16
-#define CHUNK_SIZE			16
+#define CHUNK_SECTIONS		8
+#define CHUNK_SIZE			32
 #define CHUNK_SIZE_R		(CHUNK_SIZE - 1)
 #define HALF_CHUNK_SIZE		(CHUNK_SIZE / 2)
 #define HALF_CHUNK_SIZE_R	(HALF_CHUNK_SIZE - 1)

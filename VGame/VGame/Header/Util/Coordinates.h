@@ -84,6 +84,10 @@ struct BlockPositionXYZ {
 		return { x + coord.x, y + coord.y, z + coord.z };
 	}
 
+	bool operator!=(const BlockPositionXYZ& coord) {
+		return ((x != coord.x) && (y != coord.y) && (z != coord.z));
+	}
+
 	friend std::ostream& operator<<(std::ostream& output, const BlockPositionXYZ& coord) {
 		return output << "BlockPositionXYZ(" << coord.x << ", " << coord.y << ", " << coord.z << ")";
 	}

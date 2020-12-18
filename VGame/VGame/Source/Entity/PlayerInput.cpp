@@ -1,19 +1,21 @@
+#include <GLM/glm.hpp>
 #include "Player.h"
 #include "Input.h"
 #include "Window.h"
 #include "World.h"
 #include "CoreEngine.h"
 #include "WorldConstants.h"
+#include "ChunkManager.h"
 #include "FramerateCounter.h"
 #include "Timer.h"
 
 
 void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 	float gravity = GRAVITY * CoreEngine::gameTimer->getDeltaTime() / 20;
-	float movementSpeed = WALK_SPEED + (gravity * CoreEngine::gameTimer->getDeltaTime());
+	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * CoreEngine::gameTimer->getDeltaTime();
 
-	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT)) movementSpeed *= 1.2f;
-	if(isSwimming) movementSpeed /= 1.2f;
+	if(Input::isKeyPressed(KeyCode::KEY_LCTRL)) movementSpeed *= 1.25f;
+	if(isSwimming) movementSpeed /= 1.25f;
 
 	/* Input */
 	glm::vec3 change(0.f);
@@ -30,7 +32,7 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 		change += _toHorizontal(camera->right * movementSpeed);
 
 
-	if(Input::isKeyPressed(KeyCode::KEY_LCTRL))
+	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
 		if(isFlying)
 			change.y += -movementSpeed - 0.05;
 
@@ -53,13 +55,9 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 	if(World::gravityEnabled) {
 		if(!isFlying) {
 			change.y -= gravity;
-
-			/*if(!isOnGround && !isSwimming)
-				velocity.y -= gravity;
-
+						
 			if(isSwimming)
-				velocity.y -= gravity + 0.05;
-			isOnGround = false;*/
+				velocity.y -= 0.025;
 			
 			if(isJumping) {
 				_jump += 0.15;
@@ -76,8 +74,7 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 	velocity += change;
 }
 
-
-void Player::_handleMouseInputs() {
+void Player::_handleMouseMove() {
 	glm::vec2 centerMousePosition = Window::getMouseCenterPosition();
 
 	if(Input::isKeyPressed(KeyCode::KEY_ESCAPE)) {
@@ -108,15 +105,35 @@ void Player::_handleMouseInputs() {
 	}
 }
 
-void Player::_processInput() {
+void Player::_handleMouseButtons() {
 	// Break block
 	if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
-
+		//glm::vec3 blockPosition = Raycast::rayCast(camera, _chunkManager, 5.f);
+		//
+		//if(blockPosition != glm::vec3(0, 0, 0))
+		//	std::cout << blockPosition.x << " " << blockPosition.y << " " << blockPosition.z << std::endl;
 	}
 
 	// Place block
 	else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_RIGHT)) {
 
+	}
+}
+
+void Player::_handleFOV() {
+	if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
+	   Input::isKeyPressed(KeyCode::KEY_W)) {
+
+		if(camera->fov < FOV_SPRINT)
+			camera->fov += FOV_SPRINT_STEPS;
+
+		isSprinting = true;
+	}
+	else {
+		if(camera->fov > FOV)
+			camera->fov -= FOV_SPRINT_STEPS;
+
+		isSprinting = false;
 	}
 }
 

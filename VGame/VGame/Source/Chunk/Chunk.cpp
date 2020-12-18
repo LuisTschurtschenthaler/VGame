@@ -47,9 +47,14 @@ ChunkSection* Chunk::getChunkSection(int y) {
 	return _sections[y];
 }
 
-void Chunk::placeBlock(const BlockPositionXYZ& bcoord, BlockType block) {
-	BlockPositionXYZ bCoord = chunkManager->getBlockCoord(bcoord);
-	getChunkSection(bcoord.y / CHUNK_SIZE)->placeBlock(bCoord, block);
+void Chunk::placeBlock(const BlockPositionXYZ& coord, BlockType block) {
+	BlockPositionXYZ bCoord = chunkManager->getBlockCoord(coord);
+	getChunkSection(coord.y / CHUNK_SIZE)->placeBlock(bCoord, block);
+}
+
+void Chunk::removeBlock(const BlockPositionXYZ& coord) {
+	BlockPositionXYZ bCoord = chunkManager->getBlockCoord(coord);
+	getChunkSection(coord.y / CHUNK_SIZE)->removeBlock(bCoord);
 }
 
 void Chunk::generateChunkData(ChunkMap* chunkMap) {

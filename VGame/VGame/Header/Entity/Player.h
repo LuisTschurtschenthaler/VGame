@@ -15,7 +15,7 @@ class Player : public Entity {
 public:
 	Camera* camera;
 	glm::vec3 velocity;
-	bool isFlying, isOnGround, isJumping, isSwimming;
+	bool isFlying, isOnGround, isJumping, isSwimming, isSprinting;
 
 private:
 	AABB _box;
@@ -38,8 +38,9 @@ public:
 
 private:
 	void _handleKeyboardInputs(ChunkManager* chunkManager);
-	void _handleMouseInputs();
-	void _processInput();
+	void _handleMouseMove();
+	void _handleMouseButtons();
+	void _handleFOV();
 	glm::vec3 _toHorizontal(const glm::vec3& vec);
 
 };

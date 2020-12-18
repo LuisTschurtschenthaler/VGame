@@ -21,6 +21,10 @@ void ChunkSection::placeBlock(const BlockPositionXYZ& blockCoord, const BlockTyp
 	data.set(blockCoord.x, blockCoord.y, blockCoord.z, block);
 }
 
+void ChunkSection::removeBlock(const BlockPositionXYZ& blockCoord) {
+	data.set(blockCoord.x, blockCoord.y, blockCoord.z, BlockType::AIR);
+}
+
 BlockType ChunkSection::getBlock(const BlockPositionXYZ& blockCoord) {
 	return data.get(blockCoord.x, blockCoord.y, blockCoord.z);
 }

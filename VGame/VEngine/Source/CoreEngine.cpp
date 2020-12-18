@@ -25,14 +25,6 @@ CoreEngine::~CoreEngine() {
 }
 
 
-void CoreEngine::createWindow(int width, int height, bool fullscreen, const std::string& windowTitle) {
-	Window::create(width, height, fullscreen, windowTitle);
-	RenderUtil::initGraphics();
-	Log::setFile("./VGame.log");
-	Input::setup();
-	Random::init();
-}
-
 void CoreEngine::start() {
 	if(_isRunning) return;
 	_run();
@@ -45,6 +37,11 @@ void CoreEngine::stop() {
 
 void CoreEngine::_run() {
 	_isRunning = true;
+
+	RenderUtil::initGraphics();
+	Log::setFile("./VGame.log");
+	Input::init();
+	Random::init();
 	_game->init();
 
 	while(_isRunning) {

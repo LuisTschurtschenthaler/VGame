@@ -121,6 +121,11 @@ void ChunkManager::placeBlock(BlockPositionXYZ blockCoord, BlockType block) {
 	getChunk(chunkCoord)->placeBlock(blockCoord, block);
 }
 
+void ChunkManager::removeBlock(BlockPositionXYZ blockCoord) {
+	ChunkCoordXZ chunkCoord = getChunkCoord(blockCoord);
+	getChunk(chunkCoord)->removeBlock(blockCoord);
+}
+
 ChunkCoordXZ ChunkManager::getChunkCoord(const BlockPositionXYZ& blockCoord) {
 	ChunkCoordXZ c{ blockCoord.x / CHUNK_SIZE, blockCoord.z / CHUNK_SIZE };
 	if(c.x < 0) c.x -= 1;

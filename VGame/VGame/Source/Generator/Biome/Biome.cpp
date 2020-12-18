@@ -20,5 +20,5 @@ Biome::~Biome() {
 }
 
 int Biome::getHeight(int x, int z, int chunkX, int chunkZ) {
-	return static_cast<int>(_noise->getHeight(x, z, chunkX, chunkZ));
+	return static_cast<int>(_noise->getNoise(x, z, chunkX, chunkZ));
 }

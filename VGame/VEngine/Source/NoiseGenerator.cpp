@@ -3,6 +3,7 @@
 #include "Chunk.h"
 #include <cmath>
 
+
 NoiseGenerator::NoiseGenerator(int seed) 
 	: _seed(seed) {
 
@@ -17,7 +18,7 @@ NoiseGenerator::~NoiseGenerator() {
 }
 
 
-float NoiseGenerator::getHeight(int x, int z, int chunkX, int chunkZ) const {
+float NoiseGenerator::getNoise(int x, int z, int chunkX, int chunkZ) const {
 	float newX = x + chunkX * CHUNK_SIZE,
 		  newZ = z + chunkZ * CHUNK_SIZE;
 
@@ -26,43 +27,42 @@ float NoiseGenerator::getHeight(int x, int z, int chunkX, int chunkZ) const {
 		float frequency = pow(2.f, i);
 		float amplitude = pow(_settings.roughness, i);
 		
-		value += _noise(static_cast<float>(newX) * frequency / _settings.smoothness, (static_cast<float>(newZ) * frequency / _settings.smoothness)) * amplitude;
+		value += _noise(newX * frequency / _settings.smoothness, (newZ * frequency / _settings.smoothness)) * amplitude;
 	}
 
-	float val = (((value / 2.1f) + 1.2f) * _settings.amplitude) + _settings.offset;
+	float val = (((value / 2.f) + 1.f) * _settings.amplitude) + _settings.offset;
 	return (val > 0.f) ? val : 1.f;
 }
 
+float NoiseGenerator::getNoise(float x) const {
+	int newX = static_cast<int>(x);
+	newX += _seed;
+	newX = (newX << 10) ^ newX;
+	newX = (newX * (newX * newX * 60493 + 19990303) + 1376312589) & 0x7fffffff;
 
-float NoiseGenerator::_getNoise(float n) const {
-	int newN = static_cast<int>(n);
-	newN += _seed;
-	newN = (newN << 13) ^ newN;
-	newN = (newN * (newN * newN * 60493 + 19990303) + 1376312589) & 0x7fffffff;
-
-	return 1.f - (static_cast<float>(newN) / 1073741824.f);
+	return (1.f - (static_cast<float>(newX) / 1073741824.f));
 }
 
-float NoiseGenerator::_getNoise(float x, float z) const{
-	return _getNoise(x + z * 57.f);
+float NoiseGenerator::getNoise(float x, float y) const {
+	return getNoise(x + y * 18.f);
 }
 
-float NoiseGenerator::_lerp(float a, float b, float z) const{
+
+float NoiseGenerator::_linearInterpolation(float x, float y, float z) const {
 	float lerp = (1.f - std::cos(z * PI)) / 2.f;
-	return (a * (1.f - lerp) + b * lerp);
+	return (x * (1.f - lerp) + y * lerp);
 }
 
-float NoiseGenerator::_noise(float x, float z) const {
+float NoiseGenerator::_noise(float x, float y) const {
 	float floorX = std::floor(x);
-	float floorZ = std::floor(z);
+	float floorY = std::floor(y);
 
-	float s = 0.f, t = 0.f, u = 0.f, v = 0.f;
-	s = _getNoise(floorX, floorZ);
-	t = _getNoise(floorX + 1, floorZ);
-	u = _getNoise(floorX, floorZ + 1);
-	v = _getNoise(floorX + 1, floorZ + 1);
+	float n1 = getNoise(floorX,		floorY);
+	float n2 = getNoise(floorX + 1, floorY);
+	float n3 = getNoise(floorX,		floorY + 1);
+	float n4 = getNoise(floorX + 1, floorY + 1);
 
-	float rec1 = _lerp(s, t, x - floorX);
-	float rec2 = _lerp(u, v, x - floorX);
-	return _lerp(rec1, rec2, z - floorZ);
+	float finalNr1 = _linearInterpolation(n1, n2, x - floorX);
+	float finalNr2 = _linearInterpolation(n3, n4, x - floorX);
+	return _linearInterpolation(finalNr1, finalNr2, y - floorY);
 }

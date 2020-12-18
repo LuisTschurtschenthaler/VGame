@@ -6,12 +6,13 @@
 
 
 Player::Player()
-	: _box({ 0.5f, 1.75f, 0.5f }), _lastChunkPosition({ 0.f }) {
+	: _box({ 0.32f, 1.75f, 0.32f }), _lastChunkPosition({ 0.f }) {
 
 	isFlying = false;
 	isOnGround = false;
 	isJumping = false;
 	isSwimming = false;
+	isSprinting = false;
 	velocity = glm::vec3(0.f);
 
 	_mouseLocked = false;
@@ -34,9 +35,9 @@ void Player::setToWorld(World* world) {
 
 void Player::input() {
 	_handleKeyboardInputs(_chunkManager);
-	_handleMouseInputs();
-
-	_processInput();
+	_handleMouseMove();
+	_handleMouseButtons();
+	_handleFOV();
 }
 
 void Player::update() {

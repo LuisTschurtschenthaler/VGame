@@ -36,7 +36,7 @@ private:
 
 
 public:
-	static void setup();
+	static void init();
 	static void update();
 
 	static bool isKeyPressed(int key);

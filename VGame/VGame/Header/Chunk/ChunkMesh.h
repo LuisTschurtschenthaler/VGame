@@ -9,6 +9,7 @@
 #include "WorldConstants.h"
 #include "MeshTypes.h"
 #include "Shader.h"
+
 class Chunk;
 class World;
 class Game;

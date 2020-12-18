@@ -25,7 +25,7 @@ void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3
 	player.isSwimming = false; //((block1->meshType == FLUID) || (block2->meshType == FLUID));
 
 	for(int x = player.position.x - dimensions.x; x < player.position.x + dimensions.x; x++)
-	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.25; y++)
+	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.2; y++)
 	for(int z = player.position.z - dimensions.z; z < player.position.z + dimensions.z; z++) {
 		
 		Block* block = BlockUtil::blocks[chunkManager->getBlock({ x, y, z })];
@@ -41,7 +41,7 @@ void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3
 			}
 		
 			if(velocity.y > 0) {
-				player.position.y = y - dimensions.y;
+				player.position.y = y - 0.2;
 				player.velocity.y = 0;
 			}
 			else if(velocity.y < 0) {

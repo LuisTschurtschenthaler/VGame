@@ -2,8 +2,6 @@
 #define CAMERA_H
 
 #include <GLM/glm.hpp>
-#include <GLM/gtc/matrix_transform.hpp>
-#include <GLM/gtx/euler_angles.hpp>
 
 class CoreEngine;
 class RenderEngine;
@@ -16,10 +14,11 @@ class Camera {
 
 public:
 	float fov;
+	glm::vec3 position;
 	glm::vec3 front, right, up;
 
 private:
-	const Player* _player;
+	const Player* _PLAYER;
 	const glm::vec3 _WORLD_UP;
 	glm::mat4 _projection;
 	glm::mat4 _view;

@@ -47,6 +47,7 @@ public:
 
 	BlockType getBlock(const BlockPositionXYZ& coord);
 	void placeBlock(BlockPositionXYZ blockCoord, BlockType block);
+	void removeBlock(BlockPositionXYZ blockCoord);
 
 	static ChunkCoordXZ getChunkCoord(const BlockPositionXYZ& blockCoord);
 	static BlockPositionXYZ getBlockCoord(const BlockPositionXYZ& blockCoord);

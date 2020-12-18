@@ -30,7 +30,9 @@ public:
 	~Chunk();
 
 	ChunkSection* getChunkSection(int y);
+
 	void placeBlock(const BlockPositionXYZ& coord, BlockType block);
+	void removeBlock(const BlockPositionXYZ& coord);
 
 	void generateChunkData(ChunkMap* chunkMap);
 	void generateFlora(ChunkMap* chunkMap);

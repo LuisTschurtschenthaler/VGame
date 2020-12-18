@@ -28,6 +28,8 @@ public:
 	~ChunkSection();
 
 	void placeBlock(const BlockPositionXYZ& blockCoord, const BlockType& block);
+	void removeBlock(const BlockPositionXYZ& blockCoord);
+
 	BlockType getBlock(const BlockPositionXYZ& blockCoord);
 	void generateMesh();
 	const Block* getBlockRelative(int x, int y, int z) const;

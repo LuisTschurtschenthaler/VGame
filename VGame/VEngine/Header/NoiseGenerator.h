@@ -3,7 +3,7 @@
 
 class Chunk;
 
-/* Noise functions from: https://github.com/Hopson97/MineCraft-One-Week-Challenge */
+/* Similar to: https://github.com/Hopson97/MineCraft-One-Week-Challenge */
 struct NoiseSettings {
 	int octaves;
 	int amplitude;
@@ -19,19 +19,21 @@ private:
 	NoiseSettings _settings;
 	int _seed;
 
+
 public:
 	NoiseGenerator(int seed);
 	~NoiseGenerator();
 
-	float getHeight(int x, int z, int chunkX, int chunkZ) const;
+	float getNoise(int x, int z, int chunkX, int chunkZ) const;
+
+	float getNoise(float x) const;
+	float getNoise(float x, float y) const;
+
 	void setNoiseSettings(const NoiseSettings& settings) { _settings = settings; }
 
 private:
-	float _getNoise(float n) const;
-	float _getNoise(float x, float z) const;
-
-	float _lerp(float a, float b, float z) const;
-	float _noise(float x, float z) const;
+	float _linearInterpolation(float x, float y, float z) const;
+	float _noise(float x, float y) const;
 
 };
 
