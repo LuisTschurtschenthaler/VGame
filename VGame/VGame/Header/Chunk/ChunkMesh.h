@@ -8,7 +8,6 @@
 #include "Block.h"
 #include "WorldConstants.h"
 #include "MeshTypes.h"
-#include "Shader.h"
 
 class Chunk;
 class World;
@@ -35,6 +34,7 @@ public:
 
 	void prepareDraw();
 	void draw();
+	void clear();
 
 	void addBlockFace(const ChunkSection* chunkSection, int xi, int yi, int zi, const BlockFace face, Block* block);
 	void addFloraBlock(const ChunkSection* chunkSection, int x, int y, int z, const BlockFace face, Block* block);

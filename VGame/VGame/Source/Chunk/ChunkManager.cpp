@@ -20,9 +20,24 @@ ChunkManager::ChunkManager(World* world, TerrainGenerator* terrainGenerator, Pla
 	_threads.emplace_back([&]() {
 		while(!_world->disposed) {
 			std::this_thread::sleep_for(std::chrono::microseconds(50));
+
+			_updateChunks();
 			_generateChunkData();
 		}
 	});
+
+	/*
+	_threads.emplace_back([&]() {
+		while(!_world->disposed) {
+			std::this_thread::sleep_for(std::chrono::microseconds(50));
+
+			for(auto& coord : _chunksToRecreate)
+				getChunk(coord)->recreateMeshes();
+
+			_chunksToRecreate.clear();
+			_chunksToRecreate.shrink_to_fit();
+		}
+	});*/
 }
 
 ChunkManager::~ChunkManager() {
@@ -52,11 +67,6 @@ void ChunkManager::getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList)
 	chunkList[CHUNK_LEFT]	 = getChunk({ coord.x - 1, coord.z });
 	chunkList[CHUNK_FRONT]	 = getChunk({ coord.x, coord.z + 1 });
 	chunkList[CHUNK_BACK]	 = getChunk({ coord.x, coord.z - 1 });
-
-	chunkList[CHUNK_RF]	 = getChunk({ coord.x + 1, coord.z + 1 });
-	chunkList[CHUNK_RB]	 = getChunk({ coord.x + 1, coord.z - 1 });
-	chunkList[CHUNK_LF]	 = getChunk({ coord.x - 1, coord.z + 1 });
-	chunkList[CHUNK_LB]	 = getChunk({ coord.x - 1, coord.z - 1 });
 }
 
 Chunk* ChunkManager::getChunk(const ChunkCoordXZ& coord) {
@@ -90,7 +100,7 @@ std::vector<Chunk*> ChunkManager::getChunksToRender() {
 	int playerZ = static_cast<int>(_player->position.z / CHUNK_SIZE);
 
 	for(std::pair<ChunkCoordXZ, Chunk*> it : chunks) {
-		if(!it.second->meshGenerated)
+		if(!it.second->meshGenerated && it.second != nullptr)
 			continue;
 
 		if(it.first.x < playerX - RENDER_DISTANCE || it.first.x > playerX + RENDER_DISTANCE ||
@@ -126,6 +136,11 @@ void ChunkManager::removeBlock(BlockPositionXYZ blockCoord) {
 	getChunk(chunkCoord)->removeBlock(blockCoord);
 }
 
+void ChunkManager::recreateMesh(const BlockPositionXYZ& coord) {
+	//getChunk(getChunkCoord(coord))->recreateMeshes();
+	_chunksToUpdate.push_back(getChunkCoord(coord));
+}
+
 ChunkCoordXZ ChunkManager::getChunkCoord(const BlockPositionXYZ& blockCoord) {
 	ChunkCoordXZ c{ blockCoord.x / CHUNK_SIZE, blockCoord.z / CHUNK_SIZE };
 	if(c.x < 0) c.x -= 1;
@@ -143,6 +158,13 @@ BlockPositionXYZ ChunkManager::getBlockCoord(const BlockPositionXYZ& blockCoord)
 	return c;
 }
 
+
+void ChunkManager::_updateChunks() {
+	for(auto& coord : _chunksToUpdate) {
+		getChunk(coord)->recreateMeshes();
+		_chunksToUpdate.erase(_chunksToUpdate.begin());
+	}
+}
 
 void ChunkManager::_generateChunkData() {
 	int currentChunkX = static_cast<int>(_player->position.x / CHUNK_SIZE);

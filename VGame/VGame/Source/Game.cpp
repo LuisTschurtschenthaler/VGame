@@ -23,7 +23,6 @@ Game::Game()
 	: _coreEngine(nullptr), _textRenderer(nullptr), _sky(nullptr), 
 	_player(nullptr), _world(nullptr) {
 
-	Crosshair::init();
 }
 
 Game::~Game() {
@@ -59,6 +58,7 @@ void Game::update() {
 
 void Game::render() {
 	RenderUtil::clearScreen();
+	Crosshair::draw();
 	
 	_world->prepareDraw();
 	_world->draw();

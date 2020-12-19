@@ -63,3 +63,53 @@ void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3
 	}
 
 }
+
+glm::vec3 AABB::rayIntersectionWithBlock(glm::vec3 playerPos, glm::vec3 targetPos, glm::vec3 blockPos) {
+	glm::vec3 direction = targetPos - playerPos;
+
+	glm::vec3 scaling = (blockPos - playerPos) / direction;
+	glm::vec3 scaled = playerPos + direction * scaling.x;
+	
+	if(direction.x > 0) {
+		if(_isPositionInSquare({ scaled.z, scaled.y }, { blockPos.z, blockPos.y + 1.f, blockPos.z + 1.f, blockPos.y }))
+			return glm::vec3(-1, 0, 0);
+	}
+	else if(direction.x <= 0) {
+		if(_isPositionInSquare({ scaled.z, scaled.y }, { blockPos.z, blockPos.y + 1.f, blockPos.z + 1.f, blockPos.y }))
+			return glm::vec3(1, 0, 0);
+	}
+
+	if(direction.y > 0) {
+		if(_isPositionInSquare({ scaled.x, scaled.z }, { blockPos.x, blockPos.z + 1.f, blockPos.x + 1.f, blockPos.z }))
+			return glm::vec3(0, -1, 0);
+	}
+	else if(direction.y <= 0) {
+		if(_isPositionInSquare({ scaled.x, scaled.z }, { blockPos.x, blockPos.z + 1.f, blockPos.x + 1.f, blockPos.z }))
+			return glm::vec3(0, 1, 0);
+	}
+
+	if(direction.z > 0) {
+		if(_isPositionInSquare({ scaled.x, scaled.y }, { blockPos.x, blockPos.y + 1.f, blockPos.x + 1.f, blockPos.y }))
+			return glm::vec3(0, 0, -1);
+	}
+	else if(direction.z <= 0) {
+		if(_isPositionInSquare({ scaled.x, scaled.y }, { blockPos.x, blockPos.y + 1.f, blockPos.x + 1.f, blockPos.y }))
+			return glm::vec3(0, 0, 1);
+	}
+
+	return glm::vec3(0.f);
+}
+
+
+bool AABB::_isPositionInSquare(const glm::vec2& position, const glm::vec4& square) {
+	/* Square:
+		x = top left x
+		y = top left y
+		z = bottom right x
+		w = bottom right y
+	*/
+
+	return ((position.x >= square.x) && (position.x <= square.z) 
+		&& ((position.y >= square.w) && (position.y <= square.y))
+	);
+}

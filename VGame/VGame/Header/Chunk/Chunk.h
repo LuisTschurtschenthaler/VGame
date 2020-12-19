@@ -7,6 +7,8 @@
 #include "MeshTypes.h"
 #include "NearbyChunks.h"
 #include "ChunkMesh.h"
+#include "MeshCollection.h"
+
 class ChunkManager;
 class ChunkSection;
 class ChunkMap;
@@ -16,14 +18,15 @@ class Chunk {
 
 public:
 	ChunkManager* chunkManager;
+	MeshCollection* meshCollection;
 	ChunkCoordXZ coord;
 
 	Chunk* nearbyChunks[AMOUNT_OF_NEARBY_CHUNKS];
-	std::vector<ChunkMesh*> meshCollection;
 	bool chunkDataGenerated, meshGenerated;
 	
 private:
 	std::vector<ChunkSection*> _sections;
+
 
 public:
 	Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord);
@@ -37,6 +40,8 @@ public:
 	void generateChunkData(ChunkMap* chunkMap);
 	void generateFlora(ChunkMap* chunkMap);
 	void generateMesh();
+
+	void recreateMeshes();
 
 	void draw(int meshtype);
 	void save();

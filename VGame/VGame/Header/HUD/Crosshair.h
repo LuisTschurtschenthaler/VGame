@@ -1,16 +1,11 @@
 #ifndef CROSSHAIR_H
 #define CROSSHAIR_H
 
-class Texture;
+#include <vector>
 
 class Crosshair {
 
-private:
-	static Texture* _crosshair;
-
-
 public:
-	static void init();
 	static void draw();
 
 };

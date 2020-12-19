@@ -1,4 +1,5 @@
 #include <GLM/glm.hpp>
+#include <GLM/geometric.hpp>
 #include "Player.h"
 #include "Input.h"
 #include "Window.h"
@@ -8,6 +9,7 @@
 #include "ChunkManager.h"
 #include "FramerateCounter.h"
 #include "Timer.h"
+#include "Raycast.h"
 
 
 void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
@@ -106,16 +108,26 @@ void Player::_handleMouseMove() {
 }
 
 void Player::_handleMouseButtons() {
-	// Break block
-	if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
-		//glm::vec3 blockPosition = Raycast::rayCast(camera, _chunkManager, 5.f);
-		//
-		//if(blockPosition != glm::vec3(0, 0, 0))
-		//	std::cout << blockPosition.x << " " << blockPosition.y << " " << blockPosition.z << std::endl;
-	}
+	if(_mouseTimer->elapse() >= MOUSE_TIMEOUT) {
+		// Break block
+		if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
+			BlockPositionXYZ blockPosition = Raycast::rayCast(camera, _chunkManager);
+			
+			if(blockPosition.x == -1.f) return;
+			_chunkManager->removeBlock(blockPosition);
+			_chunkManager->recreateMesh(blockPosition);
+			_mouseTimer->update();
+		}
 
-	// Place block
-	else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_RIGHT)) {
+		// Place block
+		else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_RIGHT)) {
+			BlockPositionXYZ blockPosition = Raycast::rayCast(camera, _chunkManager);
+
+			if(blockPosition.x == -1.f) return;
+			_chunkManager->placeBlock(blockPosition, BlockType::TNT);
+			_chunkManager->recreateMesh(blockPosition);
+			_mouseTimer->update();
+		}
 
 	}
 }
@@ -129,6 +141,7 @@ void Player::_handleFOV() {
 
 		isSprinting = true;
 	}
+
 	else {
 		if(camera->fov > FOV)
 			camera->fov -= FOV_SPRINT_STEPS;

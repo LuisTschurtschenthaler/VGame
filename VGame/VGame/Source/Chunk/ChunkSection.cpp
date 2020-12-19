@@ -5,6 +5,7 @@
 #include "WorldConstants.h"
 #include "TerrainGenerator.h"
 #include "Block.h"
+#include "MeshCollection.h"
 
 
 ChunkSection::ChunkSection(ChunkManager* chunkManager, Chunk* chunk, const ChunkCoordXYZ& coord)
@@ -52,17 +53,17 @@ void ChunkSection::generateMesh() {
 				}
 
 				else if(block->name == "Tall grass") {
-					_chunk->meshCollection[FLORA]->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
-					_chunk->meshCollection[FLORA]->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
+					_chunk->meshCollection->flora->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
+					_chunk->meshCollection->flora->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
 				}
 
-				else _chunk->meshCollection[FLORA]->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
+				else _chunk->meshCollection->flora->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
 				break;
 
 
 			case MeshType::FLUID:
 				if((y + coord.y * CHUNK_SIZE) == WATER_LEVEL)
-					_chunk->meshCollection[FLUID]->addBlockFace(this, x, y, z, FACE_TOP, block);
+					_chunk->meshCollection->fluid->addBlockFace(this, x, y, z, FACE_TOP, block);
 				break;
 		}
 	}
@@ -169,7 +170,7 @@ void ChunkSection::_addBlockFaces(int x, int y, int z, MeshType meshType, Block*
 		const Block* relativeBlock = getBlockRelative(blockPos.x, blockPos.y, blockPos.z);
 		
 		if(relativeBlock->isTransparent || relativeBlock->meshType == MeshType::FLORA)
-			_chunk->meshCollection[meshType]->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
+			_chunk->meshCollection->get(meshType)->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
 	}
 }
 

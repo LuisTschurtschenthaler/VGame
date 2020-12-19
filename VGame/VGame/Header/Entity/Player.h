@@ -7,6 +7,7 @@
 #include "AABB.h"
 
 class World;
+class Timer;
 class ChunkManager;
 
 
@@ -19,6 +20,7 @@ public:
 
 private:
 	AABB _box;
+	Timer* _mouseTimer, *_jumpTimer;
 	ChunkManager* _chunkManager;
 	glm::vec3 _lastChunkPosition;
 	bool _mouseLocked;

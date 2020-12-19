@@ -7,10 +7,11 @@
 #include <mutex>
 #include <thread>
 #include <string>
-#include <queue>
 #include <GLM/glm.hpp>
 #include "Chunk.h"
+#include "MeshCollection.h"
 #include "Coordinates.h"
+
 class World;
 class TerrainGenerator;
 class Player;
@@ -29,6 +30,9 @@ private:
 	World* _world;
 	Player* _player;
 	std::vector<std::thread> _threads;
+
+	std::vector<ChunkCoordXZ> _chunksToUpdate;
+	std::vector<std::pair<ChunkCoordXZ, MeshCollection*>> _updatedChunks;
 
 
 public:
@@ -49,12 +53,15 @@ public:
 	void placeBlock(BlockPositionXYZ blockCoord, BlockType block);
 	void removeBlock(BlockPositionXYZ blockCoord);
 
+	void recreateMesh(const BlockPositionXYZ& coord);
+
 	static ChunkCoordXZ getChunkCoord(const BlockPositionXYZ& blockCoord);
 	static BlockPositionXYZ getBlockCoord(const BlockPositionXYZ& blockCoord);
 
 	World* getWorld() const { return _world; }
 
 private:
+	void _updateChunks();
 	void _generateChunkData();
 
 };

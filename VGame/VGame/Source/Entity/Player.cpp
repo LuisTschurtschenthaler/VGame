@@ -7,6 +7,8 @@
 
 Player::Player()
 	: _box({ 0.32f, 1.75f, 0.32f }), _lastChunkPosition({ 0.f }) {
+	
+	camera = new Camera(this);
 
 	isFlying = false;
 	isOnGround = false;
@@ -15,8 +17,9 @@ Player::Player()
 	isSprinting = false;
 	velocity = glm::vec3(0.f);
 
+	_mouseTimer = new Timer();
+	_jumpTimer = new Timer;
 	_mouseLocked = false;
-	camera = new Camera(this);
 	_jump = 0;
 }
 

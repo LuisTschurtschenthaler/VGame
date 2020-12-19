@@ -23,6 +23,9 @@ public:
 	}
 
 	void set(int x, int y, int z, const T& value) {
+		///if((x < 0 || x > SIZE) || (y < 0 || y > SIZE) || (z < 0 || z > SIZE)) 
+			//return;
+		
 		_data[x][y][z] = value;
 	}
 

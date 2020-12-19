@@ -17,9 +17,7 @@ void Timer::update() {
 	_time = currentTime;
 }
 
-#include <iostream>
 double Timer::elapse() {
 	double currentTime = static_cast<double>(SDL_GetTicks());
-	//std::cout << (currentTime - _time) << std::endl;
 	return ((currentTime - _time) / 1000);
 }

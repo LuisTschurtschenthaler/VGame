@@ -15,7 +15,7 @@
 
 
 Sky::Sky() {
-	_shader = new Shader("sky.vert", "sky.frag");
+	_shader = new Shader("sky_vert.glsl", "sky_frag.glsl");
 }
 
 Sky::~Sky() {

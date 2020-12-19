@@ -66,6 +66,19 @@ void ChunkMesh::draw() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void ChunkMesh::clear() {
+	_isBuffered = false;
+
+	indices.clear();
+	indices.shrink_to_fit();
+
+	vertices.clear();
+	vertices.shrink_to_fit();
+
+	glDeleteBuffers(1, &_VBO);
+	glDeleteBuffers(1, &_IBO);
+}
+
 void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, int zi, const BlockFace face, Block* block) {
 	int x = (xi + chunkSection->coord.x * CHUNK_SIZE);
 	int y = (yi + chunkSection->coord.y * CHUNK_SIZE);
@@ -77,7 +90,6 @@ void ChunkMesh::addBlockFace(const ChunkSection* chunkSection, int xi, int yi, i
 	
 	// OPIMISATION WITH CUSTOM DATA TYPES
 	// https://en.cppreference.com/w/cpp/types/integer
-
 	int textureID = 0;
 	Vertex v1, v2, v3, v4;
 	switch(face) {

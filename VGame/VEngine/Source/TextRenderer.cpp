@@ -18,7 +18,7 @@ Key TextRenderer::key = Key(KeyCode::KEY_F3);
 
 
 TextRenderer::TextRenderer() {
-	_shader = new Shader("text.vert", "text.frag");
+	_shader = new Shader("text_vert.glsl", "text_frag.glsl");
 }
 
 TextRenderer::~TextRenderer() {

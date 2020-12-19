@@ -29,13 +29,13 @@ World::World(Game* game, TerrainGeneratorType type, const std::string& worldName
 	_chunkManager = new ChunkManager(this, terrainGenerator, _player);
 	_chunkManager->setPlayerSpawnPoint(*_player);
 
-	_skyShader = new Shader("sky.vert", "sky.frag");
+	_skyShader = new Shader("sky_vert.glsl", "sky_frag.glsl");
 	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 0);
 
 	_meshShader.insert(_meshShader.begin(), {
-		new Shader("ChunkShader/solid.vert", "ChunkShader/solid.frag"),
-		new Shader("ChunkShader/flora.vert", "ChunkShader/flora.frag"),
-		new Shader("ChunkShader/fluid.vert", "ChunkShader/fluid.frag")
+		new Shader("ChunkShader/solid_vert.glsl", "ChunkShader/solid_frag.glsl"),
+		new Shader("ChunkShader/flora_vert.glsl", "ChunkShader/flora_frag.glsl"),
+		new Shader("ChunkShader/fluid_vert.glsl", "ChunkShader/fluid_frag.glsl")
 	});
 }
 
@@ -64,7 +64,7 @@ void World::draw() {
 	for(auto& chunk : _chunkManager->getChunksToRender()) {
 		for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {
 			_meshShader[i]->bind();
-			if(chunk->meshCollection[i]->indices.size() > 0)
+			if(chunk->meshCollection->get(static_cast<MeshType>(i))->indices.size() > 0)
 				chunk->draw(i);
 			_meshShader[i]->unbind();
 		}

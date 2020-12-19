@@ -7,11 +7,6 @@ enum NearbyChunks {
 	CHUNK_FRONT		= 2, // Z+
 	CHUNK_BACK		= 3, // Z-
 
-	CHUNK_RF = 4,
-	CHUNK_RB = 5,
-	CHUNK_LF = 6,
-	CHUNK_LB = 7,
-
 	AMOUNT_OF_NEARBY_CHUNKS
 };
 

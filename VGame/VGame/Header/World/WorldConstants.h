@@ -13,9 +13,11 @@
 
 
 /* Player */
-#define RENDER_DISTANCE		5
+#define RENDER_DISTANCE		8
 
 #define MOUSE_SENSITIVITY   0.075f
+#define MOUSE_TIMEOUT		0.2f
+
 #define WALK_SPEED			0.75f
 #define FLY_SPEED			2.f
 #define JUMP_DURATION		1.f
@@ -39,8 +41,8 @@
 
 #define BLOCK_SIZE			1.f
 
-#define CHUNK_SECTIONS		8
-#define CHUNK_SIZE			32
+#define CHUNK_SECTIONS		16
+#define CHUNK_SIZE			16
 #define CHUNK_SIZE_R		(CHUNK_SIZE - 1)
 #define HALF_CHUNK_SIZE		(CHUNK_SIZE / 2)
 #define HALF_CHUNK_SIZE_R	(HALF_CHUNK_SIZE - 1)
