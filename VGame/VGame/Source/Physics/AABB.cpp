@@ -20,15 +20,15 @@ void AABB::update(glm::vec3 pos) {
 
 
 void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3& velocity) {
-	//Block* block1 = BlockUtil::blocks[chunkManager->getBlock({ player.position.x, player.position.y - 1, player.position.z })];
-	//Block* block2 = BlockUtil::blocks[chunkManager->getBlock({ player.position.x, player.position.y, player.position.z })];
+	//Block* block1 = BlockUtil::blocks[chunkManager->getBlockType({ player.position.x, player.position.y - 1, player.position.z })];
+	//Block* block2 = BlockUtil::blocks[chunkManager->getBlockType({ player.position.x, player.position.y, player.position.z })];
 	player.isSwimming = false; //((block1->meshType == FLUID) || (block2->meshType == FLUID));
 
 	for(int x = player.position.x - dimensions.x; x < player.position.x + dimensions.x; x++)
-	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.2; y++)
+	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.15; y++)
 	for(int z = player.position.z - dimensions.z; z < player.position.z + dimensions.z; z++) {
 		
-		Block* block = BlockUtil::blocks[chunkManager->getBlock({ x, y, z })];
+		Block* block = BlockUtil::blocks[chunkManager->getBlockType({ x, y, z })];
 		if(block->hasHitbox) {
 			if(velocity.x > 0) {
 				player.position.x = x - dimensions.x;
@@ -41,7 +41,7 @@ void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3
 			}
 		
 			if(velocity.y > 0) {
-				player.position.y = y - 0.2;
+				player.position.y = y - 0.15;
 				player.velocity.y = 0;
 			}
 			else if(velocity.y < 0) {
@@ -65,39 +65,51 @@ void AABB::collision(ChunkManager* chunkManager, Player& player, const glm::vec3
 }
 
 glm::vec3 AABB::rayIntersectionWithBlock(glm::vec3 playerPos, glm::vec3 targetPos, glm::vec3 blockPos) {
-	glm::vec3 direction = targetPos - playerPos;
+	glm::vec3 direction = glm::vec3(targetPos.x, targetPos.y, targetPos.z) - playerPos;
 
 	glm::vec3 scaling = (blockPos - playerPos) / direction;
-	glm::vec3 scaled = playerPos + direction * scaling.x;
+	glm::vec3 scaling2 = ((blockPos + 1.f) - playerPos) / direction;
 	
 	if(direction.x > 0) {
-		if(_isPositionInSquare({ scaled.z, scaled.y }, { blockPos.z, blockPos.y + 1.f, blockPos.z + 1.f, blockPos.y }))
+		glm::vec3 scaled = playerPos + direction * scaling.x;
+
+		if(_isPositionInSquare({ scaled.z, scaled.y }, { blockPos.z, blockPos.y + 1, blockPos.z + 1, blockPos.y }))
 			return glm::vec3(-1, 0, 0);
 	}
 	else if(direction.x <= 0) {
-		if(_isPositionInSquare({ scaled.z, scaled.y }, { blockPos.z, blockPos.y + 1.f, blockPos.z + 1.f, blockPos.y }))
+		glm::vec3 scaled = playerPos + direction * scaling2.x;
+
+		if(_isPositionInSquare({ scaled.z, scaled.y }, { blockPos.z, blockPos.y + 1, blockPos.z + 1, blockPos.y }))
 			return glm::vec3(1, 0, 0);
 	}
 
 	if(direction.y > 0) {
-		if(_isPositionInSquare({ scaled.x, scaled.z }, { blockPos.x, blockPos.z + 1.f, blockPos.x + 1.f, blockPos.z }))
+		glm::vec3 scaled = playerPos + direction * scaling.y;
+
+		if(_isPositionInSquare({ scaled.x, scaled.z }, { blockPos.x, blockPos.z + 1, blockPos.x + 1, blockPos.z }))
 			return glm::vec3(0, -1, 0);
 	}
 	else if(direction.y <= 0) {
-		if(_isPositionInSquare({ scaled.x, scaled.z }, { blockPos.x, blockPos.z + 1.f, blockPos.x + 1.f, blockPos.z }))
+		glm::vec3 scaled = playerPos + direction * scaling2.y;
+
+		if(_isPositionInSquare({ scaled.x, scaled.z }, { blockPos.x, blockPos.z + 1, blockPos.x + 1, blockPos.z }))
 			return glm::vec3(0, 1, 0);
 	}
 
 	if(direction.z > 0) {
-		if(_isPositionInSquare({ scaled.x, scaled.y }, { blockPos.x, blockPos.y + 1.f, blockPos.x + 1.f, blockPos.y }))
+		glm::vec3 scaled = playerPos + direction * scaling.z;
+
+		if(_isPositionInSquare({ scaled.x, scaled.y }, { blockPos.x, blockPos.y + 1, blockPos.x + 1, blockPos.y }))
 			return glm::vec3(0, 0, -1);
 	}
 	else if(direction.z <= 0) {
-		if(_isPositionInSquare({ scaled.x, scaled.y }, { blockPos.x, blockPos.y + 1.f, blockPos.x + 1.f, blockPos.y }))
+		glm::vec3 scaled = playerPos + direction * scaling2.z;
+
+		if(_isPositionInSquare({ scaled.x, scaled.y }, { blockPos.x, blockPos.y + 1, blockPos.x + 1, blockPos.y }))
 			return glm::vec3(0, 0, 1);
 	}
 
-	return glm::vec3(0.f);
+	return glm::vec3(0, 0, 0);
 }
 
 

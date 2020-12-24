@@ -80,8 +80,13 @@ struct BlockPositionXYZ {
 	BlockPositionXYZ(int x, int y, int z)
 		: x(x), y(y), z(z) { }
 
+
 	BlockPositionXYZ operator+(const BlockPositionXYZ& coord) {
 		return { x + coord.x, y + coord.y, z + coord.z };
+	}
+
+	BlockPositionXYZ operator-(const BlockPositionXYZ& coord) {
+		return { x - coord.x, y - coord.y, z - coord.z };
 	}
 
 	bool operator!=(const BlockPositionXYZ& coord) {

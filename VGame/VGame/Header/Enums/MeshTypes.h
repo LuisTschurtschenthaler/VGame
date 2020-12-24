@@ -3,7 +3,6 @@
 
 enum MeshType {
 	SOLID,
-	FLORA,
 	FLUID,
 
 	AMOUNT_OF_MESH_TYPES

@@ -23,8 +23,6 @@ Chunk::Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord)
 	
 	for(int y = 0; y < CHUNK_SECTIONS; y++)
 		_sections.push_back(new ChunkSection(chunkManager, this, { coord.x, y, coord.z }));
-
-	meshCollection = new MeshCollection(this);
 }
 
 Chunk::~Chunk() {
@@ -66,8 +64,7 @@ void Chunk::generateChunkData(ChunkMap* chunkMap) {
 }
 
 void Chunk::generateMesh() {
-	if(nearbyChunks[0] == nullptr)
-		chunkManager->getNearbyChunks(coord, nearbyChunks);
+	chunkManager->getNearbyChunks(coord, nearbyChunks);
 
 	for(auto& chunk : nearbyChunks) {
 		if(!chunk->chunkDataGenerated)
@@ -78,12 +75,6 @@ void Chunk::generateMesh() {
 		section->generateMesh();
 
 	meshGenerated = true;
-}
-
-void Chunk::recreateMeshes() {
-	meshGenerated = false;
-	meshCollection->clear();
-	generateMesh();
 }
 
 /* IMPROVE THIS SHIT */
@@ -110,8 +101,10 @@ void Chunk::generateFlora(ChunkMap* chunkMap) {
 }
 
 void Chunk::draw(int meshtype) {
-	meshCollection->get(static_cast<MeshType>(meshtype))->prepareDraw();
-	meshCollection->get(static_cast<MeshType>(meshtype))->draw();
+	for(auto& section : _sections) {
+		section->meshCollection->get(static_cast<MeshType>(meshtype))->prepareDraw();
+		section->meshCollection->get(static_cast<MeshType>(meshtype))->draw();
+	}
 }
 
 void Chunk::save() {

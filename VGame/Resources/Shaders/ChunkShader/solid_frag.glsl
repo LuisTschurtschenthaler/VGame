@@ -46,7 +46,7 @@ void main() {
 	vec4 texColor = texture(textureAtlas, vs_texCoord.xy);
 	if(texColor.a == 0.f) discard;
 	
-	float ambient = clamp((vs_ambientOcclusion + 1.f) / 4.f, 0.5f, 75.f);
+	float ambient = clamp((vs_ambientOcclusion +2) / 4.f, 0.5f, 1.f);
 		
 
 	//float light = clamp(15.f / MAX_LIGHT_LEVEL, 0.f, 1.f);	

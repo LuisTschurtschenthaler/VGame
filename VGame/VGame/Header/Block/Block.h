@@ -23,7 +23,7 @@ struct Block {
 	int textures[6];
 	float texturePixelOffset, lightLevel; //float walkDrag;
 	int meshType;
-	bool isTransparent, hasHitbox;
+	bool isFloraBlock, hasHitbox;
 };
 
 

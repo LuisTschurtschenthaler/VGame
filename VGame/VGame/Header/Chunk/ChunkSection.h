@@ -6,6 +6,8 @@
 #include "NearbyChunks.h"
 #include "Array3D.h"
 #include "MeshTypes.h"
+#include "MeshCollection.h"
+
 class ChunkManager;
 class ChunkMap;
 class Chunk;
@@ -15,6 +17,7 @@ class ChunkSection {
 
 public:
 	ChunkManager* chunkManager;
+	MeshCollection* meshCollection;
 	ChunkCoordXYZ coord;
 	Array3D<BlockType, CHUNK_SIZE> data;
 	bool areMeshesGenerated;
@@ -30,12 +33,14 @@ public:
 	void placeBlock(const BlockPositionXYZ& blockCoord, const BlockType& block);
 	void removeBlock(const BlockPositionXYZ& blockCoord);
 
-	BlockType getBlock(const BlockPositionXYZ& blockCoord);
-	void generateMesh();
+	const BlockType getBlockType(const BlockPositionXYZ& blockCoord);
 	const Block* getBlockRelative(int x, int y, int z) const;
+	
+	void generateMesh(MeshCollection* collection = nullptr);
+	void recreateMeshes();
 
 private:
-	void _addBlockFaces(int x, int y, int z, MeshType meshType, Block* block);
+	void _addBlockFaces(int x, int y, int z, MeshType meshType, Block* block, MeshCollection& collection);
 	bool _isOutOfChunkRange(BlockPositionXYZ coord);
 	bool _isOutOfChunkRange(int nr);
 	const Block* _getBlock(int x, int y, int z) const;

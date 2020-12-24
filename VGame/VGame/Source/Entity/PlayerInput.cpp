@@ -22,16 +22,16 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 	/* Input */
 	glm::vec3 change(0.f);
 	if(Input::isKeyPressed(KeyCode::KEY_W))
-		change += _toHorizontal(camera->front * movementSpeed);
+		change += _toHorizontal(camera->front) * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_A))
-		change -= _toHorizontal(camera->right * movementSpeed);
+		change -= _toHorizontal(camera->right) * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_S))
-		change -= _toHorizontal(camera->front * movementSpeed);
+		change -= _toHorizontal(camera->front) * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_D))
-		change += _toHorizontal(camera->right * movementSpeed);
+		change += _toHorizontal(camera->right) * movementSpeed;
 
 
 	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
@@ -111,7 +111,7 @@ void Player::_handleMouseButtons() {
 	if(_mouseTimer->elapse() >= MOUSE_TIMEOUT) {
 		// Break block
 		if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
-			BlockPositionXYZ blockPosition = Raycast::rayCast(camera, _chunkManager);
+			BlockPositionXYZ blockPosition = Raycast::getBlockPosition(Raycast::getBlockToBreak(camera, _chunkManager));
 			
 			if(blockPosition.x == -1.f) return;
 			_chunkManager->removeBlock(blockPosition);
@@ -121,10 +121,10 @@ void Player::_handleMouseButtons() {
 
 		// Place block
 		else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_RIGHT)) {
-			BlockPositionXYZ blockPosition = Raycast::rayCast(camera, _chunkManager);
+			BlockPositionXYZ blockPosition = Raycast::getBlockPosition(Raycast::getBlockToPlace(camera, _chunkManager));
 
 			if(blockPosition.x == -1.f) return;
-			_chunkManager->placeBlock(blockPosition, BlockType::TNT);
+			_chunkManager->placeBlock(blockPosition, BlockType::CACTUS);
 			_chunkManager->recreateMesh(blockPosition);
 			_mouseTimer->update();
 		}

@@ -10,7 +10,12 @@ class ChunkManager;
 class Raycast {
 
 public:
-	static BlockPositionXYZ rayCast(Camera* camera, ChunkManager* chunkManager);
+	static glm::vec3 getBlockToBreak(Camera* camera, ChunkManager* chunkManager);
+	static glm::vec3 getBlockToPlace(Camera* camera, ChunkManager* chunkManager);
+	static BlockPositionXYZ getBlockPosition(const glm::vec3 pos);
+
+private:
+	static glm::vec3 _getMouseRay(Camera* camera, ChunkManager* chunkManager);
 
 };
 

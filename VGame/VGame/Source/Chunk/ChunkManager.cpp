@@ -20,24 +20,16 @@ ChunkManager::ChunkManager(World* world, TerrainGenerator* terrainGenerator, Pla
 	_threads.emplace_back([&]() {
 		while(!_world->disposed) {
 			std::this_thread::sleep_for(std::chrono::microseconds(50));
-
-			_updateChunks();
 			_generateChunkData();
 		}
 	});
 
-	/*
 	_threads.emplace_back([&]() {
 		while(!_world->disposed) {
 			std::this_thread::sleep_for(std::chrono::microseconds(50));
-
-			for(auto& coord : _chunksToRecreate)
-				getChunk(coord)->recreateMeshes();
-
-			_chunksToRecreate.clear();
-			_chunksToRecreate.shrink_to_fit();
+			_updateChunks();
 		}
-	});*/
+	});
 }
 
 ChunkManager::~ChunkManager() {
@@ -116,14 +108,14 @@ std::vector<Chunk*> ChunkManager::getChunksToRender() {
 	return chunksToRender;
 }
 
-BlockType ChunkManager::getBlock(const BlockPositionXYZ& coord) {
+BlockType ChunkManager::getBlockType(const BlockPositionXYZ& coord) {
 	ChunkCoordXZ chunkCoord = getChunkCoord(coord);
 
 	ChunkSection* section = getChunk(chunkCoord)->getChunkSection(coord.y / CHUNK_SIZE);
 	if(section == nullptr)
 		return BlockType::AIR;
 
-	else return section->getBlock(getBlockCoord(coord));
+	else return section->getBlockType(getBlockCoord(coord));
 }
 
 void ChunkManager::placeBlock(BlockPositionXYZ blockCoord, BlockType block) {
@@ -138,7 +130,11 @@ void ChunkManager::removeBlock(BlockPositionXYZ blockCoord) {
 
 void ChunkManager::recreateMesh(const BlockPositionXYZ& coord) {
 	//getChunk(getChunkCoord(coord))->recreateMeshes();
-	_chunksToUpdate.push_back(getChunkCoord(coord));
+	ChunkCoordXYZ c{ coord.x / CHUNK_SIZE, coord.y / CHUNK_SIZE, coord.z / CHUNK_SIZE };
+	if(c.x < 0) c.x -= 1;
+	if(c.y < 0) c.y -= 1;
+	if(c.z < 0) c.z -= 1;
+	_chunksToUpdate.push_back(c);
 }
 
 ChunkCoordXZ ChunkManager::getChunkCoord(const BlockPositionXYZ& blockCoord) {
@@ -161,7 +157,7 @@ BlockPositionXYZ ChunkManager::getBlockCoord(const BlockPositionXYZ& blockCoord)
 
 void ChunkManager::_updateChunks() {
 	for(auto& coord : _chunksToUpdate) {
-		getChunk(coord)->recreateMeshes();
+		getChunk({ coord.x, coord.z })->getChunkSection(coord.y)->recreateMeshes();
 		_chunksToUpdate.erase(_chunksToUpdate.begin());
 	}
 }

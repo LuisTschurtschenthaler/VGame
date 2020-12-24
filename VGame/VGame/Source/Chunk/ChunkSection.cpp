@@ -5,12 +5,12 @@
 #include "WorldConstants.h"
 #include "TerrainGenerator.h"
 #include "Block.h"
-#include "MeshCollection.h"
 
 
 ChunkSection::ChunkSection(ChunkManager* chunkManager, Chunk* chunk, const ChunkCoordXYZ& coord)
 	: coord(coord), areMeshesGenerated(false), chunkManager(chunkManager), _chunk(chunk) {
 
+	meshCollection = new MeshCollection(chunk);
 	data.fill(BlockType::AIR);
 }
 
@@ -26,49 +26,8 @@ void ChunkSection::removeBlock(const BlockPositionXYZ& blockCoord) {
 	data.set(blockCoord.x, blockCoord.y, blockCoord.z, BlockType::AIR);
 }
 
-BlockType ChunkSection::getBlock(const BlockPositionXYZ& blockCoord) {
+const BlockType ChunkSection::getBlockType(const BlockPositionXYZ& blockCoord) {
 	return data.get(blockCoord.x, blockCoord.y, blockCoord.z);
-}
-
-void ChunkSection::generateMesh() {
-	for(int x = 0; x < CHUNK_SIZE; x++)
-	for(int z = 0; z < CHUNK_SIZE; z++)
-	for(int y = 0; y < CHUNK_SIZE; y++) {
-
-		BlockType blockType = data.get(x, y, z);
-		if(blockType == BlockType::AIR)
-			continue;
-
-		Block* block = BlockUtil::blocks[blockType];
-		switch(block->meshType) {
-			case MeshType::SOLID:
-				_addBlockFaces(x, y, z, MeshType::SOLID, block);
-				break;
-
-
-			case MeshType::FLORA:
-				if(block->name == "Oak leave") {
-					_addBlockFaces(x, y, z, MeshType::FLORA, block);
-					break;
-				}
-
-				else if(block->name == "Tall grass") {
-					_chunk->meshCollection->flora->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
-					_chunk->meshCollection->flora->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
-				}
-
-				else _chunk->meshCollection->flora->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
-				break;
-
-
-			case MeshType::FLUID:
-				if((y + coord.y * CHUNK_SIZE) == WATER_LEVEL)
-					_chunk->meshCollection->fluid->addBlockFace(this, x, y, z, FACE_TOP, block);
-				break;
-		}
-	}
-
-	areMeshesGenerated = true;
 }
 
 const Block* ChunkSection::getBlockRelative(int x, int y, int z) const {
@@ -147,15 +106,66 @@ const Block* ChunkSection::getBlockRelative(int x, int y, int z) const {
 			&& z >= 0
 			&& z < CHUNK_SIZE)) {
 
-		return BlockUtil::blocks[chunkManager->getBlock({ x, y, z })];
+		return BlockUtil::blocks[chunkManager->getBlockType({ x, y, z })];
 	}
 
 	// This chunk
 	else return _getBlock(x, y, z);
 }
 
+void ChunkSection::generateMesh(MeshCollection* collection) {
+	MeshCollection& meshes = (collection == nullptr) ? *meshCollection : *collection;
 
-void ChunkSection::_addBlockFaces(int x, int y, int z, MeshType meshType, Block* block) {
+	for(int x = 0; x < CHUNK_SIZE; x++)
+	for(int z = 0; z < CHUNK_SIZE; z++)
+	for(int y = 0; y < CHUNK_SIZE; y++) {
+		BlockType blockType = data.get(x, y, z);
+		if(blockType == BlockType::AIR)
+			continue;
+
+		Block* block = BlockUtil::blocks[blockType];
+		switch(block->meshType) {
+
+			case MeshType::SOLID:
+				if(block->isFloraBlock) {
+					if(block->name == "Oak leave" || block->name == "Cactus") {
+						_addBlockFaces(x, y, z, MeshType::SOLID, block, meshes);
+						break;
+					}
+
+					else if(block->name == "Tall grass") {
+						meshes.solid->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
+						meshes.solid->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
+					}
+
+					else meshes.solid->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
+
+				}
+				else _addBlockFaces(x, y, z, MeshType::SOLID, block, meshes);
+
+
+			case MeshType::FLUID:
+				if((y + coord.y * CHUNK_SIZE) == WATER_LEVEL)
+					meshes.fluid->addBlockFace(this, x, y, z, BlockFace::FACE_TOP, block);
+				break;
+		}
+	}
+
+	areMeshesGenerated = true;
+}
+
+void ChunkSection::recreateMeshes() {
+	areMeshesGenerated = false;
+
+	MeshCollection* collection = new MeshCollection(_chunk);
+	generateMesh(collection);
+
+	meshCollection->clear();
+	meshCollection = std::move(collection);
+}
+
+
+void ChunkSection::_addBlockFaces(int x, int y, int z, MeshType meshType, Block* block, MeshCollection& collection) {
 	std::vector<BlockPositionXYZ> adjacents = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
@@ -169,8 +179,8 @@ void ChunkSection::_addBlockFaces(int x, int y, int z, MeshType meshType, Block*
 		BlockPositionXYZ blockPos = { x + adjacents[i].x, y + adjacents[i].y, z + adjacents[i].z };
 		const Block* relativeBlock = getBlockRelative(blockPos.x, blockPos.y, blockPos.z);
 		
-		if(relativeBlock->isTransparent || relativeBlock->meshType == MeshType::FLORA)
-			_chunk->meshCollection->get(meshType)->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
+		if(relativeBlock->isFloraBlock || !relativeBlock->hasHitbox)
+			collection.get(meshType)->addBlockFace(this, x, y, z, static_cast<BlockFace>(i), block);
 	}
 }
 

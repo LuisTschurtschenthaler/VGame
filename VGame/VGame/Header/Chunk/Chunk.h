@@ -18,7 +18,6 @@ class Chunk {
 
 public:
 	ChunkManager* chunkManager;
-	MeshCollection* meshCollection;
 	ChunkCoordXZ coord;
 
 	Chunk* nearbyChunks[AMOUNT_OF_NEARBY_CHUNKS];
@@ -40,8 +39,6 @@ public:
 	void generateChunkData(ChunkMap* chunkMap);
 	void generateFlora(ChunkMap* chunkMap);
 	void generateMesh();
-
-	void recreateMeshes();
 
 	void draw(int meshtype);
 	void save();

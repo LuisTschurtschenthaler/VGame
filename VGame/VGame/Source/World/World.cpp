@@ -15,6 +15,7 @@
 #include "MeshTypes.h"
 #include "Player.h"
 #include "Sky.h"
+#include "Raycast.h"
 
 
 bool World::gravityEnabled = true;
@@ -34,7 +35,6 @@ World::World(Game* game, TerrainGeneratorType type, const std::string& worldName
 
 	_meshShader.insert(_meshShader.begin(), {
 		new Shader("ChunkShader/solid_vert.glsl", "ChunkShader/solid_frag.glsl"),
-		new Shader("ChunkShader/flora_vert.glsl", "ChunkShader/flora_frag.glsl"),
 		new Shader("ChunkShader/fluid_vert.glsl", "ChunkShader/fluid_frag.glsl")
 	});
 }
@@ -64,8 +64,7 @@ void World::draw() {
 	for(auto& chunk : _chunkManager->getChunksToRender()) {
 		for(size_t i = 0; i < AMOUNT_OF_MESH_TYPES; i++) {
 			_meshShader[i]->bind();
-			if(chunk->meshCollection->get(static_cast<MeshType>(i))->indices.size() > 0)
-				chunk->draw(i);
+			chunk->draw(i);
 			_meshShader[i]->unbind();
 		}
 	}
@@ -89,14 +88,11 @@ void World::_updateUniforms(const MeshType& meshType) {
 	_meshShader[meshType]->setVec3("light.ambient", glm::vec3(0.6f, 0.6f, 0.2f));
 	_meshShader[meshType]->setVec3("light.diffuse", glm::vec3(0.5f));
 	_meshShader[meshType]->setVec3("light.specular", glm::vec3(0.5f));
-	_meshShader[meshType]->setInt("isPlayerUnderwater", _player->isSwimming);
+	_meshShader[meshType]->setInt("isPlayerUnderwater", _player->isSwimming);	// <----- ADD POST PROCESSING EFFECT
 
 
 	switch(meshType) {
 		case MeshType::SOLID:
-			break;
-
-		case MeshType::FLORA:
 			break;
 
 		case MeshType::FLUID:

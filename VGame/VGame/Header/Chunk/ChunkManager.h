@@ -31,8 +31,8 @@ private:
 	Player* _player;
 	std::vector<std::thread> _threads;
 
-	std::vector<ChunkCoordXZ> _chunksToUpdate;
-	std::vector<std::pair<ChunkCoordXZ, MeshCollection*>> _updatedChunks;
+	std::vector<ChunkCoordXYZ> _chunksToUpdate;
+	std::vector<std::pair<ChunkCoordXYZ, MeshCollection*>> _updatedChunks;
 
 
 public:
@@ -49,7 +49,7 @@ public:
 	bool chunkMapExists(const ChunkCoordXZ& coord);
 	std::vector<Chunk*> getChunksToRender();
 
-	BlockType getBlock(const BlockPositionXYZ& coord);
+	BlockType getBlockType(const BlockPositionXYZ& coord);
 	void placeBlock(BlockPositionXYZ blockCoord, BlockType block);
 	void removeBlock(BlockPositionXYZ blockCoord);
 

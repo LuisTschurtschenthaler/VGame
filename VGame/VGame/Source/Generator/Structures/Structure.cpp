@@ -13,7 +13,7 @@ const int Structure::BUSH_RADIUS = 2;
 
 void Structure::build(ChunkManager& chunkManager) {
 	for(auto& structureBlock : _structureBlocks) {
-		//if(chunkManager.getBlock(structureBlock.position) == BlockType::AIR)
+		//if(chunkManager.getBlockType(structureBlock.position) == BlockType::AIR)
 			chunkManager.placeBlock(structureBlock.position, structureBlock.block);
 	}
 }
