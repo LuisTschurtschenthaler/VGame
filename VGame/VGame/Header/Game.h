@@ -11,17 +11,19 @@ class CoreEngine;
 class Camera;
 class Sky;
 class Player;
+class EventDispatcher;
 class TextRenderer;
 
 /*
 enum GameState {
 	GAME_ACTIVE,
-	GAME_MENU
+	GAME_MENUs
 };*/
 
 class Game {
 
 public:
+	static EventDispatcher eventDispatcher;
 	static std::string version;
 	static float dayTime;
 

@@ -33,7 +33,7 @@ void main() {
 	vs_texCoord = vertex_texCoords;
 	vs_normal = vertex_normal;
 
-	vec3 worldPos = getWorldPosition();
+	vec3 worldPos = vertex_position;
 	vec3 finalVec = (distance(worldPos, cameraPosition) <= 40) ? worldPos : vertex_position;
 	gl_Position = projection * view * vec4(finalVec, 1.f);
 }

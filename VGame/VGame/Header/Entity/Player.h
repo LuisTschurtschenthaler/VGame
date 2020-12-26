@@ -20,7 +20,7 @@ public:
 
 private:
 	AABB _box;
-	Timer* _mouseTimer, *_jumpTimer;
+	Timer* _mouseTimer;
 	ChunkManager* _chunkManager;
 	glm::vec3 _lastChunkPosition;
 	bool _mouseLocked;

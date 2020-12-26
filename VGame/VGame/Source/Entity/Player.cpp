@@ -18,7 +18,6 @@ Player::Player()
 	velocity = glm::vec3(0.f);
 
 	_mouseTimer = new Timer();
-	_jumpTimer = new Timer;
 	_mouseLocked = false;
 	_jump = 0;
 }

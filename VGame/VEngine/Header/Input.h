@@ -31,16 +31,16 @@ private:
 	static int _mouseX;
 	static int _mouseY;
 
-	static std::map<int, bool> _keys;
-	static std::map<int, bool> _mousebuttons;
+	static std::map<int, bool> _keyStates;
+	static std::map<int, bool> _mousebuttonStates;
 
 
 public:
 	static void init();
 	static void update();
 
-	static bool isKeyPressed(int key);
-	static bool isMousebuttonPressed(int button);
+	static bool isKeyPressed(const int& key);
+	static bool isMousebuttonPressed(const int& button);
 
 	static void setCursorVisible(bool value);
 

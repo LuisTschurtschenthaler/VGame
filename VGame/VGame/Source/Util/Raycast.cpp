@@ -14,7 +14,7 @@ glm::vec3 Raycast::getBlockToBreak(Camera* camera, ChunkManager* chunkManager) {
 	glm::vec3 mouseRay = _getMouseRay(camera, chunkManager);
 	glm::vec3 targetBlockPos(-1.f);
 
-	for(int i = 0; i < 25; i++) {
+	for(int i = 0; i < MAX_BLOCK_REACH_DISTANCE; i++) {
 		targetBlockPos = camera->position + static_cast<float>(i) * mouseRay;
 		BlockType blockType = chunkManager->getBlockType({
 			int(targetBlockPos.x),
@@ -31,13 +31,14 @@ glm::vec3 Raycast::getBlockToBreak(Camera* camera, ChunkManager* chunkManager) {
 					 int(targetBlockPos.z) };
 		}
 	}
+	return glm::vec3(-1.f);
 }
 
 glm::vec3 Raycast::getBlockToPlace(Camera* camera, ChunkManager* chunkManager) {
 	glm::vec3 mouseRay = _getMouseRay(camera, chunkManager);
 	glm::vec3 targetBlockPos(-1.f);
 
-	for(int i = 0; i < 25; i++) {
+	for(int i = 0; i < MAX_BLOCK_REACH_DISTANCE; i++) {
 		targetBlockPos = camera->position + static_cast<float>(i) * mouseRay;
 		BlockType blockType = chunkManager->getBlockType({
 			int(std::floor(targetBlockPos.x)),

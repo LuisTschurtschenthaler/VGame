@@ -19,8 +19,9 @@
 #define MOUSE_TIMEOUT		0.2f
 
 #define WALK_SPEED			0.75f
-#define FLY_SPEED			2.f
+#define FLY_SPEED			2.25f
 #define JUMP_DURATION		1.f
+#define MAX_BLOCK_REACH_DISTANCE 6
 
 
 /* Camera */

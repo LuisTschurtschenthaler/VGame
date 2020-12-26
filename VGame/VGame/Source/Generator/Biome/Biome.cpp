@@ -8,10 +8,10 @@ Biome::Biome(int treeFrequency, int plantFrequency, int seed)
 	_noise = new NoiseGenerator(seed);
 
 	NoiseSettings settings;
-	settings.octaves = 6;
-	settings.amplitude = 50;
-	settings.smoothness = 145;
-	settings.offset = 0;
+	settings.octaves = 15;
+	settings.amplitude = 55;
+	settings.smoothness = 160;
+	settings.offset = 10;
 	settings.roughness = 0.45f;
 	_noise->setNoiseSettings(settings);
 }

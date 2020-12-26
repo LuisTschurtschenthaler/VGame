@@ -2,7 +2,7 @@
 #define BIOME_TYPE_H
 
 enum BiomeType {
-	OCEAN,
+	OCEAN = 0,
 	BEACH,
 	SCORCHED,
 	BARE,

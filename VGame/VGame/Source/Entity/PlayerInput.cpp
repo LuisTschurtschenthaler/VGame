@@ -10,6 +10,9 @@
 #include "FramerateCounter.h"
 #include "Timer.h"
 #include "Raycast.h"
+#include "Game.h"
+#include "EventDispatcher.h"
+#include "EventTypes.h"
 
 
 void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
@@ -59,11 +62,11 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 			change.y -= gravity;
 						
 			if(isSwimming)
-				velocity.y -= 0.025;
+				change.y -= 0.025;
 			
 			if(isJumping) {
-				_jump += 0.15;
-				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0165;
+				_jump += 0.1;
+				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0075;
 
 				if(_jump >= JUMP_DURATION)
 					isJumping = false;
@@ -117,6 +120,7 @@ void Player::_handleMouseButtons() {
 			_chunkManager->removeBlock(blockPosition);
 			_chunkManager->recreateMesh(blockPosition);
 			_mouseTimer->update();
+			Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, 10);
 		}
 
 		// Place block
@@ -127,27 +131,30 @@ void Player::_handleMouseButtons() {
 			_chunkManager->placeBlock(blockPosition, BlockType::CACTUS);
 			_chunkManager->recreateMesh(blockPosition);
 			_mouseTimer->update();
+			Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, 10);
 		}
 
 	}
 }
 
 void Player::_handleFOV() {
+	if(Input::isKeyPressed(KeyCode::KEY_C))
+		camera->fov = 45;
+	//else camera->fov = FOV;
+
 	if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
 	   Input::isKeyPressed(KeyCode::KEY_W)) {
 
 		if(camera->fov < FOV_SPRINT)
 			camera->fov += FOV_SPRINT_STEPS;
-
 		isSprinting = true;
 	}
-
 	else {
 		if(camera->fov > FOV)
 			camera->fov -= FOV_SPRINT_STEPS;
-
 		isSprinting = false;
 	}
+
 }
 
 

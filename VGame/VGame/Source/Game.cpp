@@ -14,7 +14,11 @@
 #include "Timer.h"
 #include "Crosshair.h"
 
+#include "EventDispatcher.h"
+#include "BlockEvents.h"
 
+
+EventDispatcher Game::eventDispatcher = EventDispatcher();
 std::string Game::version = "V1.0.0";
 float Game::dayTime = 0;
 
@@ -22,7 +26,6 @@ float Game::dayTime = 0;
 Game::Game() 
 	: _coreEngine(nullptr), _textRenderer(nullptr), _sky(nullptr), 
 	_player(nullptr), _world(nullptr) {
-
 }
 
 Game::~Game() {
@@ -36,9 +39,11 @@ void Game::init() {
 
 	_sky = new Sky();
 	_sky->init();
-	
+
 	_textRenderer = new TextRenderer();
 	_textRenderer->init("./Resources/Fonts/font.ttf", 42);
+
+	EventDispatcher::registerEvents(eventDispatcher);
 }
 
 void Game::update() {
