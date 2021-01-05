@@ -2,7 +2,7 @@
 #define UTIL_H
 
 #include <string>
-#include "WorldConstants.h"
+#include "Constants.h"
 
 template<typename Base, typename T>
 inline bool instanceof(const T* ptr) {

@@ -1,7 +1,7 @@
 #ifndef BLOCK_TYPE_H
 #define BLOCK_TYPE_H
 
-enum BlockType {
+enum BlockID {
 	AIR = 0,
 	WATER,
 	LAVA,
@@ -30,7 +30,7 @@ enum BlockType {
 	BLUE_ORCHID,
 	ERROR,
 
-	AMOUNT_OF_BLOCKS
+	TOTAL_BLOCKS
 };
 
 #endif // BLOCK_TYPE_H

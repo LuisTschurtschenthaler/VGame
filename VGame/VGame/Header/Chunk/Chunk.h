@@ -3,14 +3,15 @@
 
 #include <vector>
 #include "Block.h"
+#include "World.h"
 #include "Coordinates.h"
 #include "MeshTypes.h"
-#include "NearbyChunks.h"
+#include "Orientation.h"
 #include "ChunkMesh.h"
-#include "MeshCollection.h"
+#include "Constants.h"
+#include "Array3D.h"
 
 class ChunkManager;
-class ChunkSection;
 class ChunkMap;
 
 
@@ -18,36 +19,38 @@ class Chunk {
 
 public:
 	ChunkManager* chunkManager;
-	ChunkCoordXZ coord;
+	const ChunkXZ coord, worldCoord;
 
-	Chunk* nearbyChunks[AMOUNT_OF_NEARBY_CHUNKS];
-	bool chunkDataGenerated, meshGenerated;
+	Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
+	bool chunkDataGenerated, meshesGenerated;
 	
 private:
-	std::vector<ChunkSection*> _sections;
+	ChunkMesh* solid, *fluid;
+	Chunk* _nearbyChunks[TOTAL_NEARBY_CHUNKS];
 
 
 public:
-	Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord);
+	Chunk(ChunkManager* chunkManager, const ChunkXZ& coord);
 	~Chunk();
 
-	ChunkSection* getChunkSection(int y);
+	void drawSolid();
+	void drawFluid();
 
-	void placeBlock(const BlockPositionXYZ& coord, BlockType block);
-	void removeBlock(const BlockPositionXYZ& coord);
+	void generateChunkData();
+	void generateChunkMesh();
 
-	void generateChunkData(ChunkMap* chunkMap);
-	void generateFlora(ChunkMap* chunkMap);
-	void generateMesh();
+	const Block* getBlockRelative(const LocationXYZ& location) const;
+	const Block* getBlockRelative(const int& x, const int& y, const int& z) const;
 
-	void draw(int meshtype);
-	void save();
-
-	int getWorldPositionX(int x) const;
-	int getWorldPositionZ(int z) const;
-	
 private:
-	bool _isOutOfRange(const BlockPositionXYZ& coord);
+	const Block* _getBlock(const LocationXYZ& location) const;
+	const Block* _getBlock(const int& x, const int& y, const int& z) const;
+	
+	void _addBlockFaces(LocationXYZ loc, MeshType meshType, Block* block);
+
+	void _generateFlora();
+	void _generateCaves();
+	void _generateOres();
 
 };
 

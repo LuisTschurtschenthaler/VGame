@@ -2,6 +2,7 @@
 #define MESH_TYPES_H
 
 enum MeshType {
+	NONE = -1,
 	SOLID,
 	FLUID,
 

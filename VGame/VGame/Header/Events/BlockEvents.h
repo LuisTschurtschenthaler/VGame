@@ -2,17 +2,27 @@
 #define BLOCK_EVENTS
 
 #include <iostream>
+#include "Coordinates.h"
+#include "ChunkManager.h"
+#include "Raycast.h"
+#include "Camera.h"
 
 
 class BlockEvents {
 
 public:
-	static void onBlockBreak(int a) {
-		std::cout << "BlockBreakEvent" << std::endl;
+	static void onBlockBreak(ChunkManager* chunkManager) {
+		LocationXYZ blockPosition = Raycast::getBlockToBreak();
+
+		if(blockPosition.x == -1.f) return;
+		chunkManager->removeBlock(blockPosition);
 	}
 
-	static void onBlockPlace(int a) {
-		std::cout << "BlockPlaceEvent" << std::endl;
+	static void onBlockPlace(ChunkManager* chunkManager) {
+		LocationXYZ blockPosition = Raycast::getBlockToPlace();
+
+		if(blockPosition.x == -1.f) return;
+		chunkManager->placeBlock(blockPosition, BlockID::ERROR);
 	}
 
 };

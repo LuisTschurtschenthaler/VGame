@@ -1,18 +1,19 @@
 #ifndef STRUCTURE_H
 #define STRUCTURE_H
 
-#include <GLM/glm.hpp>
 #include <vector>
+#include <GLM/glm.hpp>
 #include "Coordinates.h"
-#include "BlockType.h"
+#include "BlockID.h"
+
 class ChunkManager;
 
 
 struct SturctureBlock {
-	BlockPositionXYZ position;
-	BlockType block;
+	LocationXYZ position;
+	BlockID block;
 
-	SturctureBlock(int x, int y, int z, BlockType block)
+	SturctureBlock(int x, int y, int z, BlockID block)
 		: position({ x, y, z }), block(block) { }
 };
 
@@ -28,12 +29,12 @@ public:
 
 public:
 	void build(ChunkManager& chunkManager);
-	void generateTree(const BlockPositionXYZ& pos);
-	void generateCactus(const BlockPositionXYZ& pos);
+	void generateTree(const LocationXYZ& pos);
+	void generateCactus(const LocationXYZ& pos);
 
-	void fillXZ(const BlockPositionXYZ& start, const BlockPositionXYZ& end, BlockType block);
-	void fillY(const BlockPositionXYZ& start, BlockType block, int height);
-	void clearEdges(const BlockPositionXYZ& pos, int distance);
+	void fillXZ(const LocationXYZ& start, const LocationXYZ& end, BlockID block);
+	void fillY(const LocationXYZ& start, BlockID block, int height);
+	void clearEdges(const LocationXYZ& pos, int distance);
 
 };
 

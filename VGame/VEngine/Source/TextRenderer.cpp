@@ -59,8 +59,8 @@ void TextRenderer::init(std::string fontPath, int fontSize) {
 			_face->glyph->bitmap.buffer
 		);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -84,7 +84,7 @@ void TextRenderer::init(std::string fontPath, int fontSize) {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 }
 
-void TextRenderer::update(ChunkManager* chunkManager, Player* player) {
+void TextRenderer::update(Player* player) {
 	if(!shouldShowText)
 		return;
 
@@ -93,7 +93,8 @@ void TextRenderer::update(ChunkManager* chunkManager, Player* player) {
 
 	glm::vec3 playerPos = player->position;
 
-	std::string title = "VGame FPS: " + std::to_string(FramerateCounter::getFPS());
+	std::string fps = std::to_string(std::ceil(FramerateCounter::getFPS()));
+	std::string title = "VGame FPS: " + fps.substr(0, fps.find("."));
 
 	std::string time = "Time: " + std::to_string(Game::dayTime) + " " + Util::angleToTime(Game::dayTime);
 

@@ -6,11 +6,13 @@
 
 
 Player::Player()
-	: _box({ 0.32f, 1.75f, 0.32f }), _lastChunkPosition({ 0.f }) {
+	: Entity() {
 	
+	box = AABB({ 0.32f, 1.75f, 0.32f });
 	camera = new Camera(this);
 
-	isFlying = false;
+	position = glm::vec3(0, 50, 0);
+	isFlying = true;
 	isOnGround = false;
 	isJumping = false;
 	isSwimming = false;
@@ -23,44 +25,27 @@ Player::Player()
 }
 
 Player::~Player() {
+	delete camera;
+	delete _mouseTimer;
 }
 
-
-void Player::setSpawnPoint(glm::vec3 spawnPoint) {
-	_lastChunkPosition = spawnPoint;
-	position = spawnPoint;
-}
-
-void Player::setToWorld(World* world) {
-	_chunkManager = world->getChunkManager();
-}
-
-void Player::input() {
-	_handleKeyboardInputs(_chunkManager);
-	_handleMouseMove();
-	_handleMouseButtons();
-	_handleFOV();
-}
 
 void Player::update() {
+	_input();
+
 	velocity.x *= 0.85;
 	if(isFlying) velocity.y *= 0.85;
 	velocity.z *= 0.85;
 
-	_box.update(position);
 	camera->update();
+	box.update(position);
 
-	if((position - _lastChunkPosition).length() >= 1)
-		_lastChunkPosition = position;
-}
-
-void Player::doCollision() {
 	position.x += velocity.x;
-	_box.collision(_chunkManager, *this, { velocity.x, 0, 0 });
+	box.collision(*this, { velocity.x, 0, 0 });
 
 	position.y += velocity.y;
-	_box.collision(_chunkManager, *this, { 0, velocity.y, 0 });
+	box.collision(*this, { 0, velocity.y, 0 });
 
 	position.z += velocity.z;
-	_box.collision(_chunkManager, *this, { 0, 0, velocity.z });
+	box.collision(*this, { 0, 0, velocity.z });
 }

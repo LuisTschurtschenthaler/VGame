@@ -5,10 +5,12 @@
 #include <ctime>
 #include <GLM/glm.hpp>
 #include "Coordinates.h"
+#include "Constants.h"
 #include "Biomes.h"
+#include "Array3D.h"
+
 class Chunk;
 class ChunkMap;
-class ChunkSection;
 class ChunkManager;
 class NoiseGenerator;
 class Biome;
@@ -22,14 +24,11 @@ enum TerrainGeneratorType {
 
 class TerrainGenerator {
 
-public:
-	static TerrainGenerator* generators[];
-
-protected:
-	NoiseGenerator* _biomeNoise;
-	int _seed;
+	friend class Chunk;
 
 private:
+	NoiseGenerator* _biomeNoise;
+
 	Desert* _desert;
 	Grassland* _grassland;
 	Forest* _forest;
@@ -41,11 +40,11 @@ public:
 	TerrainGenerator();
 	~TerrainGenerator();
 	
-	void generateBlockData(ChunkSection& chunkSection, ChunkMap* chunkMap);
-	Biome* getBiome(ChunkMap* chunkMap, int x, int z);
-	
+	void generateChunkData(const ChunkXZ& coord, Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>& chunkData);
 	//static void generateFlora(Chunk& chunk, ChunkMap* chunkMap);
-	virtual ChunkMap* generateChunkMap(ChunkCoordXZ coord) = 0;
+
+private:
+	Biome* _getBiome(const float& value);
 
 };
 

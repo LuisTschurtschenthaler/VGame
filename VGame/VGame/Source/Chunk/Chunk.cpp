@@ -1,124 +1,187 @@
-#include <GLM/glm.hpp>
+#include <GLEW/GL/glew.h>
 #include "Chunk.h"
-#include "TerrainGenerator.h"
-#include "WorldConstants.h"
+#include "World.h"
 #include "ChunkManager.h"
-#include "ChunkMesh.h"
-#include "ChunkSection.h"
-#include "NearbyChunks.h"
-#include "Shader.h"
-#include "Block.h"
-#include "World.h"
-#include "Random.h"
-#include "Structure.h"
-#include "ChunkMap.h"
-#include "Util.h"
-#include "AABB.h"
-#include "World.h"
+#include "TerrainGenerator.h"
 
 
-Chunk::Chunk(ChunkManager* chunkManager, ChunkCoordXZ coord)
-	: chunkManager(chunkManager), coord(coord),
-	chunkDataGenerated(false), meshGenerated(false) {
+Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
+	: chunkManager(chunkManager), coord(coord), worldCoord(coord * CHUNK_SIZE) {
+
+	solid = new ChunkMesh(this);
+	fluid = new ChunkMesh(this);
 	
-	for(int y = 0; y < CHUNK_SECTIONS; y++)
-		_sections.push_back(new ChunkSection(chunkManager, this, { coord.x, y, coord.z }));
+	chunkData.fill(BlockID::AIR);
+	chunkDataGenerated = false;
+	meshesGenerated = false;
 }
 
 Chunk::~Chunk() {
-	/*
-	chunkManager->chunks.erase(coord);
-	chunkManager->chunkMaps.erase(coord);
+	solid->clear();
+	delete solid;
 
-	for(auto& section : _sections)
-		section->~ChunkSection();
-
-	for(auto& mesh : meshCollection)
-		mesh->~ChunkMesh();
-	*/
+	fluid->clear();
+	delete fluid;
 }
 
 
-ChunkSection* Chunk::getChunkSection(int y) {
-	if(y < 0 || y >= CHUNK_SECTIONS) return nullptr;
-	return _sections[y];
+void Chunk::drawSolid() {
+	solid->draw();
 }
 
-void Chunk::placeBlock(const BlockPositionXYZ& coord, BlockType block) {
-	BlockPositionXYZ bCoord = chunkManager->getBlockCoord(coord);
-	getChunkSection(coord.y / CHUNK_SIZE)->placeBlock(bCoord, block);
+void Chunk::drawFluid() {
+	fluid->draw();
 }
 
-void Chunk::removeBlock(const BlockPositionXYZ& coord) {
-	BlockPositionXYZ bCoord = chunkManager->getBlockCoord(coord);
-	getChunkSection(coord.y / CHUNK_SIZE)->removeBlock(bCoord);
-}
-
-void Chunk::generateChunkData(ChunkMap* chunkMap) {
-	generateFlora(chunkMap);
-
-	for(auto& section : _sections)
-		chunkManager->terrainGenerator->generateBlockData(*section, chunkMap);
-
+void Chunk::generateChunkData() {
+	chunkManager->getNearbyChunks(coord, _nearbyChunks);
+	World::terrainGenerator->generateChunkData(coord, chunkData);
+	
 	chunkDataGenerated = true;
 }
 
-void Chunk::generateMesh() {
-	chunkManager->getNearbyChunks(coord, nearbyChunks);
+void Chunk::generateChunkMesh() {
+	if(!chunkDataGenerated)
+		return;
 
-	for(auto& chunk : nearbyChunks) {
-		if(!chunk->chunkDataGenerated)
-			chunk->generateChunkData(chunkManager->getChunkMap(chunk->coord));
-	}
-
-	for(auto& section : _sections)
-		section->generateMesh();
-
-	meshGenerated = true;
-}
-
-/* IMPROVE THIS SHIT */
-void Chunk::generateFlora(ChunkMap* chunkMap) {
 	for(int x = 0; x < CHUNK_SIZE; x++)
-	for(int z = 0; z < CHUNK_SIZE; z++) {
-		int height = chunkMap->heightMap.get(x, z);
+	for(int z = 0; z < CHUNK_SIZE; z++)
+	for(int y = 0; y < CHUNK_HEIGHT; y++) {
+		BlockID blockID = chunkData.get(x, y, z);
+		if(blockID == BlockID::AIR)
+			continue;
 
-		if(height > WATER_LEVEL + 2) {
-			Biome* biome = chunkManager->terrainGenerator->getBiome(chunkMap, x, z);
+		Block* block = BlockUtil::blocks[blockID];
+		switch(block->meshType) {
+			case MeshType::SOLID:
+				if(block->isFloraBlock) {
+					if(block->name == "Tall grass") {
+						solid->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
+						solid->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
+					}
 
-			if(Random::isIntInRange(0, biome->getTreeFrequency()) == 5) {
-				Structure structure;
-				if(instanceof<Desert>(biome))
-					structure.generateCactus({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
-				else structure.generateTree({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
-				
-				structure.build(*chunkManager);
-			}
-			else if(Random::isIntInRange(0, biome->getPlantFrequency()) == 5)
-				chunkManager->placeBlock({ x + coord.x * CHUNK_SIZE, height + 1, z + coord.z * CHUNK_SIZE }, biome->getPlant());
+					else if(block->name != "Cactus")
+						solid->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
+
+				}
+				else _addBlockFaces({ x, y, z }, MeshType::SOLID, block);
+				break;
+
+			case MeshType::FLUID:
+				if(y == WATER_LEVEL)
+					fluid->addBlockFace(this, x, y, z, BlockFace::FACE_TOP, block);
+				break;
 		}
 	}
+
+	meshesGenerated = true;
 }
 
-void Chunk::draw(int meshtype) {
-	for(auto& section : _sections) {
-		section->meshCollection->get(static_cast<MeshType>(meshtype))->prepareDraw();
-		section->meshCollection->get(static_cast<MeshType>(meshtype))->draw();
+
+const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
+	// Right -> loc.x+
+	if(loc.x > CHUNK_SIZE_R
+	   && loc.y < CHUNK_HEIGHT
+	   && loc.y >= 0
+	   && loc.z < CHUNK_SIZE
+	   && loc.z >= 0) {
+
+		return _nearbyChunks[CHUNK_RIGHT]->_getBlock(0, loc.y, loc.z);
 	}
+
+	// Left -> loc.x-
+	else if(loc.x < 0
+			&& loc.y < CHUNK_HEIGHT
+			&& loc.y >= 0
+			&& loc.z < CHUNK_SIZE
+			&& loc.z >= 0) {
+
+		return _nearbyChunks[CHUNK_LEFT]->_getBlock(CHUNK_SIZE_R, loc.y, loc.z);
+	}
+
+	// Top -> loc.y+
+	else if(loc.x < CHUNK_SIZE
+			&& loc.x >= 0
+			&& loc.y > CHUNK_HEIGHT - 1
+			&& loc.z < CHUNK_SIZE
+			&& loc.z >= 0) {
+		
+		return BlockUtil::blocks[AIR];
+	}
+
+	// Bottom -> loc.y- 
+	else if(loc.x < CHUNK_SIZE
+			&& loc.x >= 0
+			&& loc.y < 0
+			&& loc.z < CHUNK_SIZE
+			&& loc.z >= 0) {
+
+		return BlockUtil::blocks[STONE];
+	}
+
+	// Front -> loc.z+
+	else if(loc.x < CHUNK_SIZE
+			&& loc.x >= 0
+			&& loc.y < CHUNK_SIZE
+			&& loc.y >= 0
+			&& loc.z > CHUNK_SIZE_R) {
+
+		return _nearbyChunks[CHUNK_FRONT]->_getBlock(loc.x, loc.y, 0);
+	}
+
+	// Back -> loc.z-
+	else if(loc.x < CHUNK_SIZE
+			&& loc.x >= 0
+			&& loc.y < CHUNK_HEIGHT
+			&& loc.y >= 0
+			&& loc.z < 0) {
+
+		return _nearbyChunks[CHUNK_BACK]->_getBlock(loc.x, loc.y, CHUNK_SIZE_R);
+	}
+
+	else if(!(loc.x >= 0
+			&& loc.x < CHUNK_SIZE
+			&& loc.y >= 0
+			&& loc.y < CHUNK_HEIGHT
+			&& loc.z >= 0
+			&& loc.z < CHUNK_SIZE)) {
+
+		Chunk* chunk = chunkManager->getChunk({ loc.x / CHUNK_SIZE, loc.z / CHUNK_SIZE });
+		return chunk->_getBlock(chunkManager->getBlockLocation(loc));
+	}
+
+	// This chunk
+	else return _getBlock(loc);
 }
 
-void Chunk::save() {
+const Block* Chunk::getBlockRelative(const int& x, const int& y, const int& z) const {
+	return getBlockRelative({ x, y, z });
 }
 
-int Chunk::getWorldPositionX(int x) const {
-	return (x + coord.x * CHUNK_SIZE);
+const Block* Chunk::_getBlock(const LocationXYZ& location) const {
+	return BlockUtil::blocks[chunkData.get(location)];
 }
 
-int Chunk::getWorldPositionZ(int z) const {
-	return (z + coord.z * CHUNK_SIZE);
+const Block* Chunk::_getBlock(const int& x, const int& y, const int& z) const {
+	return _getBlock({ x, y, z });
 }
 
+void Chunk::_addBlockFaces(LocationXYZ loc, MeshType meshType, Block* block) {
+	const std::vector<LocationXYZ> adjacents = {
+		{  1,  0,  0 },
+		{ -1,  0,  0 },
+		{  0,  1,  0 },
+		{  0, -1,  0 },
+		{  0,  0,  1 },
+		{  0,  0, -1 }
+	};
 
-bool Chunk::_isOutOfRange(const BlockPositionXYZ& coord) {
-	return ((coord.x >= CHUNK_SIZE || coord.x < 0) || (coord.y >= CHUNK_SIZE || coord.y < 0) || (coord.z >= CHUNK_SIZE || coord.z < 0));
+	for(uint8_t i = 0; i < adjacents.size(); i++) {
+		const Block* relativeBlock = getBlockRelative(loc + adjacents[i]);
+
+		if(relativeBlock->isFloraBlock || !relativeBlock->hasHitbox)
+			if(meshType == MeshType::SOLID)
+				solid->addBlockFace(this, loc.x, loc.y, loc.z, static_cast<BlockFace>(i), block);
+			else fluid->addBlockFace(this, loc.x, loc.y, loc.z, static_cast<BlockFace>(i), block);
+	}
 }

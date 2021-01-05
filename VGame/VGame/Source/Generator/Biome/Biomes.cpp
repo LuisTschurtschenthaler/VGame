@@ -1,5 +1,4 @@
 #include "Biomes.h"
-#include "ChunkSection.h"
 #include "Random.h"
 
 
@@ -11,24 +10,24 @@ std::string Desert::getName() const {
 	return "Desert";
 }
 
-BlockType Desert::getPlant() const {
-	return BlockType::DEAD_BUSH;
+BlockID Desert::getPlant() const {
+	return BlockID::DEAD_BUSH;
 }
 
-BlockType Desert::getTopBlock() const {
-	return BlockType::SAND;
+BlockID Desert::getTopBlock() const {
+	return BlockID::SAND;
 }
 
-BlockType Desert::getBelowTopBlock() const {
-	return BlockType::SAND;
+BlockID Desert::getBelowTopBlock() const {
+	return BlockID::SAND;
 }
 
-BlockType Desert::getUnderEarth() const {
-	return BlockType::SANDSTONE;
+BlockID Desert::getUnderEarth() const {
+	return BlockID::SANDSTONE;
 }
 
-BlockType Desert::getUnderwaterBlock() const {
-	return (Random::get(0, 10) > 8) ? BlockType::GRAVEL : BlockType::SAND;
+BlockID Desert::getUnderwaterBlock() const {
+	return (Random::get(0, 10) > 8) ? BlockID::GRAVEL : BlockID::SAND;
 }
 
 void Desert::plantTree(ChunkSection& chunk, int x, int y, int z) {
@@ -45,35 +44,35 @@ std::string Grassland::getName() const {
 }
 
 
-BlockType Grassland::getPlant() const {
+BlockID Grassland::getPlant() const {
 	int random = Random::get(0, 10);
 
 	if(random <= 2)
-		return BlockType::TALL_GRASS;
+		return BlockID::TALL_GRASS;
 	if(random <= 4)
-		return BlockType::GRASS2;
+		return BlockID::GRASS2;
 	if(random <= 6)
-		return BlockType::DANDELION;
+		return BlockID::DANDELION;
 	if(random <= 8)
-		return BlockType::POPPY;
+		return BlockID::POPPY;
 	else
-		return BlockType::BLUE_ORCHID;
+		return BlockID::BLUE_ORCHID;
 }
 
-BlockType Grassland::getTopBlock() const {
-	return BlockType::GRASS;
+BlockID Grassland::getTopBlock() const {
+	return BlockID::GRASS;
 }
 
-BlockType Grassland::getBelowTopBlock() const {
-	return BlockType::DIRT;
+BlockID Grassland::getBelowTopBlock() const {
+	return BlockID::DIRT;
 }
 
-BlockType Grassland::getUnderEarth() const {
-	return BlockType::STONE;
+BlockID Grassland::getUnderEarth() const {
+	return BlockID::STONE;
 }
 
-BlockType Grassland::getUnderwaterBlock() const {
-	return (Random::get(0, 10) > 8) ? BlockType::GRAVEL : BlockType::SAND;
+BlockID Grassland::getUnderwaterBlock() const {
+	return (Random::get(0, 10) > 8) ? BlockID::GRAVEL : BlockID::SAND;
 }
 
 void Grassland::plantTree(ChunkSection& chunk, int x, int y, int z) {
@@ -89,24 +88,24 @@ std::string Forest::getName() const {
 	return "Forest";
 }
 
-BlockType Forest::getPlant() const {
-	return (Random::get(0, 10) > 8) ? BlockType::TALL_GRASS : BlockType::GRASS2;
+BlockID Forest::getPlant() const {
+	return (Random::get(0, 10) > 8) ? BlockID::TALL_GRASS : BlockID::GRASS2;
 }
 
-BlockType Forest::getTopBlock() const {
-	return BlockType::GRASS;
+BlockID Forest::getTopBlock() const {
+	return BlockID::GRASS;
 }
 
-BlockType Forest::getBelowTopBlock() const {
-	return BlockType::DIRT;
+BlockID Forest::getBelowTopBlock() const {
+	return BlockID::DIRT;
 }
 
-BlockType Forest::getUnderEarth() const {
-	return BlockType::STONE;
+BlockID Forest::getUnderEarth() const {
+	return BlockID::STONE;
 }
 
-BlockType Forest::getUnderwaterBlock() const {
-	return (Random::get(0, 10) > 8) ? BlockType::GRAVEL : BlockType::SAND;
+BlockID Forest::getUnderwaterBlock() const {
+	return (Random::get(0, 10) > 8) ? BlockID::GRAVEL : BlockID::SAND;
 }
 
 void Forest::plantTree(ChunkSection& chunk, int x, int y, int z) {
@@ -122,24 +121,24 @@ std::string SnowForest::getName() const {
 	return "SnowForest";
 }
 
-BlockType SnowForest::getPlant() const {
-	return (Random::get(0, 10) > 8) ? BlockType::TALL_GRASS : BlockType::GRASS2;
+BlockID SnowForest::getPlant() const {
+	return (Random::get(0, 10) > 8) ? BlockID::TALL_GRASS : BlockID::GRASS2;
 }
 
-BlockType SnowForest::getTopBlock() const {
-	return BlockType::SNOW; // SNOWGRASS
+BlockID SnowForest::getTopBlock() const {
+	return BlockID::SNOW; // SNOWGRASS
 }
 
-BlockType SnowForest::getBelowTopBlock() const {
-	return BlockType::DIRT;
+BlockID SnowForest::getBelowTopBlock() const {
+	return BlockID::DIRT;
 }
 
-BlockType SnowForest::getUnderEarth() const {
-	return BlockType::STONE;
+BlockID SnowForest::getUnderEarth() const {
+	return BlockID::STONE;
 }
 
-BlockType SnowForest::getUnderwaterBlock() const {
-	return (Random::get(0, 10) > 8) ? BlockType::DIRT : BlockType::SAND;
+BlockID SnowForest::getUnderwaterBlock() const {
+	return (Random::get(0, 10) > 8) ? BlockID::DIRT : BlockID::SAND;
 }
 
 void SnowForest::plantTree(ChunkSection& chunk, int x, int y, int z) {
@@ -155,24 +154,24 @@ std::string HighLands::getName() const {
 	return "HighLands";
 }
 
-BlockType HighLands::getPlant() const {
-	return BlockType::GRASS2;
+BlockID HighLands::getPlant() const {
+	return BlockID::GRASS2;
 }
 
-BlockType HighLands::getTopBlock() const {
-	return (Random::get(0, 10) > 9) ? BlockType::GRAVEL : BlockType::DIRT;
+BlockID HighLands::getTopBlock() const {
+	return (Random::get(0, 10) > 9) ? BlockID::GRAVEL : BlockID::DIRT;
 }
 
-BlockType HighLands::getBelowTopBlock() const {
-	return BlockType::DIRT;
+BlockID HighLands::getBelowTopBlock() const {
+	return BlockID::DIRT;
 }
 
-BlockType HighLands::getUnderEarth() const {
-	return BlockType::STONE;
+BlockID HighLands::getUnderEarth() const {
+	return BlockID::STONE;
 }
 
-BlockType HighLands::getUnderwaterBlock() const {
-	return (Random::get(0, 10) > 8) ? BlockType::DIRT : BlockType::SAND;
+BlockID HighLands::getUnderwaterBlock() const {
+	return (Random::get(0, 10) > 8) ? BlockID::DIRT : BlockID::SAND;
 }
 
 void HighLands::plantTree(ChunkSection& chunk, int x, int y, int z) {

@@ -1,68 +1,49 @@
 #ifndef CHUNK_MANAGER_H
 #define CHUNK_MANAGER_H
 
-#include <vector>
 #include <unordered_map>
 #include <map>
 #include <mutex>
 #include <thread>
-#include <string>
-#include <GLM/glm.hpp>
+#include "BlockID.h"
 #include "Chunk.h"
-#include "MeshCollection.h"
 #include "Coordinates.h"
 
-class World;
-class TerrainGenerator;
-class Player;
-class ChunkMap;
+class TextureAtlas;
+class Shader;
 
 
 class ChunkManager {
 
 public:
-	TerrainGenerator* terrainGenerator;
-	std::unordered_map<ChunkCoordXZ, Chunk*> chunks;
-	std::unordered_map<ChunkCoordXZ, ChunkMap*> chunkMaps;
-	std::mutex chunkMapMutex;
+	std::mutex chunkMutex;
+	std::unordered_map<ChunkXZ, Chunk*> _chunks;
 
 private:
-	World* _world;
-	Player* _player;
-	std::vector<std::thread> _threads;
-
-	std::vector<ChunkCoordXYZ> _chunksToUpdate;
-	std::vector<std::pair<ChunkCoordXYZ, MeshCollection*>> _updatedChunks;
+	TextureAtlas* _textureAtlas;
+	Shader* _solidShader, *_waterShader;
+	std::thread* _chunkGenerationThread;
 
 
 public:
-	ChunkManager(World* world, TerrainGenerator* terrainGenerator, Player* player);
+	ChunkManager();
 	~ChunkManager();
 
-	void setPlayerSpawnPoint(Player& player);
+	void update();
+	void draw();
 
-	void getNearbyChunks(const ChunkCoordXZ& coord, Chunk** chunkList);
-	Chunk* getChunk(const ChunkCoordXZ& coord);
-	ChunkMap* getChunkMap(const ChunkCoordXZ& coord);
+	void getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks);
+	void removeBlock(const LocationXYZ& location);
+	void placeBlock(const LocationXYZ& location, BlockID blockID);
 
-	bool chunkExists(const ChunkCoordXZ& coord);
-	bool chunkMapExists(const ChunkCoordXZ& coord);
-	std::vector<Chunk*> getChunksToRender();
+	Chunk* getChunk(const ChunkXZ& coord);
 
-	BlockType getBlockType(const BlockPositionXYZ& coord);
-	void placeBlock(BlockPositionXYZ blockCoord, BlockType block);
-	void removeBlock(BlockPositionXYZ blockCoord);
-
-	void recreateMesh(const BlockPositionXYZ& coord);
-
-	static ChunkCoordXZ getChunkCoord(const BlockPositionXYZ& blockCoord);
-	static BlockPositionXYZ getBlockCoord(const BlockPositionXYZ& blockCoord);
-
-	World* getWorld() const { return _world; }
+	LocationXYZ getBlockLocation(LocationXYZ location);
+	BlockID getBlockID(const LocationXYZ& loc);
+	bool _chunkExists(const ChunkXZ& coord);
 
 private:
-	void _updateChunks();
-	void _generateChunkData();
+	void _generateChunks();
 
 };
 

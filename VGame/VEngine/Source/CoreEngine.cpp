@@ -42,7 +42,6 @@ void CoreEngine::_run() {
 	Log::setFile("./VGame.log");
 	Input::init();
 	Random::init();
-	_game->init();
 
 	while(_isRunning) {
 		if(Window::shouldClose())

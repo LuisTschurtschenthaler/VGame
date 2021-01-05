@@ -2,11 +2,23 @@
 #define ENTITY_H
 
 #include <GLM/glm.hpp>
+#include "AABB.h"
 
 
-struct Entity {
-	glm::vec3 position;
+class Entity {
+
+public:
+	AABB box;
+
+	glm::vec3 position, velocity;
 	float yaw, pitch;
+	bool isFlying, isOnGround, isJumping, isSwimming, isSprinting;
+
+
+public:
+	Entity() { }
+	~Entity() { }
+
 };
 
 #endif // ENTITY_H

@@ -22,19 +22,6 @@ struct Character {
 	unsigned int advance;
 };
 
-/*
-DES SOLLS SEIN
-Toggle with F3
-
-VGame 0.0.1 / <60> FPS
-Time: 12:00
-
-XYZ: <0.0000> / <12.4187> / <0.0000>
-Block: <0> <12> <0> (use std::ceil)
-Chunk: <0> <0> <0>
-Facing: <North/South/West/East> (<Pitch> / <Yaw>)
-*/
-
 struct GameInfo {
 	std::string text;
 	float x, y;
@@ -86,7 +73,7 @@ public:
 	static void handle();
 
 	void init(std::string fontPath, int fontSize);
-	void update(ChunkManager* chunkManager, Player* player);
+	void update(Player* player);
 	//void draw(std::string text, float x, float y, float scale = 1.f, glm::vec3 color = glm::vec3(1.f));
 	void draw();
 

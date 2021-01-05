@@ -6,11 +6,18 @@
 #include <vector>
 #include <functional>
 #include "Event.h"
+#include "Log.h"
 
 #include "BlockEvents.h"
 
+class Camera;
+class ChunkManager;
 
 class EventDispatcher {
+
+private:
+	std::map<EventType, std::vector<IEvent*>> _events;
+
 
 public:
 	EventDispatcher() { }
@@ -18,8 +25,8 @@ public:
 
 
 	static void registerEvents(EventDispatcher& dispatcher) {
-		dispatcher.registerEvent(new Event<int>(EventType::BLOCK_BREAK_EVENT, &BlockEvents::onBlockBreak));
-		dispatcher.registerEvent(new Event<int>(EventType::BLOCK_PLACE_EVENT, &BlockEvents::onBlockPlace));
+		dispatcher.registerEvent(new Event<ChunkManager*>(EventType::BLOCK_BREAK_EVENT, &BlockEvents::onBlockBreak));
+		dispatcher.registerEvent(new Event<ChunkManager*>(EventType::BLOCK_PLACE_EVENT, &BlockEvents::onBlockPlace));
 	}
 
 	void registerEvent(IEvent* e) {
@@ -35,11 +42,8 @@ public:
 				if(Event<Args...>* ev = dynamic_cast<Event<Args...>*>(itEvent))
 					ev->handle(args...);
 			}
-		}
+		} else Log::write(Log::ERROR, "EventType not found!");
 	}
-
-private:
-	std::map<EventType, std::vector<IEvent*>> _events;
 
 };
 

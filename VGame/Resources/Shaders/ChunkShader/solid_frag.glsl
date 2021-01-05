@@ -9,6 +9,8 @@ in float vs_ambientOcclusion;
 
 uniform float dayTime;
 uniform vec3 cameraPosition;
+uniform vec3 choosenBlockPosition;
+uniform vec2 texCoordBreakBlock;
 uniform int renderDistance;
 uniform struct Light {
 	vec3 direction;
@@ -38,22 +40,37 @@ float calulateAmbient() {
     else return dayLight;
 }
 
+float isChosen(vec3 fragPos) {
+    if (fragPos.x < choosenBlockPosition.x - 0.0001 || fragPos.x > choosenBlockPosition.x + 1.0001 ||
+        fragPos.y < choosenBlockPosition.y - 0.0001 || fragPos.y > choosenBlockPosition.y + 1.0001 ||
+        fragPos.z < choosenBlockPosition.z - 0.0001 || fragPos.z > choosenBlockPosition.z + 1.0001 ) 
+		return 1.f;
+    return 1.3f;
+}
+
 
 const float MAX_LIGHT_LEVEL = 15.f;
 
 
 void main() {
-	vec4 texColor = texture(textureAtlas, vs_texCoord.xy);
-	if(texColor.a == 0.f) discard;
-	
-	float ambient = clamp((vs_ambientOcclusion +2) / 4.f, 0.5f, 1.f);
-		
+	vec4 textureColor = texture(textureAtlas, vs_texCoord.xy);
+	if(textureColor.a == 0.f) discard;
 
+	//if(vs_texCoord2 != vec2(-1.f))
+	//	textureColor = mix(textureColor, texture(textureAtlas, vs_texCoord2.xy), 0.5f);
+
+	float isChosen = isChosen(gl_FragCoord.xyz);
+	
+	if(isChosen == 1.3f) {
+		vec4 brokenTexture = texture(textureAtlas, texCoordBreakBlock.xy);
+	}
+
+	float ambient = clamp((vs_ambientOcclusion + 1.f) / 4.f, 0.5f, 1.f);
 	//float light = clamp(15.f / MAX_LIGHT_LEVEL, 0.f, 1.f);	
 	//float sun = clamp((15.f / MAX_LIGHT_LEVEL) * ((sin(dayTime * 0.01f) + 1.f) / 2.f), 0.2f, 1.f);
 
-	vec3 result = (texColor.rgb * (ambient));
+	vec3 result = (textureColor.rgb * (ambient));
 	//result = (normalize(vs_viewNormal) * 0.5f) + 0.5f;			
 	
-	color = (vec4(result, texColor.a));
+	color = (vec4(result, textureColor.a));
 }

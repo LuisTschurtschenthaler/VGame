@@ -2,7 +2,7 @@
 #define BIOMES_H
 
 #include "Biome.h"
-#include "BlockType.h"
+#include "BlockID.h"
 class ChunkSection;
 
 
@@ -13,11 +13,11 @@ public:
 	Desert(int seed);
 
 	std::string getName() const override;
-	BlockType getPlant() const override;
-	BlockType getTopBlock() const override;
-	BlockType getBelowTopBlock() const override;
-	BlockType getUnderEarth() const override;
-	BlockType getUnderwaterBlock() const override;
+	BlockID getPlant() const override;
+	BlockID getTopBlock() const override;
+	BlockID getBelowTopBlock() const override;
+	BlockID getUnderEarth() const override;
+	BlockID getUnderwaterBlock() const override;
 	
 	void plantTree(ChunkSection& chunk, int x, int y, int z) override;
 };
@@ -30,11 +30,11 @@ public:
 	Grassland(int seed);
 
 	std::string getName() const override;
-	BlockType getPlant() const override;
-	BlockType getTopBlock() const override;
-	BlockType getBelowTopBlock() const override;
-	BlockType getUnderEarth() const override;
-	BlockType getUnderwaterBlock() const override;
+	BlockID getPlant() const override;
+	BlockID getTopBlock() const override;
+	BlockID getBelowTopBlock() const override;
+	BlockID getUnderEarth() const override;
+	BlockID getUnderwaterBlock() const override;
 
 	void plantTree(ChunkSection& chunk, int x, int y, int z) override;
 };
@@ -47,11 +47,11 @@ public:
 	Forest(int seed);
 
 	std::string getName() const override;
-	BlockType getPlant() const override;
-	BlockType getTopBlock() const override;
-	BlockType getBelowTopBlock() const override;
-	BlockType getUnderEarth() const override;
-	BlockType getUnderwaterBlock() const override;
+	BlockID getPlant() const override;
+	BlockID getTopBlock() const override;
+	BlockID getBelowTopBlock() const override;
+	BlockID getUnderEarth() const override;
+	BlockID getUnderwaterBlock() const override;
 
 	void plantTree(ChunkSection& chunk, int x, int y, int z) override;
 };
@@ -64,11 +64,11 @@ public:
 	SnowForest(int seed);
 
 	std::string getName() const override;
-	BlockType getPlant() const override;
-	BlockType getTopBlock() const override;
-	BlockType getBelowTopBlock() const override;
-	BlockType getUnderEarth() const override;
-	BlockType getUnderwaterBlock() const override;
+	BlockID getPlant() const override;
+	BlockID getTopBlock() const override;
+	BlockID getBelowTopBlock() const override;
+	BlockID getUnderEarth() const override;
+	BlockID getUnderwaterBlock() const override;
 
 	void plantTree(ChunkSection& chunk, int x, int y, int z) override;
 };
@@ -81,11 +81,11 @@ public:
 	HighLands(int seed);
 
 	std::string getName() const override;
-	BlockType getPlant() const override;
-	BlockType getTopBlock() const override;
-	BlockType getBelowTopBlock() const override;
-	BlockType getUnderEarth() const override;
-	BlockType getUnderwaterBlock() const override;
+	BlockID getPlant() const override;
+	BlockID getTopBlock() const override;
+	BlockID getBelowTopBlock() const override;
+	BlockID getUnderEarth() const override;
+	BlockID getUnderwaterBlock() const override;
 
 	void plantTree(ChunkSection& chunk, int x, int y, int z) override;
 };

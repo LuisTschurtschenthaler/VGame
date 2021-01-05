@@ -5,7 +5,7 @@
 #include "Window.h"
 #include "World.h"
 #include "CoreEngine.h"
-#include "WorldConstants.h"
+#include "Constants.h"
 #include "ChunkManager.h"
 #include "FramerateCounter.h"
 #include "Timer.h"
@@ -13,9 +13,17 @@
 #include "Game.h"
 #include "EventDispatcher.h"
 #include "EventTypes.h"
+#include "Raycast.h"
 
 
-void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
+void Player::_input() {
+	_handleKeyboardInputs();
+	_handleMouseMove();
+	_handleMouseButtons();
+	_handleFOV();
+}
+
+void Player::_handleKeyboardInputs() {
 	float gravity = GRAVITY * CoreEngine::gameTimer->getDeltaTime() / 20;
 	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * CoreEngine::gameTimer->getDeltaTime();
 
@@ -39,7 +47,7 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 
 	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
 		if(isFlying)
-			change.y += -movementSpeed - 0.05;
+			change.y -= movementSpeed - 0.05;
 
 	//if(Input::isKeyDoublePressed(KeyCode::KEY_SPACE)) else if
 	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {
@@ -65,8 +73,8 @@ void Player::_handleKeyboardInputs(ChunkManager* chunkManager) {
 				change.y -= 0.025;
 			
 			if(isJumping) {
-				_jump += 0.1;
-				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0075;
+				_jump += 0.125;
+				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0125;
 
 				if(_jump >= JUMP_DURATION)
 					isJumping = false;
@@ -94,7 +102,7 @@ void Player::_handleMouseMove() {
 
 	if(_mouseLocked) {
 		glm::vec2 deltaPosition = Input::getMousePosition() - centerMousePosition;
-		yaw   += deltaPosition.x *  MOUSE_SENSITIVITY;
+		yaw += deltaPosition.x * MOUSE_SENSITIVITY;
 		pitch += deltaPosition.y * -MOUSE_SENSITIVITY;
 
 		if(pitch > 89.99f)
@@ -111,50 +119,40 @@ void Player::_handleMouseMove() {
 }
 
 void Player::_handleMouseButtons() {
-	if(_mouseTimer->elapse() >= MOUSE_TIMEOUT) {
+	if(_mouseTimer->elapse() >= BLOCK_BREAK_DURATION) {
 		// Break block
 		if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
-			BlockPositionXYZ blockPosition = Raycast::getBlockPosition(Raycast::getBlockToBreak(camera, _chunkManager));
-			
-			if(blockPosition.x == -1.f) return;
-			_chunkManager->removeBlock(blockPosition);
-			_chunkManager->recreateMesh(blockPosition);
+			Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, &World::getChunkManager());
 			_mouseTimer->update();
-			Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, 10);
+		
 		}
 
 		// Place block
 		else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_RIGHT)) {
-			BlockPositionXYZ blockPosition = Raycast::getBlockPosition(Raycast::getBlockToPlace(camera, _chunkManager));
-
-			if(blockPosition.x == -1.f) return;
-			_chunkManager->placeBlock(blockPosition, BlockType::CACTUS);
-			_chunkManager->recreateMesh(blockPosition);
+			Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, &World::getChunkManager());
 			_mouseTimer->update();
-			Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, 10);
 		}
-
 	}
 }
 
 void Player::_handleFOV() {
 	if(Input::isKeyPressed(KeyCode::KEY_C))
-		camera->fov = 45;
-	//else camera->fov = FOV;
+		camera->fov = FOV_ZOOM;
 
-	if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
+	else if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
 	   Input::isKeyPressed(KeyCode::KEY_W)) {
 
 		if(camera->fov < FOV_SPRINT)
 			camera->fov += FOV_SPRINT_STEPS;
 		isSprinting = true;
 	}
-	else {
-		if(camera->fov > FOV)
+
+	else if(camera->fov > FOV && camera->fov != FOV_ZOOM) {
 			camera->fov -= FOV_SPRINT_STEPS;
 		isSprinting = false;
 	}
 
+	else camera->fov = FOV;
 }
 
 

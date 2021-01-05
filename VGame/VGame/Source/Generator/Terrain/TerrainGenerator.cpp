@@ -1,27 +1,17 @@
 #include "TerrainGenerator.h"
-#include "WorldConstants.h"
+#include "Constants.h"
 #include "NoiseGenerator.h"
 #include "ChunkManager.h"
-#include "Realistic.h"
-#include "Flatland.h"
 #include "Chunk.h"
 #include "Block.h"
 #include "Biome.h"
 #include "Biomes.h"
 #include "Random.h"
 #include "Structure.h"
-#include "ChunkMap.h"
-#include "ChunkSection.h"
-
-
-TerrainGenerator* TerrainGenerator::generators[] = {
-	new Flatland(),
-	new Realistic()
-};
 
 
 TerrainGenerator::TerrainGenerator() {
-	int seed = Random::get(1000, 999999);
+	int seed = Random::get(1000, 9999);
 	std::cout << "Biome-Seed: " << seed << std::endl;
 
 	_desert = new Desert(seed);
@@ -30,58 +20,53 @@ TerrainGenerator::TerrainGenerator() {
 	_snowForest = new SnowForest(seed);
 	_highLands = new HighLands(seed);
 
-	_biomeNoise = new NoiseGenerator(Random::get(1000, 999999));
+	_biomeNoise = new NoiseGenerator(Random::get(1000, 9999));
 }
 
 TerrainGenerator::~TerrainGenerator() {
 }
 
 
-void TerrainGenerator::generateBlockData(ChunkSection& chunkSection, ChunkMap* chunkMap) {
-	for(int x = 0; x < CHUNK_SIZE; x++) {
-		for(int z = 0; z < CHUNK_SIZE; z++) {
+void TerrainGenerator::generateChunkData(const ChunkXZ& coord, Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>& chunkData) {
+	for(int x = 0; x < CHUNK_SIZE; x++)
+	for(int z = 0; z < CHUNK_SIZE; z++) {
+		Biome* biome = _getBiome(_biomeNoise->getNoise(x, z, coord.x, coord.z));
+		int height = std::ceil(biome->getHeight(x, z, coord.x, coord.z));
 
-			Biome* biome = getBiome(chunkMap, x, z);
-			int height = chunkMap->heightMap.get(x, z);
-
-			for(int y = 0; y < CHUNK_SIZE; y++) {
-				int iy = y + chunkSection.coord.y * CHUNK_SIZE;
-
-				if(iy > height) { // IS TYPE REALISTIC
-					if(iy <= WATER_LEVEL)
-						chunkSection.data.set(x, y, z, BlockType::WATER);
-				}
-
-				else if(iy == height) {
-					if(iy >= WATER_LEVEL) {
-						if(iy == BEACH_LEVEL)
-							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockType::SAND : biome->getTopBlock());
-						else if(iy == BEACH_LEVEL - 1)
-							chunkSection.data.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockType::SAND : biome->getTopBlock());
-						else if(iy < BEACH_LEVEL)
-							chunkSection.data.set(x, y, z, BlockType::SAND);
-						else chunkSection.data.set(x, y, z, static_cast<BlockType>(biome->getTopBlock()));
-					}
-					else chunkSection.data.set(x, y, z, static_cast<BlockType>(biome->getUnderwaterBlock()));
-					
-				}
-				
-				else if(iy > height - 3)
-					chunkSection.data.set(x, y, z, static_cast<BlockType>(biome->getBelowTopBlock()));
-
-				else chunkSection.data.set(x, y, z, static_cast<BlockType>(biome->getUnderEarth()));
+		for(int y = 0; y < CHUNK_HEIGHT; y++) {
+			if(y > height) { // IS TYPE REALISTIC
+				if(y <= WATER_LEVEL)
+					chunkData.set(x, y, z, BlockID::WATER);
 			}
+
+			else if(y == height) {
+				if(y >= WATER_LEVEL) {
+					if(y == BEACH_LEVEL)
+						chunkData.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock());
+
+					else if(y == BEACH_LEVEL - 1)
+						chunkData.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockID::SAND : biome->getTopBlock());
+
+					else if(y < BEACH_LEVEL)
+						chunkData.set(x, y, z, BlockID::SAND);
+
+					else chunkData.set(x, y, z, static_cast<BlockID>(biome->getTopBlock()));
+				}
+				else chunkData.set(x, y, z, static_cast<BlockID>(biome->getUnderwaterBlock()));
+			}
+
+			else if(y > height - 3)
+				chunkData.set(x, y, z, static_cast<BlockID>(biome->getBelowTopBlock()));
+			else chunkData.set(x, y, z, static_cast<BlockID>(biome->getUnderEarth()));
 		}
 	}
 }
 
-Biome* TerrainGenerator::getBiome(ChunkMap* chunkMap, int x, int z) {
-	int biome = chunkMap->biomeMap.get(x, z);
-
-	if(biome > 140) return _grassland;
-	else if(biome > 125) return _snowForest;
-	else if(biome > 110) return _highLands;
-	else if(biome > 100) return _forest;
-	else if(biome > 90) return _grassland;
+Biome* TerrainGenerator::_getBiome(const float& value) {
+	if(value > 140) return _grassland;
+	else if(value > 125) return _snowForest;
+	else if(value > 110) return _highLands;
+	else if(value > 100) return _forest;
+	else if(value > 90) return _grassland;
 	else return _desert;
 }

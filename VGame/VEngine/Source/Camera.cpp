@@ -1,19 +1,19 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtx/euler_angles.hpp>
-#include "WorldConstants.h"
+#include "Constants.h"
 #include "Camera.h"
 #include "Window.h"
 #include "Player.h"
 #include "Random.h"
 
 
-Camera::Camera(Player* player)
-	: _PLAYER(player), _WORLD_UP(glm::vec3(0.f, 1.f, 0.f)) {
+Camera::Camera(Entity* entity)
+	: ENTITY(entity), _WORLD_UP(glm::vec3(0.f, 1.f, 0.f)) {
 
 	fov = FOV;
 	
 	position = glm::vec3(0.f);
-	front = glm::vec3(0.f, 0.f, 1.f);
+	front = glm::vec3(0.f, 0.f, -1.f);
 	right = glm::vec3(0.f);
 	up = glm::vec3(0.f, 1.f, 0.f);
 }
@@ -24,15 +24,15 @@ Camera::~Camera() {
 
 void Camera::update() {
 	glm::vec3 _front;
-	_front.x = cos(glm::radians(_PLAYER->yaw)) * cos(glm::radians(_PLAYER->pitch));
-	_front.y = sin(glm::radians(_PLAYER->pitch));
-	_front.z = sin(glm::radians(_PLAYER->yaw)) * cos(glm::radians(_PLAYER->pitch));
+	_front.x = cos(glm::radians(ENTITY->yaw)) * cos(glm::radians(ENTITY->pitch));
+	_front.y = sin(glm::radians(ENTITY->pitch));
+	_front.z = sin(glm::radians(ENTITY->yaw)) * cos(glm::radians(ENTITY->pitch));
 
 	front = glm::normalize(_front);
 	right = glm::normalize(glm::cross(front, _WORLD_UP));
 	up = glm::normalize(glm::cross(right, front));
 
-	position = _PLAYER->position;
+	position = ENTITY->position;
 };
 
 glm::mat4 Camera::getView() {

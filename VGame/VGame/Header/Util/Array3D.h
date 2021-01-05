@@ -3,30 +3,39 @@
 
 #include <array>
 #include <vector>
+#include <algorithm>
+#include "Coordinates.h"
 
-template<class T, int SIZE>
+
+template<class T, int WIDTH, int HEIGHT, int DEPTH>
 class Array3D {
 
 private:
-	std::array<std::array<std::array<T, SIZE>, SIZE>, SIZE> _data;
+	std::array<std::array<std::array<T, DEPTH>, HEIGHT>, WIDTH> _data;
 
 
 public:
 	void fill(const T& value) {
-		for(int x = 0; x < CHUNK_SIZE; x++)
-		for(int y = 0; y < CHUNK_SIZE; y++)
-			_data[x][y].fill(value);
+		std::fill(
+			&_data[0][0][0],
+			&_data[0][0][0] + sizeof(_data) / sizeof(_data[0][0][0]),
+			value);
 	}
 
 	const T& get(int x, int y, int z) const {
 		return _data[x][y][z];
 	}
 
+	const T& get(const LocationXYZ& loc) const {
+		return _data[loc.x][loc.y][loc.z];
+	}
+
 	void set(int x, int y, int z, const T& value) {
-		///if((x < 0 || x > SIZE) || (y < 0 || y > SIZE) || (z < 0 || z > SIZE)) 
-			//return;
-		
 		_data[x][y][z] = value;
+	}
+
+	void set(const LocationXYZ& loc, const T& value) {
+		_data[loc.x][loc.y][loc.z] = value;
 	}
 
 };

@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Log.h"
 
+
 Texture::Texture(const char* filename, int unit)
 	: _unit(unit) {
 
@@ -20,9 +21,7 @@ Texture::Texture(const char* filename, int unit)
 	if(data) {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _width, _height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		//glGenerateMipmap(GL_TEXTURE_2D);
-	} else {
-		Log::write(Log::ERROR, "Failed to load texture: " + std::to_string(unit));
-	}
+	} else Log::write(Log::ERROR, "Failed to load texture: " + std::to_string(unit));
 	
 	glBindTexture(GL_TEXTURE_2D, 0);
 	stbi_image_free(data);
@@ -57,8 +56,7 @@ GLuint Texture::loadCubemap(std::vector<std::string> textures) {
 
 		if(data)
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		else
-			Log::write(Log::ERROR, "Cubemap texture failed to load at path: " + textures[i]);
+		else Log::write(Log::ERROR, "Cubemap texture failed to load at path: " + textures[i]);
 
 		stbi_image_free(data);
 	}

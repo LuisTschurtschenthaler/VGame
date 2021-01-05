@@ -19,13 +19,13 @@ uniform mat4 view;
 uniform vec3 cameraPosition;
 uniform float dayTime;
 
+const float PI = 3.14159265359;
+const float AMPLITUDE = 0.01;
 
-vec3 getWorldPosition() {
-	vec3 inVert = vertex_position;
-    inVert.y -= 0.25;
-    inVert.y -= sin((dayTime + inVert.y + inVert.z)) / 10.f;
-    inVert.y += cos((dayTime + inVert.y + inVert.x)) / 10.f;
-    return inVert;
+float getHeight() {
+	float h1 = sin(2.f * PI * dayTime + (vertex_position.x * 16.f)) * AMPLITUDE;
+    float h2 = sin(2.f * PI * dayTime + (vertex_position.y + vertex_position.x * 8.f)) * AMPLITUDE;
+    return (h1 + h2);
 }
 
 void main() {
@@ -33,7 +33,6 @@ void main() {
 	vs_texCoord = vertex_texCoords;
 	vs_normal = vertex_normal;
 
-	vec3 worldPos = vertex_position;
-	vec3 finalVec = (distance(worldPos, cameraPosition) <= 40) ? worldPos : vertex_position;
-	gl_Position = projection * view * vec4(finalVec, 1.f);
+	vec3 worldPos = vec3(vertex_position.x, getHeight(), vertex_position.z);
+	gl_Position = projection * view * vec4(normalize(worldPos), 1.f);
 }

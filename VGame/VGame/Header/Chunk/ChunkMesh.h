@@ -1,18 +1,15 @@
 #ifndef CHUNK_MESH_H
 #define CHUNK_MESH_H
 
-#include <GLEW/GL/glew.h>
 #include <map>
 #include <vector>
 #include "Vertex.h"
 #include "Block.h"
-#include "WorldConstants.h"
+#include "Orientation.h"
 #include "MeshTypes.h"
 
 class Chunk;
-class World;
-class Game;
-class ChunkSection;
+class Player;
 
 
 class ChunkMesh {
@@ -24,7 +21,8 @@ public:
 
 private:
 	Chunk* _chunk;
-	GLuint _VBO, _IBO;
+	Player* _player;
+	unsigned int _VBO, _IBO;
 	bool _isBuffered;
 
 
@@ -36,11 +34,8 @@ public:
 	void draw();
 	void clear();
 
-	void addBlockFace(const ChunkSection* chunkSection, int xi, int yi, int zi, const BlockFace face, Block* block);
-	void addFloraBlock(const ChunkSection* chunkSection, int x, int y, int z, const BlockFace face, Block* block);
-
-	GLuint getVBO() const { return _VBO; }
-	GLuint getIBO() const { return _IBO; }
+	void addBlockFace(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block);
+	void addFloraBlock(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block);
 
 private:
 	float _vertexAO(bool corner, bool side1, bool side2);

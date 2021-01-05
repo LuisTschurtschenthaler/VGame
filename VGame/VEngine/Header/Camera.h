@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <GLM/glm.hpp>
+#include "Entity.h"
 
 class CoreEngine;
 class RenderEngine;
@@ -13,19 +13,19 @@ class ChunkManager;
 class Camera {
 
 public:
+	const Entity* ENTITY;
+
 	float fov;
 	glm::vec3 position;
 	glm::vec3 front, right, up;
 
 private:
-	const Player* _PLAYER;
 	const glm::vec3 _WORLD_UP;
-	glm::mat4 _projection;
-	glm::mat4 _view;
+	glm::mat4 _projection, _view;
 
 
 public:
-	Camera(Player* player);
+	Camera(Entity* entity);
 	~Camera();
 
 	void update();
