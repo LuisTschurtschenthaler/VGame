@@ -13,6 +13,7 @@ public:
 	glm::vec3 min, max;
 	glm::vec3 dimensions;
 
+
 public:
 	AABB(const glm::vec3& dimension);
 	AABB();

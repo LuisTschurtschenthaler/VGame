@@ -34,15 +34,19 @@ void Chunk::drawFluid() {
 }
 
 void Chunk::generateChunkData() {
-	chunkManager->getNearbyChunks(coord, _nearbyChunks);
 	World::terrainGenerator->generateChunkData(coord, chunkData);
-	
 	chunkDataGenerated = true;
 }
 
 void Chunk::generateChunkMesh() {
 	if(!chunkDataGenerated)
 		return;
+
+	chunkManager->getNearbyChunks(coord, _nearbyChunks);
+	for(auto& chunk : _nearbyChunks) {
+		if(!chunk->chunkDataGenerated)
+			chunk->generateChunkData();
+	}
 
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++)

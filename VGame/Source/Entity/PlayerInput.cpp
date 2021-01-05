@@ -47,7 +47,7 @@ void Player::_handleKeyboardInputs() {
 
 	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
 		if(isFlying)
-			change.y -= movementSpeed - 0.05;
+			change.y += -movementSpeed - 0.05;
 
 	//if(Input::isKeyDoublePressed(KeyCode::KEY_SPACE)) else if
 	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {

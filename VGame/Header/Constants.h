@@ -43,7 +43,7 @@
 
 #define BLOCK_SIZE				1.f
 
-#define CHUNK_SIZE				32
+#define CHUNK_SIZE				16
 #define CHUNK_HEIGHT			256
 #define CHUNK_SIZE_R			(CHUNK_SIZE - 1)
 #define CHUNK_AREA				(CHUNK_SIZE * CHUNK_SIZE)

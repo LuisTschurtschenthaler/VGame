@@ -7,14 +7,12 @@
 layout(location = 0) in vec3 vertex_position;
 layout(location = 1) in vec3 vertex_normal;
 layout(location = 2) in vec2 vertex_texCoord;
-layout(location = 3) in vec2 vertex_texCoord2;
-layout(location = 4) in float vertex_ambientOcclusion;
+layout(location = 3) in float vertex_ambientOcclusion;
 
 
 out vec3 vs_position;
 out vec2 vs_texCoord;
 out vec3 vs_normal;
-out vec3 vs_viewNormal;
 out float vs_ambientOcclusion;
 
 uniform mat4 projection;
@@ -25,8 +23,8 @@ void main() {
 	vs_position = normalize(vertex_position);
 	vs_texCoord = vertex_texCoord;
 	vs_normal = vertex_normal;
-	vs_viewNormal = mat3(view) * vertex_normal;
 	vs_ambientOcclusion = vertex_ambientOcclusion;
+	//vs_viewNormal = mat3(view) * vertex_normal;
 
 	gl_Position = projection * view * vec4(vertex_position, 1.f);
 }

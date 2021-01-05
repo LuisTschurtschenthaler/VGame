@@ -17,7 +17,9 @@ ChunkManager::ChunkManager() {
 }
 
 ChunkManager::~ChunkManager() {
-
+	delete _solidShader;
+	delete _waterShader;
+	delete _textureAtlas;
 }
 
 
@@ -25,14 +27,10 @@ void ChunkManager::update() {
 	_solidShader->setInt("textureAtlas", _textureAtlas->getTextureID());
 	_solidShader->setMat4("projection", World::getPlayer().camera->getProjection());
 	_solidShader->setMat4("view", World::getPlayer().camera->getView());
-	_solidShader->setFloat("dayTime", Game::dayTime);
-	_solidShader->setVec3("cameraPosition", World::getPlayer().position);
 
 	_waterShader->setInt("textureAtlas", _textureAtlas->getTextureID());
 	_waterShader->setMat4("projection", World::getPlayer().camera->getProjection());
 	_waterShader->setMat4("view", World::getPlayer().camera->getView());
-	_waterShader->setFloat("dayTime", Game::dayTime);
-	_waterShader->setVec3("cameraPosition", World::getPlayer().position);
 }
 
 void ChunkManager::draw() {
@@ -51,16 +49,16 @@ void ChunkManager::draw() {
 
 		}
 		else {
+			_waterShader->bind();
+			_textureAtlas->getTexture().bind();
+			it.second->drawFluid();
+			_waterShader->unbind();
 			// Draw solid
 			_solidShader->bind();
 			_textureAtlas->getTexture().bind();
 			it.second->drawSolid();
 			_solidShader->unbind();
 			
-			_waterShader->bind();
-			_textureAtlas->getTexture().bind();
-			it.second->drawFluid();
-			_waterShader->unbind();
 		}
 	}
 }
@@ -113,9 +111,8 @@ Chunk* ChunkManager::createChunk(const ChunkXZ& coord, bool generateEverything) 
 }
 */
 LocationXYZ ChunkManager::getBlockLocation(LocationXYZ loc) {
-	LocationXYZ l{ loc.x % CHUNK_SIZE, loc.y % CHUNK_SIZE, loc.z % CHUNK_SIZE };
+	LocationXYZ l{ loc.x % CHUNK_SIZE, loc.y % CHUNK_HEIGHT, loc.z % CHUNK_SIZE };
 	if(loc.x < 0) l.x += CHUNK_SIZE;
-	if(loc.y < 0) l.y += CHUNK_HEIGHT;
 	if(loc.z < 0) l.z += CHUNK_SIZE;
 
 	return l;
