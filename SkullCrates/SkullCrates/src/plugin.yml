@@ -1,0 +1,8 @@
+name: SkullCrates
+version: 1.0
+description: A simple crate plugin
+author: Luis
+main: me.luis.skullcrates.SkullCrates
+commands:
+  crate:
+    aliases: [crates, c]
