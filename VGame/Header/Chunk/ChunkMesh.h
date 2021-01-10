@@ -33,6 +33,7 @@ public:
 	void draw();
 	void clear();
 
+	void addBlock(const Chunk* chunk, int x, int y, int z, Block* block);
 	void addBlockFace(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block);
 	void addFloraBlock(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block);
 

@@ -18,6 +18,7 @@
 
 
 EventDispatcher Game::eventDispatcher = EventDispatcher();
+bool Game::debugMode = false;
 float Game::dayTime = 0;
 
 
@@ -55,6 +56,12 @@ void Game::render() {
 	RenderUtil::clearScreen();
 	//Crosshair::draw();
 	
-	_world->draw();
+	if(debugMode) {
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		_world->draw();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else _world->draw();
+
 	_textRenderer->draw();
 }

@@ -26,6 +26,9 @@ ChunkManager::ChunkManager() {
 }
 
 ChunkManager::~ChunkManager() {
+	for(auto& thread : _threads)
+		thread.join();
+
 	delete _solidShader;
 	delete _waterShader;
 	delete _textureAtlas;
@@ -80,8 +83,8 @@ void ChunkManager::findSpawnPoint(glm::vec3& position) {
 	Biome* biome = World::terrainGenerator->getBiomeAt(chunkPosX, chunkPosZ, { 0, 0 });
 	int height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, 0, 0));
 
-	height = (height > WATER_LEVEL) ? height + 3 : WATER_LEVEL + 2;
-	position = { chunkPosX + HALF_BLOCK_SIZE, height, chunkPosZ + HALF_BLOCK_SIZE };
+	height = (height > WATER_LEVEL) ? height : WATER_LEVEL;
+	position = { chunkPosX + CHUNK_SIZE + HALF_BLOCK_SIZE, height + 3, chunkPosZ + CHUNK_SIZE + HALF_BLOCK_SIZE };
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
@@ -116,14 +119,14 @@ Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {
 
 Chunk* ChunkManager::getChunkFromLocation(const LocationXYZ& location) {
 	ChunkXZ coord = { location.x / CHUNK_SIZE, location.z / CHUNK_SIZE };
-	if(coord.x < 0) coord.x -= 1;
-	if(coord.z < 0) coord.z -= 1;
+	if(coord.x <= 0) coord.x -= 1;
+	if(coord.z <= 0) coord.z -= 1;
 
 	return getChunk(coord);
 }
 
 LocationXYZ ChunkManager::getBlockLocation(const LocationXYZ& location) {
-	LocationXYZ loc = { location.x % CHUNK_SIZE, location.y % CHUNK_HEIGHT, location.z % CHUNK_SIZE };
+	LocationXYZ loc = { location.x % CHUNK_SIZE, location.y, location.z % CHUNK_SIZE };
 	if(location.x < 0) loc.x += CHUNK_SIZE;
 	if(location.z < 0) loc.z += CHUNK_SIZE;
 
@@ -152,11 +155,9 @@ void ChunkManager::_generateChunks() {
 	for(int i = 0; i < RENDER_DISTANCE; i++)
 	for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
 	for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
-		if(x < 0 || z < 0) continue;
+		if(x <= 0 || z <= 0) continue;
 		//if(x >= 4 || z >= 4) continue;
 		
-		std::cout << "X: " << x << " Z: " << z << std::endl;
-
 		Chunk* chunk = getChunk({ x, z });
 		if(!chunk->chunkDataGenerated)
 			chunk->generateChunkData();

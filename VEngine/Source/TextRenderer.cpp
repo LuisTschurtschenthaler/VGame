@@ -28,8 +28,10 @@ TextRenderer::~TextRenderer() {
 void TextRenderer::handle() {
 	key.update();
 
-	if(key.wasPressedAndReleased())
+	if(key.wasPressedAndReleased()) {
 		shouldShowText = !shouldShowText;
+		Game::debugMode = !Game::debugMode;
+	}
 }
 
 void TextRenderer::init(std::string fontPath, int fontSize) {
@@ -120,6 +122,8 @@ void TextRenderer::update(Player* player) {
 				+ std::to_string(static_cast<int>(std::floor(playerPos.x / CHUNK_SIZE))) 
 		+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.y / CHUNK_SIZE)))
 		+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.z / CHUNK_SIZE)));
+
+	//std::string biome = "Biome: " + World::terrainGenerator->getBiomeAt()
 
 	std::string vertices = "Vertices: " + std::to_string(ChunkMesh::amountOfVertices);
 	std::string indices = "Indices: " + std::to_string(ChunkMesh::amountOfIndices);

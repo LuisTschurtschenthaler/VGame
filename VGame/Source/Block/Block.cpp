@@ -9,8 +9,8 @@ Block* BlockUtil::blocks[TOTAL_BLOCKS] = {
 		TexturePixelOffset{ RIGHT, LEFT, TOP, BOTTOM, FRONT, BACK }, MeshType, LL, IsFloraBlock, HasHitbox
 	*/
 	new Block{ "Air",			{ },						{ },				   NONE,  0.f, false, false },
-	new Block{ "Water",			{  0,  0,  0,  0,  0,  0 }, { 0, 0, 3, 0, 0, 0 }, FLUID,  0.f, false, false },
-	new Block{ "Lava",			{  1,  1,  1,  1,  1,  1 }, { 0, 0, 3, 0, 0, 0 }, FLUID, 15.f, false, false },
+	new Block{ "Water",			{  0,  0,  0,  0,  0,  0 }, { 0, 0, 2, 0, 0, 0 }, FLUID,  0.f, false, false },
+	new Block{ "Lava",			{  1,  1,  1,  1,  1,  1 }, { 0, 0, 2, 0, 0, 0 }, FLUID, 15.f, false, false },
 	new Block{ "Snow",			{  2,  2,  2,  2,  2,  2 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true },
 	new Block{ "Dirt",			{  3,  3,  3,  3,  3,  3 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true },
 	new Block{ "Grass",			{  4,  4,  5,  3,  4,  4 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true },
@@ -34,6 +34,8 @@ Block* BlockUtil::blocks[TOTAL_BLOCKS] = {
 	new Block{ "Dandelion",		{ -1, -1, -1, -1, 29, 29 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false },
 	new Block{ "Poppy",			{ -1, -1, -1, -1, 30, 30 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false },
 	new Block{ "Blue Orchid",	{ -1, -1, -1, -1, 31, 31 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false },
+	new Block{ "Birch log",		{ 32, 32, 33, 33, 32, 32 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true },
+	new Block{ "Birch Leave",	{ 33, 33, 33, 33, 33, 33 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, true },
 
 	new Block{ "Error",			{ 255, 255, 255, 255, 255, 255 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true }
 };

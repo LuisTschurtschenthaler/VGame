@@ -21,7 +21,7 @@ unsigned long int Random::get(const unsigned long int& min, const unsigned long 
 	return (min + rand() % ((max + 1) - min));
 }
 
-int Random::isIntInRange(int min, int max) {
+int Random::getIntInRange(int min, int max) {
 	std::uniform_int_distribution<int> dist(min, max);
 	return dist(_rd);
 }

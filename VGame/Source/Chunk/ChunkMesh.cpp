@@ -82,9 +82,28 @@ void ChunkMesh::clear() {
 	glDeleteBuffers(1, &_IBO);
 }
 
+
+void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block) {
+	const std::vector<LocationXYZ> adjacents = {
+		{  1,  0,  0 },
+		{ -1,  0,  0 },
+		{  0,  1,  0 },
+		{  0, -1,  0 },
+		{  0,  0,  1 },
+		{  0,  0, -1 }
+	};
+
+	for(int i = 0; i < TOTAL_BLOCK_FACES; i++) {
+		const Block* relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + adjacents[i]);
+
+		if(!relativeBlock->hasHitbox || relativeBlock->isFloraBlock)
+			addBlockFace(chunk, x, y, z, static_cast<BlockFace>(i), block);
+	}
+}
+
 void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block) {
-	int x = (xi + chunk->coord.x * CHUNK_SIZE);
-	int z = (zi + chunk->coord.z * CHUNK_SIZE);
+	int x = xi + chunk->coord.x * CHUNK_SIZE;
+	int z = zi + chunk->coord.z * CHUNK_SIZE;
 
 	amountOfVertices += 4;
 	amountOfIndices += 6;

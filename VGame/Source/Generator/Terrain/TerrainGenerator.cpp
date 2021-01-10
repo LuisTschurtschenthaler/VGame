@@ -8,6 +8,7 @@
 #include "Biomes.h"
 #include "Random.h"
 #include "Structure.h"
+#include "Util.h"
 
 
 TerrainGenerator::TerrainGenerator() {
@@ -36,7 +37,7 @@ void TerrainGenerator::generateChunkData(const ChunkXZ& coord, Array3D<BlockID, 
 	for(int z = 0; z < CHUNK_SIZE; z++) {
 		
 		Biome* biome = getBiomeAt(x, z, coord);
-		int height = std::ceil(biome->getHeight(x, z, coord.x, coord.z));
+		int height = int(std::ceil(biome->getHeight(x, z, coord.x, coord.z)));
 
 		for(int y = 0; y < CHUNK_HEIGHT; y++) {
 			if(y > height) {
@@ -66,6 +67,29 @@ void TerrainGenerator::generateChunkData(const ChunkXZ& coord, Array3D<BlockID, 
 		}
 	}
 }
+
+void TerrainGenerator::generateFlora(const ChunkXZ& coord, Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>& chunkData) {
+	for(int x = 0; x < CHUNK_SIZE; x++)
+	for(int z = 0; z < CHUNK_SIZE; z++) {
+
+		Biome* biome = getBiomeAt(x, z, coord);
+		int height = int(std::ceil(biome->getHeight(x, z, coord.x, coord.z)));
+
+		if(height > WATER_LEVEL + 2) {
+			if(Random::getIntInRange(0, biome->getTreeFrequency()) == 5) {
+				Structure structure;
+				if(instanceof<Desert>(biome))
+					structure.generateCactus({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
+				else structure.generateTree({ x + coord.x * CHUNK_SIZE, height, z + coord.z * CHUNK_SIZE });
+
+				structure.build();
+			}
+			else if(Random::getIntInRange(0, biome->getPlantFrequency()) == 5)
+				World::getChunkManager().placeBlock({ x + coord.x * CHUNK_SIZE, height + 1, z + coord.z * CHUNK_SIZE }, biome->getPlant());
+		}
+	}
+}
+
 
 Biome* TerrainGenerator::_getBiome(const float& value) {
 	if(value > 140) return _grassland;

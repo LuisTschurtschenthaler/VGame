@@ -18,24 +18,6 @@ enum BiomeType {
 	TOTAL_BIOMES
 };
 
-/*
-typedef struct Decoration {
-	enum BlockID blockID;
-	float chance;
-};
-
-
-typedef struct Biome {
-	enum BlockID topBlock, belowTopBlock, underEarthBlock, unterWaterBlock;
-	struct Decoration decorations[MAX_DECORATIONS];
-	NoiseSettings noiseSettings;
-};
-
-
-Biome Biomes[TOTAL_BIOMES] = {
-
-};
-*/
 
 class Biome {
 

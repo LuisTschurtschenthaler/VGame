@@ -2,6 +2,7 @@
 #include "Random.h"
 #include "BlockID.h"
 #include "Constants.h"
+#include "World.h"
 #include "ChunkManager.h"
 #include "Chunk.h"
 
@@ -10,10 +11,10 @@ const int Structure::CROWN_RADIUS = 1;
 const int Structure::BUSH_RADIUS = 2;
 
 
-void Structure::build(ChunkManager& chunkManager) {
+void Structure::build() {
 	for(auto& structureBlock : _structureBlocks) {
 		//if(chunkManager.getBlockID(structureBlock.position) == BlockID::AIR)
-			chunkManager.placeBlock(structureBlock.position, structureBlock.block);
+		World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
 	}
 }
 

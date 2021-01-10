@@ -18,6 +18,7 @@ class Game {
 
 public:
 	static EventDispatcher eventDispatcher;
+	static bool debugMode;
 	static float dayTime;
 
 private:

@@ -1,4 +1,5 @@
-#include <GLEW/GL/glew.h>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/type_ptr.hpp>
 #include "Chunk.h"
 #include "World.h"
 #include "ChunkManager.h"
@@ -6,7 +7,7 @@
 
 
 Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
-	: chunkManager(chunkManager), coord(coord) {
+	: chunkManager(chunkManager), coord(coord), worldCoord(coord * CHUNK_SIZE) {
 
 	solid = new ChunkMesh(this);
 	fluid = new ChunkMesh(this);
@@ -35,6 +36,7 @@ void Chunk::drawFluid() {
 
 void Chunk::generateChunkData() {
 	World::terrainGenerator->generateChunkData(coord, chunkData);
+	World::terrainGenerator->generateFlora(coord, chunkData);
 	chunkDataGenerated = true;
 }
 
@@ -56,17 +58,16 @@ void Chunk::generateChunkMesh() {
 
 		Block* block = BlockUtil::blocks[blockID];
 		switch(block->meshType) {
+			
 			case MeshType::SOLID:
-				if(block->isFloraBlock) {
+				if(block->isFloraBlock && block->name != "Oak leave" && block->name != "Cactus") {
 					if(block->name == "Tall grass") {
 						solid->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
 						solid->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
 					}
-
-					else if(block->name != "Cactus")
-						solid->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
+					else solid->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
 				}
-				else _addBlockFaces({ x, y, z }, MeshType::SOLID, block);
+				else solid->addBlock(this, x, y, z, block);
 				break;
 
 			case MeshType::FLUID:
@@ -78,6 +79,15 @@ void Chunk::generateChunkMesh() {
 	meshesGenerated = true;
 }
 
+const glm::mat4& Chunk::getModel() {
+	glm::mat4 model(1.f);
+	model = glm::translate(model, glm::vec3(worldCoord.x, 0, worldCoord.z));
+	model = glm::rotate(model, glm::radians(0.f), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(0.f), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(0.f), glm::vec3(0, 0, 1));
+	model = glm::scale(model, glm::vec3(1.f));
+	return model;
+}
 
 const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	// Right -> X+
@@ -165,25 +175,4 @@ const Block* Chunk::_getBlock(const LocationXYZ& location) const {
 
 const Block* Chunk::_getBlock(const int& x, const int& y, const int& z) const {
 	return _getBlock({ x, y, z });
-}
-
-void Chunk::_addBlockFaces(LocationXYZ loc, MeshType meshType, Block* block) {
-	const std::vector<LocationXYZ> adjacents = {
-		{  1,  0,  0 },
-		{ -1,  0,  0 },
-		{  0,  1,  0 },
-		{  0, -1,  0 },
-		{  0,  0,  1 },
-		{  0,  0, -1 }
-	};
-
-	for(int i = 0; i < TOTAL_BLOCK_FACES; i++) {
-		const Block* relativeBlock = getBlockRelative(loc + adjacents[i]);
-
-		if(!relativeBlock->hasHitbox) {
-			if(meshType == MeshType::SOLID)
-				solid->addBlockFace(this, loc.x, loc.y, loc.z, static_cast<BlockFace>(i), block);
-			else fluid->addBlockFace(this, loc.x, loc.y, loc.z, static_cast<BlockFace>(i), block);
-		}
-	}
 }

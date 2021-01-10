@@ -28,7 +28,7 @@ public:
 
 
 public:
-	void build(ChunkManager& chunkManager);
+	void build();
 	void generateTree(const LocationXYZ& pos);
 	void generateCactus(const LocationXYZ& pos);
 

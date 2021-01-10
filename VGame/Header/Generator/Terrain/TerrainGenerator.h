@@ -35,8 +35,11 @@ public:
 	~TerrainGenerator();
 	
 	Biome* getBiomeAt(const int& x, const int& z, const ChunkXZ& chunkCoord);
+
 	void generateChunkData(const ChunkXZ& coord, Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>& chunkData);
-	//static void generateFlora(Chunk& chunk, ChunkMap* chunkMap);
+	void generateFlora(const ChunkXZ& coord, Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>& chunkData);
+	void generateCaves(const ChunkXZ& coord, Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>& chunkData);
+	void generateOres(const ChunkXZ& coord, Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>& chunkData);
 
 private:
 	Biome* _getBiome(const float& value);
