@@ -12,7 +12,7 @@
 
 
 /* Player */
-#define RENDER_DISTANCE				5
+#define RENDER_DISTANCE				3
 
 #define MOUSE_SENSITIVITY			0.075f
 #define MOUSE_TIMEOUT				0.2f

@@ -3,7 +3,7 @@
 
 #include "TerrainGenerator.h"
 
-class Sky;
+class Skybox;
 class Player;
 class ChunkManager;
 
@@ -15,7 +15,7 @@ public:
 	bool disposed;
 
 private:
-	static Sky* _sky;
+	static Skybox* _skybox;
 	static Player* _player;
 	static ChunkManager* _chunkManager;
 

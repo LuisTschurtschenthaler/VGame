@@ -21,6 +21,8 @@ ChunkMesh::ChunkMesh(Chunk* chunk)
 }
 
 ChunkMesh::~ChunkMesh() {
+	_isBuffered = false;
+
 	indices.clear();
 	indices.shrink_to_fit();
 
@@ -411,8 +413,8 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 }
 
 void ChunkMesh::addFloraBlock(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block) {
-	float x = (xi + chunk->coord.x * CHUNK_SIZE) * BLOCK_SIZE;
-	float z = (zi + chunk->coord.z * CHUNK_SIZE) * BLOCK_SIZE;
+	float x = xi + chunk->coord.x * CHUNK_SIZE;
+	float z = zi + chunk->coord.z * CHUNK_SIZE;
 
 	int textureID = block->textures[face];
 	Vertex v1(

@@ -54,7 +54,7 @@ void Game::update() {
 
 void Game::render() {
 	RenderUtil::clearScreen();
-	//Crosshair::draw();
+	Crosshair::draw();
 	
 	if(debugMode) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

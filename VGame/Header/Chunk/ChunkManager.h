@@ -34,7 +34,9 @@ public:
 	void draw();
 
 	void findSpawnPoint(glm::vec3& position);
+	
 	void getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks);
+
 	void removeBlock(const LocationXYZ& location);
 	void placeBlock(const LocationXYZ& location, BlockID blockID);
 
@@ -45,6 +47,7 @@ public:
 	BlockID getBlockID(const LocationXYZ& location);
 
 private:
+	void _setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location);
 	bool _chunkExists(const ChunkXZ& coord);
 	void _generateChunks();
 

@@ -7,11 +7,11 @@
 NoiseGenerator::NoiseGenerator(int seed) 
 	: _seed(seed) {
 
-	_settings.octaves = 6;
-	_settings.amplitude = 140;
+	_settings.octaves = 7;
+	_settings.amplitude = 120;
 	_settings.smoothness = 950;
 	_settings.offset = 5;
-	_settings.roughness = 0.5;
+	_settings.roughness = 0.35;
 }
 
 NoiseGenerator::~NoiseGenerator() {

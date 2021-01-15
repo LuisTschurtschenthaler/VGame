@@ -20,14 +20,14 @@ class Chunk {
 
 public:
 	ChunkManager* chunkManager;
+	Chunk* nearbyChunks[TOTAL_NEARBY_CHUNKS];
 	const ChunkXZ coord, worldCoord;
 
 	Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
-	bool chunkDataGenerated, meshesGenerated;
+	bool chunkDataGenerated, meshesGenerated, nearbyChunksDetected, isDirty;
 	
 private:
 	ChunkMesh* solid, *fluid;
-	Chunk* _nearbyChunks[TOTAL_NEARBY_CHUNKS];
 
 
 public:
@@ -38,7 +38,8 @@ public:
 	void drawFluid();
 
 	void generateChunkData();
-	void generateChunkMesh();
+	void generateChunkMesh(ChunkMesh* solid = nullptr, ChunkMesh* fluid = nullptr);
+	void recreateChunkMesh();
 
 	const glm::mat4& getModel();
 

@@ -15,6 +15,8 @@ Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 	chunkData.fill(BlockID::AIR);
 	chunkDataGenerated = false;
 	meshesGenerated = false;
+	nearbyChunksDetected = false;
+	isDirty = false;
 }
 
 Chunk::~Chunk() {
@@ -40,10 +42,16 @@ void Chunk::generateChunkData() {
 	chunkDataGenerated = true;
 }
 
-void Chunk::generateChunkMesh() {
-	chunkManager->getNearbyChunks(coord, _nearbyChunks);
+void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
+	ChunkMesh* solidMesh = (solid == nullptr) ? this->solid : solid;
+	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->fluid : fluid;
+
+	if(!nearbyChunksDetected) {
+		chunkManager->getNearbyChunks(coord, nearbyChunks);
+		nearbyChunksDetected = true;
+	}
 	
-	for(auto& chunk : _nearbyChunks) {
+	for(auto& chunk : nearbyChunks) {
 		if(!chunk->chunkDataGenerated)
 			chunk->generateChunkData();
 	}
@@ -62,21 +70,33 @@ void Chunk::generateChunkMesh() {
 			case MeshType::SOLID:
 				if(block->isFloraBlock && block->name != "Oak leave" && block->name != "Cactus") {
 					if(block->name == "Tall grass") {
-						solid->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
-						solid->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
+						solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
+						solidMesh->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
 					}
-					else solid->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
+					else solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
 				}
-				else solid->addBlock(this, x, y, z, block);
+				else solidMesh->addBlock(this, x, y, z, block);
 				break;
 
 			case MeshType::FLUID:
 				if(y == WATER_LEVEL)
-					fluid->addBlockFace(this, x, y, z, BlockFace::FACE_TOP, block);
+					fluidMesh->addBlockFace(this, x, y, z, BlockFace::FACE_TOP, block);
 				break;
 		}
 	}
 	meshesGenerated = true;
+}
+
+void Chunk::recreateChunkMesh() {
+	ChunkMesh* solidMesh = new ChunkMesh(this); 
+	ChunkMesh* fluidMesh = new ChunkMesh(this);
+	generateChunkMesh(solidMesh, fluidMesh);
+	
+	this->solid->clear();
+	this->fluid->clear();
+	this->solid = solidMesh;
+	this->fluid = fluidMesh;
+	isDirty = false;
 }
 
 const glm::mat4& Chunk::getModel() {
@@ -97,7 +117,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	   && loc.z < CHUNK_SIZE
 	   && loc.z >= 0) {
 
-		return _nearbyChunks[CHUNK_RIGHT]->_getBlock(0, loc.y, loc.z);
+		return nearbyChunks[CHUNK_RIGHT]->_getBlock(0, loc.y, loc.z);
 	}
 
 	// Left -> X-
@@ -107,7 +127,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 
-		return _nearbyChunks[CHUNK_LEFT]->_getBlock(CHUNK_SIZE - 1, loc.y, loc.z);
+		return nearbyChunks[CHUNK_LEFT]->_getBlock(CHUNK_SIZE - 1, loc.y, loc.z);
 	}
 
 	// Top -> Y+
@@ -127,7 +147,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 
-		return BlockUtil::blocks[STONE];
+		return BlockUtil::blocks[ERROR];
 	}
 
 	// Front -> Z+
@@ -137,7 +157,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.y >= 0
 			&& loc.z >= CHUNK_SIZE) {
 
-		return _nearbyChunks[CHUNK_FRONT]->_getBlock(loc.x, loc.y, 0);
+		return nearbyChunks[CHUNK_FRONT]->_getBlock(loc.x, loc.y, 0);
 	}
 
 	// Back -> Z-
@@ -147,7 +167,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.y >= 0
 			&& loc.z < 0) {
 
-		return _nearbyChunks[CHUNK_BACK]->_getBlock(loc.x, loc.y, CHUNK_SIZE - 1);
+		return nearbyChunks[CHUNK_BACK]->_getBlock(loc.x, loc.y, CHUNK_SIZE - 1);
 	}
 
 	else if(!(loc.x >= 0

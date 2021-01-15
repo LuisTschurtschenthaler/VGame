@@ -23,6 +23,15 @@ ChunkManager::ChunkManager() {
 			_generateChunks();
 		}
 	});
+	/*
+	_threads.emplace_back([&]() {
+		while(true) {
+			std::this_thread::sleep_for(std::chrono::microseconds(50));
+			for(auto& it : _chunks)
+				if(it.second->isDirty)
+					it.second->recreateChunkMesh();
+		}
+	});*/
 }
 
 ChunkManager::~ChunkManager() {
@@ -95,16 +104,14 @@ void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
 }
 
 void ChunkManager::removeBlock(const LocationXYZ& loc) {
-	Chunk* chunk = getChunkFromLocation(loc);
-	LocationXYZ blockLoc = getBlockLocation(loc);
-
-	chunk->chunkData.set(blockLoc, BlockID::AIR);
+	placeBlock(loc, BlockID::AIR);
 }
 
 void ChunkManager::placeBlock(const LocationXYZ& loc, BlockID blockID) {
 	Chunk* chunk = getChunkFromLocation(loc);
 	LocationXYZ blockLoc = getBlockLocation(loc);
 
+	_setNearbyChunksDirty(chunk, blockLoc);
 	chunk->chunkData.set(blockLoc, blockID);
 }
 
@@ -119,9 +126,6 @@ Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {
 
 Chunk* ChunkManager::getChunkFromLocation(const LocationXYZ& location) {
 	ChunkXZ coord = { location.x / CHUNK_SIZE, location.z / CHUNK_SIZE };
-	if(coord.x <= 0) coord.x -= 1;
-	if(coord.z <= 0) coord.z -= 1;
-
 	return getChunk(coord);
 }
 
@@ -141,14 +145,21 @@ BlockID ChunkManager::getBlockID(const LocationXYZ& location) {
 }
 
 
+void ChunkManager::_setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location) {
+	chunk->isDirty = true;
+
+	if(chunk->nearbyChunks[CHUNK_LEFT] != nullptr && location.x == 0) chunk->nearbyChunks[CHUNK_LEFT]->isDirty = true;
+	if(chunk->nearbyChunks[CHUNK_BACK] != nullptr && location.z == 0) chunk->nearbyChunks[CHUNK_BACK]->isDirty = true;
+	if(chunk->nearbyChunks[CHUNK_RIGHT] != nullptr && location.x == CHUNK_SIZE - 1) chunk->nearbyChunks[CHUNK_RIGHT]->isDirty = true;
+	if(chunk->nearbyChunks[CHUNK_FRONT] != nullptr && location.z == CHUNK_SIZE - 1) chunk->nearbyChunks[CHUNK_FRONT]->isDirty = true;
+}
+
 bool ChunkManager::_chunkExists(const ChunkXZ& coord) {
 	std::lock_guard<std::mutex> lock(chunkMutex);
 	return (_chunks.find(coord) != _chunks.end());
 }
 
 void ChunkManager::_generateChunks() {
-	std::this_thread::sleep_for(std::chrono::microseconds(50));
-	
 	int currentChunkX = int(World::getPlayer().position.x / CHUNK_SIZE);
 	int currentChunkZ = int(World::getPlayer().position.z / CHUNK_SIZE);
 
@@ -156,7 +167,7 @@ void ChunkManager::_generateChunks() {
 	for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
 	for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
 		if(x <= 0 || z <= 0) continue;
-		//if(x >= 4 || z >= 4) continue;
+		if(x >= 5 || z >= 5) continue;
 		
 		Chunk* chunk = getChunk({ x, z });
 		if(!chunk->chunkDataGenerated)
@@ -164,5 +175,8 @@ void ChunkManager::_generateChunks() {
 
 		if(!chunk->meshesGenerated && chunk->chunkDataGenerated)
 			chunk->generateChunkMesh();
+
+		if(chunk->isDirty)
+			chunk->recreateChunkMesh();
 	}
 }
