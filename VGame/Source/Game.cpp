@@ -45,8 +45,8 @@ void Game::update() {
 		dayTime += 1;
 	/* ------------ TEMP ------------ */
 
-	dayTime += 0.01;
-	dayTime = (dayTime > 360) ? dayTime - 360 : (dayTime < 0) ? 360 : dayTime;
+	dayTime += CoreEngine::gameTimer->getDeltaTime();
+	//dayTime = (dayTime > 360) ? dayTime - 360 : (dayTime < 0) ? 360 : dayTime;
 
 	_world->update();
 	_textRenderer->update(&_world->getPlayer());

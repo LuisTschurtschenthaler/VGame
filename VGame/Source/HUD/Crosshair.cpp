@@ -21,14 +21,14 @@ void Crosshair::draw() {
 
 	// Horizontal line
 	glBegin(GL_LINES);
-	glVertex2i(halfWinWidth - 15, halfWinHeight);
-	glVertex2i(halfWinWidth + 15, halfWinHeight);
+		glVertex2i(halfWinWidth - 15, halfWinHeight);
+		glVertex2i(halfWinWidth + 15, halfWinHeight);
 	glEnd();
 
 	// Vertical line
 	glBegin(GL_LINES);
-	glVertex2i(halfWinWidth, halfWinHeight + 15);
-	glVertex2i(halfWinWidth, halfWinHeight - 15);
+		glVertex2i(halfWinWidth, halfWinHeight + 15);
+		glVertex2i(halfWinWidth, halfWinHeight - 15);
 	glEnd();
 
 	glPopMatrix();

@@ -8,10 +8,12 @@ class Shader;
 class Skybox {
 
 private:
-	static float skyboxVertices[];
+	static std::vector<float> _vertices;
+	static std::vector<unsigned int> _indices;
 
 	Shader* _skyboxShader;
-	unsigned int _VAO, _VBO;
+	unsigned int _VBO, _IBO;
+	bool _isBuffered;
 
 
 public:

@@ -18,20 +18,11 @@ ChunkManager::ChunkManager() {
 	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 0);
 
 	_threads.emplace_back([&]() {
-		while(true) {
+		while(!World::disposed) {
 			std::this_thread::sleep_for(std::chrono::microseconds(50));
 			_generateChunks();
 		}
 	});
-	/*
-	_threads.emplace_back([&]() {
-		while(true) {
-			std::this_thread::sleep_for(std::chrono::microseconds(50));
-			for(auto& it : _chunks)
-				if(it.second->isDirty)
-					it.second->recreateChunkMesh();
-		}
-	});*/
 }
 
 ChunkManager::~ChunkManager() {

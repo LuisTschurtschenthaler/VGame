@@ -10,9 +10,8 @@ class ChunkManager;
 class World {
 
 public:
-	static bool gravityEnabled;
 	static TerrainGenerator* terrainGenerator;
-	bool disposed;
+	static bool gravityEnabled, disposed;
 
 private:
 	static Skybox* _skybox;

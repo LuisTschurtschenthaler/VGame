@@ -7,73 +7,48 @@
 #include "Game.h"
 
 
-float Skybox::skyboxVertices[] = {
-	/* Right */
+std::vector<float> Skybox::_vertices = std::vector<float>({
+	 1.f,  1.f,  1.f,
 	 1.f, -1.f,  1.f,
-	 1.f,  1.f,  1.f,
-	 1.f, -1.f, -1.f,
-
 	 1.f,  1.f, -1.f,
 	 1.f, -1.f, -1.f,
-	 1.f,  1.f,  1.f,
-
-	 /* Left */
-	 -1.f, -1.f, -1.f,
-	 -1.f,  1.f, -1.f,
-	 -1.f, -1.f,  1.f,
-
-	 -1.f,  1.f,  1.f,
-	 -1.f, -1.f,  1.f,
-	 -1.f,  1.f, -1.f,
-	
-	/* Top */   
-	-1.f,  1.f, -1.f,
-	 1.f,  1.f, -1.f,
-	-1.f,  1.f,  1.f,
-	
-	 1.f,  1.f,  1.f,
-	-1.f,  1.f,  1.f,
-	 1.f,  1.f, -1.f,
-	
-	 /* Bottom */  
 	-1.f, -1.f, -1.f,
-	-1.f, -1.f,  1.f,
-	 1.f, -1.f, -1.f,
-	
-	 1.f, -1.f, -1.f,
-	-1.f, -1.f,  1.f,
-	 1.f, -1.f,  1.f,
-	
-	/* Front */
 	-1.f,  1.f, -1.f,
-	-1.f, -1.f, -1.f,
-	 1.f, -1.f, -1.f,
-	
-	 1.f, -1.f, -1.f,
-	 1.f,  1.f, -1.f,
-	-1.f,  1.f, -1.f,
-	
-	 /* Back */  
 	-1.f, -1.f,  1.f,
-	-1.f,  1.f,  1.f,
-	 1.f, -1.f,  1.f,
-	
-	 1.f,  1.f,  1.f,
-	 1.f, -1.f,  1.f,
 	-1.f,  1.f,  1.f
-};
+});
+
+std::vector<unsigned int> Skybox::_indices = std::vector<unsigned int>({
+	0, 1, 3,
+	3, 2, 0,
+	0, 1, 7,
+	7, 6, 1,
+	1, 3, 6,
+	6, 4, 3,
+	3, 2, 4,
+	4, 2, 5,
+	5, 4, 6,
+	6, 5, 7,
+	7, 5, 2,
+	2, 0, 7
+});
 
 
-Skybox::Skybox() {
+Skybox::Skybox() 
+	: _isBuffered(false) {
+
 	_skyboxShader = new Shader("skybox_vert.glsl", "skybox_frag.glsl");
-
-	glGenVertexArrays(1, &_VAO);
-	glGenBuffers(1, &_VBO);
 }
 
 Skybox::~Skybox() {
-	glDeleteVertexArrays(1, &_VAO);
+	_vertices.clear();
+	_vertices.shrink_to_fit();
+
+	_indices.clear();
+	_indices.shrink_to_fit();
+
 	glDeleteBuffers(1, &_VBO);
+	glDeleteBuffers(1, &_IBO);
 
 	delete _skyboxShader;
 }
@@ -82,22 +57,34 @@ Skybox::~Skybox() {
 void Skybox::update() {
 	_skyboxShader->setMat4("projection", World::getPlayer().camera->getProjection());
 	_skyboxShader->setMat4("view", glm::mat4(glm::mat3(World::getPlayer().camera->getView())));
-	_skyboxShader->setFloat("dayTime", (PI / Game::dayTime));
+	_skyboxShader->setFloat("dayTime", Game::dayTime);
 }
 
 void Skybox::draw() {
-	_skyboxShader->bind();
-	glBindVertexArray(_VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	if(!_isBuffered) {
+		glGenBuffers(1, &_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * _vertices.size(), &_vertices[0], GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
+		glGenBuffers(1, &_IBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * _indices.size(), &_indices[0], GL_STATIC_DRAW);
+		_isBuffered = true;
+	}
+
+	_skyboxShader->bind();
+	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (GLvoid*) 0);
 	glEnableVertexAttribArray(0);
 
 	glDepthFunc(GL_LEQUAL);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);
+	glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, (void*) 0);
 	glDepthFunc(GL_LESS);
 	
-	glBindVertexArray(0);
+	glDisableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	_skyboxShader->unbind();
 }

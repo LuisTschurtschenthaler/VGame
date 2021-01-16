@@ -6,6 +6,7 @@
 
 TerrainGenerator* World::terrainGenerator = nullptr;
 bool World::gravityEnabled = true;
+bool World::disposed = false;
 
 Skybox* World::_skybox = nullptr;
 Player* World::_player = nullptr;
@@ -21,6 +22,8 @@ World::World() {
 }
 
 World::~World() {
+	disposed = true;
+
 	delete _skybox;
 	delete _player;
 	delete _chunkManager;
