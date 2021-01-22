@@ -46,6 +46,8 @@ public:
 	LocationXYZ getBlockLocation(const LocationXYZ& location);
 	BlockID getBlockID(const LocationXYZ& location);
 
+	static bool isLocationOutOfChunkRange(const LocationXYZ& location);
+
 private:
 	void _setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location);
 	bool _chunkExists(const ChunkXZ& coord);

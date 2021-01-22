@@ -18,7 +18,7 @@
 #define MOUSE_TIMEOUT				0.2f
 
 #define WALK_SPEED					0.75f
-#define FLY_SPEED					2.5f
+#define FLY_SPEED					4.f
 #define JUMP_DURATION				1.f
 #define BLOCK_BREAK_DURATION		0.5f
 #define MAX_BLOCK_REACH_DISTANCE	6

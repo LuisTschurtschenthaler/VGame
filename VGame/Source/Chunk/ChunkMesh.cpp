@@ -3,7 +3,6 @@
 #include "Constants.h"
 #include "Chunk.h"
 #include "Game.h"
-#include "Sky.h"
 #include "Player.h"
 #include "ChunkManager.h"
 #include "World.h"
@@ -73,6 +72,10 @@ void ChunkMesh::draw() {
 
 void ChunkMesh::clear() {
 	_isBuffered = false;
+
+
+	amountOfIndices -= indices.size();
+	amountOfVertices -= vertices.size();
 
 	indices.clear();
 	indices.shrink_to_fit();

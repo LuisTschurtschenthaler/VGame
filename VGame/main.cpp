@@ -3,19 +3,19 @@
 #include "Game.h"
 
 /*
-	Mouse move			->		Look around
-	W, A, S, D			->		Move
-	Space				->		Jump/Fly up
-	Left control		->		Sprint
-	Left shift			->		Sneak/Fly down
+	Mouse move			->	Look around
+	W, A, S, D			->	Move
+	Space				->	Jump/Fly up
+	Left control		->	Sprint
+	Left shift			->	Sneak/Fly down
 
-	Left mouse button	->		Break block
-	Right mouse button	->		Place block
-	C					->		Zoom
+	Left mouse button	->	Break block
+	Right mouse button	->	Place block
+	C					->	Zoom
 
-	Escape				->		Lose window focus
-	F2					->		Take screenshot
-	F3					->		Show/Hide game info
+	Escape				->	Lose window focus
+	F2					->	Take screenshot
+	F3					->	Show/Hide game info
 */
 
 int main() {

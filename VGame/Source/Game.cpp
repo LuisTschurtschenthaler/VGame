@@ -5,7 +5,6 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "RenderUtil.h"
-#include "Sky.h"
 #include "Window.h"
 #include "TerrainGenerator.h"
 #include "TextRenderer.h"

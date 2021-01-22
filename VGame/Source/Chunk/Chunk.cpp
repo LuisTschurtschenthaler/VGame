@@ -68,7 +68,12 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
 		switch(block->meshType) {
 			
 			case MeshType::SOLID:
-				if(block->isFloraBlock && block->name != "Oak leave" && block->name != "Cactus") {
+				if(block->isFloraBlock 
+				   && block->name != "Oak leave" 
+				   && block->name != "Birch leave" 
+				   && block->name != "Jungle leave" 
+				   && block->name != "Cactus") {
+					
 					if(block->name == "Tall grass") {
 						solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
 						solidMesh->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);

@@ -1,7 +1,6 @@
 #ifndef BLOCK_EVENTS
 #define BLOCK_EVENTS
 
-#include <iostream>
 #include "Coordinates.h"
 #include "ChunkManager.h"
 #include "Raycast.h"

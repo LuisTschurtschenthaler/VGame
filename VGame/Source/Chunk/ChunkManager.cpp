@@ -84,7 +84,7 @@ void ChunkManager::findSpawnPoint(glm::vec3& position) {
 	int height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, 0, 0));
 
 	height = (height > WATER_LEVEL) ? height : WATER_LEVEL;
-	position = { chunkPosX + CHUNK_SIZE + HALF_BLOCK_SIZE, height + 3, chunkPosZ + CHUNK_SIZE + HALF_BLOCK_SIZE };
+	position = { chunkPosX + CHUNK_SIZE + HALF_BLOCK_SIZE, height + 5, chunkPosZ + CHUNK_SIZE + HALF_BLOCK_SIZE };
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
@@ -132,7 +132,16 @@ BlockID ChunkManager::getBlockID(const LocationXYZ& location) {
 	Chunk* chunk = getChunkFromLocation(location);
 	LocationXYZ blockLoc = getBlockLocation(location);
 
+	if(isLocationOutOfChunkRange(location))
+		return BlockID::AIR;
+
 	return chunk->chunkData.get(blockLoc);
+}
+
+bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
+	return((location.x < 0 && location.x >= CHUNK_SIZE)
+		&& (location.y < 0 && location.y >= CHUNK_HEIGHT)
+		&& (location.z < 0 && location.z >= CHUNK_SIZE));
 }
 
 
@@ -158,7 +167,7 @@ void ChunkManager::_generateChunks() {
 	for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
 	for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
 		if(x <= 0 || z <= 0) continue;
-		if(x >= 5 || z >= 5) continue;
+		//if(x >= 5 || z >= 5) continue;
 		
 		Chunk* chunk = getChunk({ x, z });
 		if(!chunk->chunkDataGenerated)

@@ -4,6 +4,7 @@
 
 
 static SDL_Window* window;
+static SDL_Surface* icon;
 static SDL_GLContext context;
 static bool isCloseRequested = false;
 
@@ -23,6 +24,9 @@ void SDLcreateWindow(const char* title, int x, int y, int width, int height, boo
 							  SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | mode);
 
 	context = SDL_GL_CreateContext(window);
+	icon = SDL_LoadBMP("./Resources/Textures/Window/Icon.bmp");
+	SDL_SetWindowIcon(window, icon);
+
 	SDL_GL_SetSwapInterval(vSync ? 1 : 0);
 }
 

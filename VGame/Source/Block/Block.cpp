@@ -35,7 +35,10 @@ Block* BlockUtil::blocks[TOTAL_BLOCKS] = {
 	new Block{ "Poppy",			{ -1, -1, -1, -1, 30, 30 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false },
 	new Block{ "Blue Orchid",	{ -1, -1, -1, -1, 31, 31 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false },
 	new Block{ "Birch log",		{ 32, 32, 33, 33, 32, 32 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true },
-	new Block{ "Birch Leave",	{ 33, 33, 33, 33, 33, 33 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, true },
+	new Block{ "Birch leave",	{ 34, 34, 34, 34, 34, 34 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, true },
+
+	new Block{ "Jungle log",	{ 35, 35, 36, 36, 35, 35 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true },
+	new Block{ "Jungle leave",	{ 37, 37, 37, 37, 37, 37 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, true },
 
 	new Block{ "Error",			{ 255, 255, 255, 255, 255, 255 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true }
 };
