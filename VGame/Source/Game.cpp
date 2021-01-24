@@ -31,8 +31,8 @@ Game::Game() {
 }
 
 Game::~Game() {
-	delete _world;
 	delete _textRenderer;
+	delete _world;
 }
 
 

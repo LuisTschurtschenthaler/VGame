@@ -24,9 +24,9 @@ World::World() {
 World::~World() {
 	disposed = true;
 
-	delete _skybox;
-	delete _player;
 	delete _chunkManager;
+	delete _player;
+	delete _skybox;
 }
 
 
