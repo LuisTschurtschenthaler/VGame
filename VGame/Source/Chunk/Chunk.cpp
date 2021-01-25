@@ -4,14 +4,17 @@
 #include "World.h"
 #include "ChunkManager.h"
 #include "TerrainGenerator.h"
+#include "AABB.h"
 
 
 Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 	: chunkManager(chunkManager), coord(coord), worldCoord(coord * CHUNK_SIZE) {
 
-	solid = new ChunkMesh(this);
-	fluid = new ChunkMesh(this);
-	
+	_solid = new ChunkMesh(this);
+	_fluid = new ChunkMesh(this);
+	_aabb = new AABB();
+	_aabb->update(worldCoord);
+
 	chunkData.fill(BlockID::AIR);
 	chunkDataGenerated = false;
 	meshesGenerated = false;
@@ -20,20 +23,21 @@ Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 }
 
 Chunk::~Chunk() {
-	solid->clear();
-	delete solid;
+	_fluid->clear();
+	_solid->clear();
 
-	fluid->clear();
-	delete fluid;
+	delete _aabb;
+	delete _fluid;
+	delete _solid;
 }
 
 
 void Chunk::drawSolid() {
-	solid->draw();
+	_solid->draw();
 }
 
 void Chunk::drawFluid() {
-	fluid->draw();
+	_fluid->draw();
 }
 
 void Chunk::generateChunkData() {
@@ -43,8 +47,8 @@ void Chunk::generateChunkData() {
 }
 
 void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
-	ChunkMesh* solidMesh = (solid == nullptr) ? this->solid : solid;
-	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->fluid : fluid;
+	ChunkMesh* solidMesh = (solid == nullptr) ? this->_solid : solid;
+	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->_fluid : fluid;
 
 	if(!nearbyChunksDetected) {
 		chunkManager->getNearbyChunks(coord, nearbyChunks);
@@ -93,14 +97,14 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
 }
 
 void Chunk::recreateChunkMesh() {
-	ChunkMesh* solidMesh = new ChunkMesh(this); 
-	ChunkMesh* fluidMesh = new ChunkMesh(this);
-	generateChunkMesh(solidMesh, fluidMesh);
+	ChunkMesh* solid = new ChunkMesh(this); 
+	ChunkMesh* fluid = new ChunkMesh(this);
+	generateChunkMesh(solid, fluid);
 	
-	this->solid->clear();
-	this->fluid->clear();
-	this->solid = solidMesh;
-	this->fluid = fluidMesh;
+	_solid->clear();
+	_fluid->clear();
+	_solid = solid;
+	_fluid = fluid;
 	isDirty = false;
 }
 

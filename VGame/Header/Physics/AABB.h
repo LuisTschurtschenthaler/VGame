@@ -2,6 +2,7 @@
 #define AABB_H
 
 #include <GLM/glm.hpp>
+#include "Coordinates.h"
 
 class Player;
 class ChunkManager;
@@ -20,6 +21,7 @@ public:
 	~AABB();
 
 	void update(glm::vec3 pos);
+	void update(ChunkXZ pos);
 	void collision(Player& player, const glm::vec3& velocity);
 
 	static glm::vec3 rayIntersectionWithBlock(glm::vec3 playerPos, glm::vec3 targetPos, glm::vec3 blockPos);

@@ -45,7 +45,6 @@ void Game::update() {
 	/* ------------ TEMP ------------ */
 
 	dayTime += CoreEngine::gameTimer->getDeltaTime();
-	//dayTime = (dayTime > 360) ? dayTime - 360 : (dayTime < 0) ? 360 : dayTime;
 
 	_world->update();
 	_textRenderer->update(&_world->getPlayer());
@@ -53,7 +52,6 @@ void Game::update() {
 
 void Game::render() {
 	RenderUtil::clearScreen();
-	Crosshair::draw();
 	
 	if(debugMode) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -63,4 +61,5 @@ void Game::render() {
 	else _world->draw();
 
 	_textRenderer->draw();
+	Crosshair::draw();
 }

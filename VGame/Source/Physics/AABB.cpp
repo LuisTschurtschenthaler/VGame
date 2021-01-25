@@ -24,6 +24,11 @@ void AABB::update(glm::vec3 pos) {
 	max = min + dimensions;
 }
 
+void AABB::update(ChunkXZ pos) {
+	min = glm::vec3(pos.x, 0, pos.z);
+	max = min + dimensions;
+}
+
 
 void AABB::collision(Player& player, const glm::vec3& velocity) {
 	//Block* block1 = BlockUtil::blocks[chunkManager->getBlockID({ player.position.x, player.position.y - 1, player.position.z })];

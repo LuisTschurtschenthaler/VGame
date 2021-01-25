@@ -12,7 +12,7 @@
 
 
 /* Player */
-#define RENDER_DISTANCE				3
+#define RENDER_DISTANCE				4
 
 #define MOUSE_SENSITIVITY			0.075f
 #define MOUSE_TIMEOUT				0.2f
@@ -20,7 +20,7 @@
 #define WALK_SPEED					0.75f
 #define FLY_SPEED					4.f
 #define JUMP_DURATION				1.f
-#define BLOCK_BREAK_DURATION		0.5f
+#define BLOCK_BREAK_DURATION		0.2f
 #define MAX_BLOCK_REACH_DISTANCE	6
 
 

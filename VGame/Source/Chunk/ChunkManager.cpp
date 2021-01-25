@@ -1,3 +1,4 @@
+#include <map>
 #include "ChunkManager.h"
 #include "Shader.h"
 #include "World.h"
@@ -49,6 +50,7 @@ void ChunkManager::draw() {
 	int playerX = int(World::getPlayer().position.x / CHUNK_SIZE),
 		playerZ = int(World::getPlayer().position.z / CHUNK_SIZE);
 
+	std::map<float, Chunk*> sortedChunks;
 	for(auto& it : _chunks) {
 		if(!it.second->meshesGenerated)
 			continue;
@@ -56,35 +58,48 @@ void ChunkManager::draw() {
 		if(it.first.x < playerX - RENDER_DISTANCE || it.first.x > playerX + RENDER_DISTANCE ||
 		   it.first.z < playerZ - RENDER_DISTANCE || it.first.z > playerZ + RENDER_DISTANCE) {
 
-			/* Unload chunk and save to file, just if chunk changed */
-			//FileManager::save(*it.second);
-
 		}
 		else {
-			// Draw fluid
-			_waterShader->bind();
-			_textureAtlas->getTexture().bind();
-			it.second->drawFluid();
-			_waterShader->unbind();
+			glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
+			glm::vec2 worldCoord = { it.second->worldCoord.x, it.second->worldCoord.z };
 
-			// Draw solid
-			_solidShader->bind();
-			_textureAtlas->getTexture().bind();
-			it.second->drawSolid();
-			_solidShader->unbind();
+			float distance = glm::length(playerPos - worldCoord);
+			sortedChunks[distance] = it.second;
 		}
+	}
+
+	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
+		it != sortedChunks.rend(); it++) {
+
+		// Draw solid
+		_solidShader->bind();
+		_textureAtlas->getTexture().bind();
+		it->second->drawSolid();
+		_solidShader->unbind();
+	}
+
+	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
+		it != sortedChunks.rend(); it++) {
+
+		// Draw fluid
+		_waterShader->bind();
+		_textureAtlas->getTexture().bind();
+		it->second->drawFluid();
+		_waterShader->unbind();
 	}
 }
 
 void ChunkManager::findSpawnPoint(glm::vec3& position) {
+	const int c = 100;
+	
 	int chunkPosX = Random::get(0, CHUNK_SIZE - 1),
 		chunkPosZ = Random::get(0, CHUNK_SIZE - 1);
 
-	Biome* biome = World::terrainGenerator->getBiomeAt(chunkPosX, chunkPosZ, { 0, 0 });
-	int height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, 0, 0));
+	Biome* biome = World::terrainGenerator->getBiomeAt(chunkPosX, chunkPosZ, { c, c });
+	int height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, c, c));
 
 	height = (height > WATER_LEVEL) ? height : WATER_LEVEL;
-	position = { chunkPosX + CHUNK_SIZE + HALF_BLOCK_SIZE, height + 5, chunkPosZ + CHUNK_SIZE + HALF_BLOCK_SIZE };
+	position = { chunkPosX + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE, height + 3, chunkPosZ + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE };
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
@@ -166,6 +181,9 @@ void ChunkManager::_generateChunks() {
 	for(int i = 0; i < RENDER_DISTANCE; i++)
 	for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
 	for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
+		if(World::disposed)
+			return;
+
 		if(x <= 0 || z <= 0) continue;
 		//if(x >= 5 || z >= 5) continue;
 		

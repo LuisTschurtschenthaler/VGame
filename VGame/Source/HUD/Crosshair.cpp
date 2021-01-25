@@ -10,13 +10,14 @@ void Crosshair::draw() {
 	float halfWinHeight = Window::getHeight() / 2.f;
 
 	glPushMatrix();
-	glMatrixMode(GL_PROJECTION);
 
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+
 	glOrtho(0, Window::getWidth(), Window::getHeight(), 0.f, -1.f, 1.f);
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-	glColor3ub(230, 230, 230);
 	glLineWidth(3.f);
 
 	// Horizontal line

@@ -14,6 +14,7 @@
 
 class ChunkManager;
 class ChunkMap;
+class AABB;
 
 
 class Chunk {
@@ -27,8 +28,8 @@ public:
 	bool chunkDataGenerated, meshesGenerated, nearbyChunksDetected, isDirty;
 	
 private:
-	ChunkMesh* solid, *fluid;
-
+	ChunkMesh* _solid, *_fluid;
+	AABB* _aabb;
 
 public:
 	Chunk(ChunkManager* chunkManager, const ChunkXZ& coord);

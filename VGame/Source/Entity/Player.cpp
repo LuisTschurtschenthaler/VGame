@@ -12,7 +12,7 @@ Player::Player()
 	box = AABB({ 0.3f, 1.75f, 0.3f });
 	camera = new Camera(this);
 
-	isFlying = false;
+	isFlying = true;
 	isOnGround = false;
 	isJumping = false;
 	isSwimming = false;
