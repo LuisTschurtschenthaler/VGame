@@ -18,13 +18,7 @@ ChunkManager::ChunkManager() {
 	_waterShader = new Shader("ChunkShader/fluid_vert.glsl", "ChunkShader/fluid_frag.glsl");
 	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 0);
 
-	_threads.emplace_back([&]() {
-		while(!World::disposed) {
-			_generateChunks();
-
-			std::this_thread::sleep_for(std::chrono::microseconds(50));
-		}
-	});
+	_threads.emplace_back([&]() { _generateChunks(); });
 }
 
 ChunkManager::~ChunkManager() {
@@ -183,26 +177,26 @@ bool ChunkManager::_chunkExists(const ChunkXZ& coord) {
 }
 
 void ChunkManager::_generateChunks() {
-	int currentChunkX = int(World::getPlayer().position.x / CHUNK_SIZE);
-	int currentChunkZ = int(World::getPlayer().position.z / CHUNK_SIZE);
+	while(!World::disposed) {
+		int currentChunkX = int(World::getPlayer().position.x / CHUNK_SIZE);
+		int currentChunkZ = int(World::getPlayer().position.z / CHUNK_SIZE);
 
-	for(int i = 0; i < RENDER_DISTANCE; i++)
-	for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
-	for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
-		if(World::disposed)
-			return;
+		for(int i = 0; i < RENDER_DISTANCE; i++) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-		if(x <= 0 || z <= 0) continue;
-		
-		Chunk* chunk = getChunk({ x, z });
-		if(!chunk->chunkDataGenerated)
-			chunk->generateChunkData();
-		
-		
-		if(!chunk->meshesGenerated && chunk->chunkDataGenerated)
-			chunk->generateChunkMesh();
+			for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
+			for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
+				if(x <= 0 || z <= 0) continue;
 
-		else if(chunk->isDirty)
-			chunk->recreateChunkMesh();
+				Chunk* chunk = getChunk({ x, z });
+				if(!chunk->chunkDataGenerated)
+					chunk->generateChunkData();
+		
+				if(chunk->chunkDataGenerated && !chunk->meshesGenerated)
+					chunk->generateChunkMesh();
+				else if(chunk->isDirty)
+					chunk->recreateChunkMesh();
+			}
+		}
 	}
 }

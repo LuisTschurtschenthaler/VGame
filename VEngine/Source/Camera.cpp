@@ -16,6 +16,8 @@ Camera::Camera(Entity* entity)
 	front = glm::vec3(0.f, 0.f, -1.f);
 	right = glm::vec3(0.f);
 	up = glm::vec3(0.f, 1.f, 0.f);
+
+	movingFront = front;
 }
 
 Camera::~Camera() {
@@ -23,12 +25,24 @@ Camera::~Camera() {
 
 
 void Camera::update() {
+/*
 	glm::vec3 _front;
 	_front.x = cos(glm::radians(ENTITY->yaw)) * cos(glm::radians(ENTITY->pitch));
 	_front.y = sin(glm::radians(ENTITY->pitch));
 	_front.z = sin(glm::radians(ENTITY->yaw)) * cos(glm::radians(ENTITY->pitch));
+*/
 
+	glm::vec3 _front;
+	_front.x = cos(glm::radians(ENTITY->yaw));
+	_front.y = 0.f;
+	_front.z = sin(glm::radians(ENTITY->yaw));
+	movingFront = glm::normalize(_front);
+	
+	_front.x *= cos(glm::radians(ENTITY->pitch));
+	_front.y = sin(glm::radians(ENTITY->pitch));
+	_front.z *= cos(glm::radians(ENTITY->pitch));
 	front = glm::normalize(_front);
+
 	right = glm::normalize(glm::cross(front, _WORLD_UP));
 	up = glm::normalize(glm::cross(right, front));
 

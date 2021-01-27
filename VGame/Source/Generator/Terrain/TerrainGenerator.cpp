@@ -37,7 +37,7 @@ void TerrainGenerator::generateChunkData(const ChunkXZ& coord, Array3D<BlockID, 
 	for(int z = 0; z < CHUNK_SIZE; z++) {
 		
 		Biome* biome = getBiomeAt(x, z, coord);
-		int height = int(std::ceil(biome->getHeight(x, z, coord.x, coord.z)));
+		int height = int(biome->getHeight(x, z, coord.x, coord.z));
 
 		for(int y = 0; y < CHUNK_HEIGHT; y++) {
 			if(y > height) {
@@ -48,22 +48,21 @@ void TerrainGenerator::generateChunkData(const ChunkXZ& coord, Array3D<BlockID, 
 			else if(y == height) {
 				if(y >= WATER_LEVEL) {
 					if(y == BEACH_LEVEL)
-						chunkData.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock());
-
+						chunkData.set(x, y, z, (Random::get(0, 10) <= 3) ? BlockID::SAND : biome->getTopBlock());
 					else if(y == BEACH_LEVEL - 1)
-						chunkData.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockID::SAND : biome->getTopBlock());
+						chunkData.set(x, y, z, (Random::get(0, 10) <= 7) ? BlockID::SAND : biome->getTopBlock());
 
 					else if(y < BEACH_LEVEL)
 						chunkData.set(x, y, z, BlockID::SAND);
 
-					else chunkData.set(x, y, z, static_cast<BlockID>(biome->getTopBlock()));
+					else chunkData.set(x, y, z, biome->getTopBlock());
 				}
-				else chunkData.set(x, y, z, static_cast<BlockID>(biome->getUnderwaterBlock()));
+				else chunkData.set(x, y, z, biome->getUnderwaterBlock());
 			}
 
 			else if(y > height - 3)
-				chunkData.set(x, y, z, static_cast<BlockID>(biome->getBelowTopBlock()));
-			else chunkData.set(x, y, z, static_cast<BlockID>(biome->getUnderEarth()));
+				chunkData.set(x, y, z, biome->getBelowTopBlock());
+			else chunkData.set(x, y, z, biome->getUnderEarth());
 		}
 	}
 }
@@ -73,9 +72,9 @@ void TerrainGenerator::generateFlora(const ChunkXZ& coord, Array3D<BlockID, CHUN
 	for(int z = 0; z < CHUNK_SIZE; z++) {
 
 		Biome* biome = getBiomeAt(x, z, coord);
-		int height = int(std::ceil(biome->getHeight(x, z, coord.x, coord.z)));
+		int height = int(biome->getHeight(x, z, coord.x, coord.z));
 
-		if(height > WATER_LEVEL + 2) {
+		if(height > BEACH_LEVEL) {
 			if(Random::getIntInRange(0, biome->getTreeFrequency()) == 5) {
 				Structure structure;
 				if(instanceof<Desert>(biome))

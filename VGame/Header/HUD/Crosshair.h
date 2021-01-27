@@ -6,8 +6,10 @@ class Crosshair {
 
 public:
 	static void draw();
-	static void drawaa();
-	static void drawDebug();
+
+private:
+	static void _drawLines(const float& halfWindowWidth, const float& halfWindowHeight);
+	static void _drawDebugLines(const float& halfWindowWidth, const float& halfWindowHeight);
 
 };
 

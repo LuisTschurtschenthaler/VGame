@@ -1,5 +1,4 @@
 #include <GLM/glm.hpp>
-#include <GLM/geometric.hpp>
 #include "Player.h"
 #include "Input.h"
 #include "Window.h"
@@ -33,13 +32,13 @@ void Player::_handleKeyboardInputs() {
 	/* Input */
 	glm::vec3 change(0.f);
 	if(Input::isKeyPressed(KeyCode::KEY_W))
-		change += _toHorizontal(camera->front) * movementSpeed;
+		change += _toHorizontal(camera->movingFront) * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_A))
 		change -= _toHorizontal(camera->right) * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_S))
-		change -= _toHorizontal(camera->front) * movementSpeed;
+		change -= _toHorizontal(camera->movingFront) * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_D))
 		change += _toHorizontal(camera->right) * movementSpeed;

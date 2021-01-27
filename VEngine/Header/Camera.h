@@ -18,6 +18,7 @@ public:
 	float fov;
 	glm::vec3 position;
 	glm::vec3 front, right, up;
+	glm::vec3 movingFront;
 
 private:
 	const glm::vec3 _WORLD_UP;

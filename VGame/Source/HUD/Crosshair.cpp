@@ -9,67 +9,69 @@
 
 
 void Crosshair::draw() {
-	float halfWinWidth = Window::getWidth() / 2.f;
-	float halfWinHeight = Window::getHeight() / 2.f;
+	float halfWindowWidth = Window::getWidth() / 2.f,
+		  halfWindowHeight = Window::getHeight() / 2.f;
 
 	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	if(Game::debugMode) {
-		glOrtho(-halfWinWidth, halfWinWidth, -halfWinHeight, halfWinHeight, NEAR_PLANE, FAR_PLANE);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
+	glLineWidth(3.f);
 
-		glRotatef(World::getPlayer().pitch, 1, 0, 0);
-		glRotatef(-World::getPlayer().yaw, 0, 1, 0);
+	if(Game::debugMode)
+		_drawDebugLines(halfWindowWidth, halfWindowHeight);
+	else _drawLines(halfWindowWidth, halfWindowHeight);
 
-		glLineWidth(3.f);
-		glScalef(40.f, 40.f, 40.f);
+	glPopMatrix();
+}
 
-		// Y-Axis (green)
-		glBegin(GL_LINES);
-			glColor3f(0.f, 1.f, 0.f);
-			glVertex3f(0.f, 0.f, 0.f);
-			glVertex3f(0.f, 1.f, 0.f);
-		glEnd();
 
-		// X-Axis (red)
-		glBegin(GL_LINES);
-			glColor3f(1.f, 0.f, 0.f);
-			glVertex3f(0.f, 0.f, 0.f);
-			glVertex3f(1.f, 0.f, 0.f);
-		glEnd();
+void Crosshair::_drawLines(const float& halfWindowWidth, const float& halfWindowHeight) {
+	glOrtho(0, Window::getWidth(), Window::getHeight(), 0.f, NEAR_PLANE, FAR_PLANE);
 
-		// Z-Axis (blue)
-		glBegin(GL_LINES);
-			glColor3f(0.f, 0.f, 1.f);
-			glVertex3f(0.f, 0.f, 0.f);
-			glVertex3f(0.f, 0.f, 1.f);
-		glEnd();
-	}
-
-	else {
-		glOrtho(0, Window::getWidth(), Window::getHeight(), 0.f, -1.f, 1.f);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-
-		glLineWidth(3.f);
+	/* Horizontal line */
+	glBegin(GL_LINES);
 		glColor3f(1.f, 1.f, 1.f);
+		glVertex2i(halfWindowWidth - 15, halfWindowHeight);
+		glVertex2i(halfWindowWidth + 15, halfWindowHeight);
+	glEnd();
 
-		// Horizontal line
-		glBegin(GL_LINES);
-			glVertex2i(halfWinWidth - 15, halfWinHeight);
-			glVertex2i(halfWinWidth + 15, halfWinHeight);
-		glEnd();
+	/* Vertical line */
+	glBegin(GL_LINES);
+		glColor3f(1.f, 1.f, 1.f);
+		glVertex2i(halfWindowWidth, halfWindowHeight + 15);
+		glVertex2i(halfWindowWidth, halfWindowHeight - 15);
+	glEnd();
+}
 
-		// Vertical line
-		glBegin(GL_LINES);
-			glVertex2i(halfWinWidth, halfWinHeight + 15);
-			glVertex2i(halfWinWidth, halfWinHeight - 15);
-		glEnd();
+void Crosshair::_drawDebugLines(const float& halfWindowWidth, const float& halfWindowHeight) {
+	glOrtho(-halfWindowWidth, halfWindowWidth, -halfWindowHeight, halfWindowHeight, NEAR_PLANE, FAR_PLANE);
 
-		glPopMatrix();
-	}
+	glRotatef(World::getPlayer().pitch, 1, 0, 0);
+	glRotatef(-World::getPlayer().yaw, 0, 1, 0);
+	glScalef(40.f, 40.f, 40.f);
+
+	/* Y-axis (green) */
+	glBegin(GL_LINES);
+		glColor3f(0.f, 1.f, 0.f);
+		glVertex3f(0.f, 0.f, 0.f);
+		glVertex3f(0.f, 1.f, 0.f);
+	glEnd();
+
+	/* X-axis (red) */
+	glBegin(GL_LINES);
+		glColor3f(1.f, 0.f, 0.f);
+		glVertex3f(0.f, 0.f, 0.f);
+		glVertex3f(1.f, 0.f, 0.f);
+	glEnd();
+
+	/* Z-axis (blue) */
+	glBegin(GL_LINES);
+		glColor3f(0.f, 0.f, 1.f);
+		glVertex3f(0.f, 0.f, 0.f);
+		glVertex3f(0.f, 0.f, 1.f);
+	glEnd();
 }

@@ -19,6 +19,7 @@ class ChunkManager {
 public:
 	std::mutex chunkMutex;
 	std::unordered_map<ChunkXZ, Chunk*> _chunks;
+	std::priority_queue<Chunk*> _chunkMeshGenerationQueue;
 
 private:
 	TextureAtlas* _textureAtlas;
