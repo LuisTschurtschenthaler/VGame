@@ -28,7 +28,7 @@ public:
 	bool chunkDataGenerated, meshesGenerated, nearbyChunksDetected, isDirty;
 	
 private:
-	ChunkMesh* _solid, *_fluid;
+	ChunkMesh* _solid, *_fluid, *_transparent;
 	AABB* _aabb;
 
 public:
@@ -37,9 +37,10 @@ public:
 
 	void drawSolid();
 	void drawFluid();
+	void drawTransparent();
 
 	void generateChunkData();
-	void generateChunkMesh(ChunkMesh* solid = nullptr, ChunkMesh* fluid = nullptr);
+	void generateChunkMesh(ChunkMesh* solid = nullptr, ChunkMesh* fluid = nullptr, ChunkMesh* transparent = nullptr);
 	void recreateChunkMesh();
 
 	const glm::mat4& getModel();

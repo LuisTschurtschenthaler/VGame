@@ -12,6 +12,7 @@ Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 
 	_solid = new ChunkMesh(this);
 	_fluid = new ChunkMesh(this);
+	_transparent = new ChunkMesh(this);
 	_aabb = new AABB();
 	_aabb->update(worldCoord);
 
@@ -40,15 +41,20 @@ void Chunk::drawFluid() {
 	_fluid->draw();
 }
 
+void Chunk::drawTransparent() {
+	_transparent->draw();
+}
+
 void Chunk::generateChunkData() {
 	World::terrainGenerator->generateChunkData(coord, chunkData);
 	World::terrainGenerator->generateFlora(coord, chunkData);
 	chunkDataGenerated = true;
 }
 
-void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
+void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* transparent) {
 	ChunkMesh* solidMesh = (solid == nullptr) ? this->_solid : solid;
 	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->_fluid : fluid;
+	ChunkMesh* transparentMesh = (transparent == nullptr) ? this->_transparent : transparent;
 
 	if(!nearbyChunksDetected) {
 		chunkManager->getNearbyChunks(coord, nearbyChunks);
@@ -72,7 +78,10 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
 		switch(block->meshType) {
 			
 			case MeshType::SOLID:
-				if(block->isFloraBlock 
+				if(block->isTransparent)
+					transparentMesh->addBlock(this, x, y, z, block);
+
+				else if(block->isFloraBlock 
 				   && block->name != "Oak leave" 
 				   && block->name != "Birch leave" 
 				   && block->name != "Jungle leave" 
@@ -99,12 +108,16 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
 void Chunk::recreateChunkMesh() {
 	ChunkMesh* solid = new ChunkMesh(this); 
 	ChunkMesh* fluid = new ChunkMesh(this);
-	generateChunkMesh(solid, fluid);
+	ChunkMesh* transparent = new ChunkMesh(this);
+	generateChunkMesh(solid, fluid, transparent);
 	
 	_solid->clear();
 	_fluid->clear();
+	_transparent->clear();
+
 	_solid = solid;
 	_fluid = fluid;
+	_transparent = transparent;
 	isDirty = false;
 }
 
@@ -186,7 +199,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z >= 0
 			&& loc.z < CHUNK_SIZE)) {
 
-		Chunk* chunk = chunkManager->getChunk({ loc.x << 4, loc.z << 4 });
+		Chunk* chunk = chunkManager->getChunk({ loc.x / 16, loc.z / 16 });
 		return chunk->_getBlock(chunkManager->getBlockLocation(loc));
 	}
 

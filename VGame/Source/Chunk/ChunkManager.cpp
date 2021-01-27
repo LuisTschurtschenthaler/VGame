@@ -68,15 +68,22 @@ void ChunkManager::draw() {
 		}
 	}
 
+	_solidShader->bind();
+	_textureAtlas->getTexture().bind();
+
 	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
 		it != sortedChunks.rend(); it++) {
 
 		// Draw solid
-		_solidShader->bind();
-		_textureAtlas->getTexture().bind();
 		it->second->drawSolid();
-		_solidShader->unbind();
 	}
+
+	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
+		it != sortedChunks.rend(); it++) {
+
+		it->second->drawTransparent();
+	}
+	_solidShader->unbind();
 
 	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
 		it != sortedChunks.rend(); it++) {

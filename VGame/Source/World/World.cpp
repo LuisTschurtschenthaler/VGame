@@ -40,6 +40,6 @@ void World::draw() {
 	// draw player/entity models
 	//_player->draw();
 
-	_chunkManager->draw();
 	_skybox->draw();
+	_chunkManager->draw();
 }
