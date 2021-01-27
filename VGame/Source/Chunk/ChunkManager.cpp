@@ -20,8 +20,9 @@ ChunkManager::ChunkManager() {
 
 	_threads.emplace_back([&]() {
 		while(!World::disposed) {
-			std::this_thread::sleep_for(std::chrono::microseconds(50));
 			_generateChunks();
+
+			std::this_thread::sleep_for(std::chrono::microseconds(50));
 		}
 	});
 }
@@ -192,16 +193,16 @@ void ChunkManager::_generateChunks() {
 			return;
 
 		if(x <= 0 || z <= 0) continue;
-		//if(x >= 5 || z >= 5) continue;
 		
 		Chunk* chunk = getChunk({ x, z });
 		if(!chunk->chunkDataGenerated)
 			chunk->generateChunkData();
-
+		
+		
 		if(!chunk->meshesGenerated && chunk->chunkDataGenerated)
 			chunk->generateChunkMesh();
 
-		if(chunk->isDirty)
+		else if(chunk->isDirty)
 			chunk->recreateChunkMesh();
 	}
 }

@@ -8,16 +8,18 @@ class CoreEngine;
 class EventDispatcher;
 class TextRenderer;
 
-/*
 enum GameState {
+	GAME_LOADING,
 	GAME_ACTIVE,
-	GAME_MENUs
-};*/
+	GAME_MENU
+};
+
 
 class Game {
 
 public:
 	static EventDispatcher eventDispatcher;
+	static GameState gameState;
 	static bool debugMode;
 	static float dayTime;
 

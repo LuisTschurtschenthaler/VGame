@@ -11,7 +11,10 @@ void RenderUtil::initGraphics() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glPolygonMode(GL_FRONT, GL_FILL);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void RenderUtil::clearScreen() {

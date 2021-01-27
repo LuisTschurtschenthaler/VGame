@@ -1,7 +1,8 @@
 #include "World.h"
-#include "Skybox.h"
 #include "Player.h"
+#include "Skybox.h"
 #include "ChunkManager.h"
+#include "TerrainGenerator.h"
 
 
 TerrainGenerator* World::terrainGenerator = nullptr;
@@ -40,6 +41,6 @@ void World::draw() {
 	// draw player/entity models
 	//_player->draw();
 
-	_skybox->draw();
 	_chunkManager->draw();
+	_skybox->draw();
 }

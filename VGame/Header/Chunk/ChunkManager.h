@@ -5,6 +5,7 @@
 #include <mutex>
 #include <vector>
 #include <thread>
+#include <queue>
 #include "BlockID.h"
 #include "Chunk.h"
 #include "Coordinates.h"

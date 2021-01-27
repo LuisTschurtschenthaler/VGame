@@ -24,13 +24,13 @@ glm::vec2 TextureAtlas::getTextureCoords(glm::vec2 uv, const int textureID) {
 		result = glm::vec2((x * _tileSize / _atlasSize), (y * _tileSize / _atlasSize));
 
 	else if(uv == glm::vec2(1.f, 0.f))
-		result = glm::vec2(((x + 1) * _tileSize / _atlasSize), (y * _tileSize / _atlasSize));
+		result = glm::vec2(((x + 1.f) * _tileSize / _atlasSize), (y * _tileSize / _atlasSize));
 
 	else if(uv == glm::vec2(1.f))
-		result = glm::vec2(((x + 1) * _tileSize / _atlasSize), ((y + 1) * _tileSize / _atlasSize));
+		result = glm::vec2(((x + 1.f) * _tileSize / _atlasSize), ((y + 1.f) * _tileSize / _atlasSize));
 
 	else if(uv == glm::vec2(0.f, 1.f))
-		result = glm::vec2((x * _tileSize / _atlasSize), ((y + 1) * _tileSize / _atlasSize));
+		result = glm::vec2((x * _tileSize / _atlasSize), ((y + 1.f) * _tileSize / _atlasSize));
 	return result;
 }
 
