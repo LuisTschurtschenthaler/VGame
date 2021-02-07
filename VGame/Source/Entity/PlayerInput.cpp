@@ -45,16 +45,17 @@ void Player::_handleKeyboardInputs() {
 
 
 	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
-		if(isFlying) change.y += -movementSpeed - 0.05;
+		if(isFlying) 
+			change.y += -movementSpeed - 0.05;
 
 	//if(Input::isKeyDoublePressed(KeyCode::KEY_SPACE)) else if
 	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {
 		if(isFlying)
 			change.y += movementSpeed + 0.05;
-		/*
+		
 		else if(isSwimming)
-			change.y += movementSpeed + 0.3f;
-		*/
+			change.y += movementSpeed;
+		
 		if(!isJumping && isOnGround) {
 			isJumping = true;
 			_jump = 0;
@@ -62,23 +63,25 @@ void Player::_handleKeyboardInputs() {
 	}
 
 	/* Gravity */
-	if(World::gravityEnabled) {
-		if(!isFlying) {
-			change.y -= gravity;
-						
-			if(isSwimming)
-				change.y -= 0.025;
-			
-			if(isJumping) {
-				_jump += 0.125;
-				change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0125;
-
-				if(_jump >= JUMP_DURATION)
-					isJumping = false;
-
-				isOnGround = false;
-			}
+	if(World::gravityEnabled && !isFlying) {
+		if(isSwimming || isUnderwater) {
+			change.y -= (gravity / 2);
+			isJumping = false;
 		}
+		
+		else if(isJumping) {
+			change.y -= gravity;
+
+			_jump += 0.125;
+			change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0125;
+
+			if(_jump >= JUMP_DURATION)
+				isJumping = false;
+
+			isOnGround = false;
+		}
+
+		else change.y -= gravity;
 	}
 
 	velocity += change;

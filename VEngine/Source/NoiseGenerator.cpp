@@ -7,11 +7,11 @@
 NoiseGenerator::NoiseGenerator(int seed) 
 	: _seed(seed) {
 
-	_settings.octaves = 7;
-	_settings.amplitude = 120;
-	_settings.smoothness = 950;
-	_settings.offset = 5;
-	_settings.roughness = 0.35;
+	_settings.octaves = 6;
+	_settings.amplitude = 160;
+	_settings.smoothness = 1050;
+	_settings.offset = 0;
+	_settings.roughness = 0.75;
 }
 
 NoiseGenerator::~NoiseGenerator() {
@@ -38,7 +38,7 @@ float NoiseGenerator::getNoise(float x) const {
 	int newX = static_cast<int>(x);
 	newX += _seed;
 	newX = (newX << 10) ^ newX;
-	newX = (newX * (newX * newX * 60493 + 19990303) + 1376312589) & 0x7fffffff;
+	newX = (newX * (newX * newX * 60493 + 19990303) + 1376312589) & 0x7FFFFFFF;
 
 	return (1.f - (static_cast<float>(newX) / 1073741824.f));
 }

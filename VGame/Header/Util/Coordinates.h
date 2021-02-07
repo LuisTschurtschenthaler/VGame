@@ -64,6 +64,10 @@ struct LocationXYZ {
 		return { x - coord.x, y - coord.y, z - coord.z };
 	}
 
+	bool operator==(const LocationXYZ& coord) {
+		return ((x == coord.x) && (y == coord.y) && (z == coord.z));
+	}
+
 	friend std::ostream& operator<<(std::ostream& output, const LocationXYZ& coord) {
 		return output << "LocationXYZ(" << coord.x << ", " << coord.y << ", " << coord.z << ")";
 	}

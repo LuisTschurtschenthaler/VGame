@@ -13,13 +13,13 @@ const int Structure::BUSH_RADIUS = 2;
 
 void Structure::build() {
 	for(auto& structureBlock : _structureBlocks) {
-		//if(chunkManager.getBlockID(structureBlock.position) == BlockID::AIR)
+		//if(World::getChunkManager().getBlockID(structureBlock.position) == BlockID::AIR)
 		World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
 	}
 }
 
 void Structure::generateTree(const LocationXYZ& pos) {
-	int height = Random::get(5, 7);
+	int height = Random::get(4, 6);
 
 	int y = pos.y + height;
 	fillXZ({ pos.x - CROWN_RADIUS, y - 1, pos.z - CROWN_RADIUS },
@@ -41,7 +41,7 @@ void Structure::generateTree(const LocationXYZ& pos) {
 }
 
 void Structure::generateCactus(const LocationXYZ& pos) {
-	fillY({ pos.x, pos.y, pos.z }, BlockID::CACTUS, Random::get(3, 4));
+	fillY({ pos.x, pos.y, pos.z }, BlockID::CACTUS, Random::get(2, 3));
 }
 
 
@@ -52,13 +52,20 @@ void Structure::fillXZ(const LocationXYZ& start, const LocationXYZ& end, BlockID
 }
 
 void Structure::fillY(const LocationXYZ& start, BlockID block, int height) {
-	for(int y = start.y + 1; y <= start.y + height; y++)
+	for(int y = start.y; y <= start.y + height; y++)
 		_structureBlocks.emplace_back(start.x, y, start.z, block);
 }
 
 void Structure::clearEdges(const LocationXYZ& pos, int distance) {
-	if(Random::get(0, 10) <= 7) _structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z + distance, BlockID::AIR);
-	if(Random::get(0, 10) <= 7) _structureBlocks.emplace_back(pos.x + distance, pos.y, pos.z - distance, BlockID::AIR);
-	if(Random::get(0, 10) <= 7) _structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z + distance, BlockID::AIR);
-	if(Random::get(0, 10) <= 7) _structureBlocks.emplace_back(pos.x - distance, pos.y, pos.z - distance, BlockID::AIR);
+	auto remove = [&](const LocationXYZ& location) {
+		_structureBlocks.erase(
+		std::remove_if(_structureBlocks.begin(), _structureBlocks.end(),
+			[&](SturctureBlock it) { return (it.position == location); }
+		));
+	};
+
+	remove({ pos.x + distance, pos.y, pos.z + distance });
+	remove({ pos.x + distance, pos.y, pos.z - distance });
+	remove({ pos.x - distance, pos.y, pos.z + distance });
+	remove({ pos.x - distance, pos.y, pos.z - distance });
 }

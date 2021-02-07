@@ -3,7 +3,7 @@
 #include "Chunk.h"
 #include "World.h"
 #include "ChunkManager.h"
-#include "TerrainGenerator.h"
+#include "WorldGenerator.h"
 #include "AABB.h"
 
 
@@ -45,12 +45,7 @@ void Chunk::drawTransparent() {
 	_transparent->draw();
 }
 
-void Chunk::generateChunkData() {
-	World::terrainGenerator->generateChunkData(coord, chunkData);
-	World::terrainGenerator->generateFlora(coord, chunkData);
-	chunkDataGenerated = true;
-}
-
+#include <chrono>
 void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* transparent) {
 	ChunkMesh* solidMesh = (solid == nullptr) ? this->_solid : solid;
 	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->_fluid : fluid;
@@ -60,33 +55,34 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		chunkManager->getNearbyChunks(coord, nearbyChunks);
 		nearbyChunksDetected = true;
 	}
-	
+
 	for(auto& chunk : nearbyChunks) {
 		if(!chunk->chunkDataGenerated)
-			chunk->generateChunkData();
+			World::worldGenerator->generateChunk(*chunk);
 	}
+	
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	
 
-	for(int x = 0; x < CHUNK_SIZE; x++)
+	for(int x = 0; x < CHUNK_SIZE; x ++)
 	for(int z = 0; z < CHUNK_SIZE; z++)
 	for(int y = 0; y < CHUNK_HEIGHT; y++) {
-		
 		BlockID blockID = chunkData.get(x, y, z);
 		if(blockID == BlockID::AIR)
 			continue;
 
 		Block* block = BlockUtil::blocks[blockID];
 		switch(block->meshType) {
-			
 			case MeshType::SOLID:
 				if(block->isTransparent)
 					transparentMesh->addBlock(this, x, y, z, block);
 
-				else if(block->isFloraBlock 
-				   && block->name != "Oak leave" 
-				   && block->name != "Birch leave" 
-				   && block->name != "Jungle leave" 
-				   && block->name != "Cactus") {
-					
+				else if(block->isFloraBlock
+						&& block->name != "Oak leave"
+						&& block->name != "Birch leave"
+						&& block->name != "Jungle leave"
+						&& block->name != "Cactus") {
+
 					if(block->name == "Tall grass") {
 						solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
 						solidMesh->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
@@ -103,6 +99,9 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		}
 	}
 	meshesGenerated = true;
+
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 }
 
 void Chunk::recreateChunkMesh() {
@@ -192,14 +191,8 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 		return nearbyChunks[CHUNK_BACK]->_getBlock(loc.x, loc.y, CHUNK_SIZE - 1);
 	}
 
-	else if(!(loc.x >= 0
-			&& loc.x < CHUNK_SIZE
-			&& loc.y >= 0
-			&& loc.y < CHUNK_HEIGHT
-			&& loc.z >= 0
-			&& loc.z < CHUNK_SIZE)) {
-
-		Chunk* chunk = chunkManager->getChunk({ loc.x / 16, loc.z / 16 });
+	else if(ChunkManager::isLocationOutOfChunkRange(loc)) {
+		Chunk* chunk = chunkManager->getChunk({ loc.x / CHUNK_SIZE, loc.z / CHUNK_SIZE });
 		return chunk->_getBlock(chunkManager->getBlockLocation(loc));
 	}
 
@@ -212,6 +205,9 @@ const Block* Chunk::getBlockRelative(const int& x, const int& y, const int& z) c
 }
 
 const Block* Chunk::_getBlock(const LocationXYZ& location) const {
+	if(ChunkManager::isLocationOutOfChunkRange(location))
+		return BlockUtil::blocks[AIR];
+
 	return BlockUtil::blocks[chunkData.get(location)];
 }
 

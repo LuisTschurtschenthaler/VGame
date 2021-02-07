@@ -12,7 +12,7 @@
 
 
 /* Player */
-#define RENDER_DISTANCE				4
+#define RENDER_DISTANCE				10
 
 #define MOUSE_SENSITIVITY			0.075f
 #define MOUSE_TIMEOUT				0.2f
@@ -46,13 +46,13 @@
 #define BLOCK_SIZE					1.f
 #define HALF_BLOCK_SIZE				(BLOCK_SIZE / 2.f)
 
-#define CHUNK_SIZE					32
+#define CHUNK_SIZE					16
 #define CHUNK_HEIGHT				256
 #define CHUNK_AREA					(CHUNK_SIZE * CHUNK_SIZE)
 #define CHUNK_VOLUME				(CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE)
 #define HALF_CHUNK_SIZE				(CHUNK_SIZE / 2)
 
-#define WATER_LEVEL					50
-#define BEACH_LEVEL					(WATER_LEVEL + 3)
+#define WATER_LEVEL					64
+#define BEACH_LEVEL					(WATER_LEVEL + 2)
 
 #endif // WORLD_CONSTANTS_H

@@ -10,7 +10,8 @@
 #include "Random.h"
 #include "World.h"
 #include "Biome.h"
-#include "TerrainGenerator.h"
+//#include "TerrainGenerator.h"
+#include "WorldGenerator.h"
 
 
 ChunkManager::ChunkManager() {
@@ -75,7 +76,6 @@ void ChunkManager::draw() {
 
 	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
 		it != sortedChunks.rend(); it++) {
-
 		it->second->drawTransparent();
 	}
 	_solidShader->unbind();
@@ -96,10 +96,10 @@ void ChunkManager::findSpawnPoint(glm::vec3& position) {
 	
 	int chunkPosX = Random::get(0, CHUNK_SIZE - 1),
 		chunkPosZ = Random::get(0, CHUNK_SIZE - 1);
-
-	Biome* biome = World::terrainGenerator->getBiomeAt(chunkPosX, chunkPosZ, { c, c });
+	
+	Biome* biome = World::worldGenerator->getBiomeAt(chunkPosX, chunkPosZ, { c, c });
 	int height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, c, c));
-
+	
 	height = (height > WATER_LEVEL) ? height : WATER_LEVEL;
 	position = { chunkPosX + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE, height + 3, chunkPosZ + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE };
 }
@@ -139,8 +139,8 @@ Chunk* ChunkManager::getChunkFromLocation(const LocationXYZ& location) {
 
 LocationXYZ ChunkManager::getBlockLocation(const LocationXYZ& location) {
 	LocationXYZ loc = { location.x % CHUNK_SIZE, location.y, location.z % CHUNK_SIZE };
-	if(location.x < 0) loc.x += CHUNK_SIZE;
-	if(location.z < 0) loc.z += CHUNK_SIZE;
+	if(loc.x < 0) loc.x += CHUNK_SIZE;
+	if(loc.z < 0) loc.z += CHUNK_SIZE;
 
 	return loc;
 }
@@ -149,16 +149,19 @@ BlockID ChunkManager::getBlockID(const LocationXYZ& location) {
 	Chunk* chunk = getChunkFromLocation(location);
 	LocationXYZ blockLoc = getBlockLocation(location);
 
-	if(isLocationOutOfChunkRange(location))
+	if(isLocationOutOfChunkRange(blockLoc))
 		return BlockID::AIR;
 
 	return chunk->chunkData.get(blockLoc);
 }
 
 bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
-	return((location.x < 0 && location.x >= CHUNK_SIZE)
-		&& (location.y < 0 && location.y >= CHUNK_HEIGHT)
-		&& (location.z < 0 && location.z >= CHUNK_SIZE));
+	return(!(location.x >= 0
+		   && location.x < CHUNK_SIZE
+		   && location.y >= 0
+		   && location.y < CHUNK_HEIGHT
+		   && location.z >= 0
+		   && location.z < CHUNK_SIZE));
 }
 
 
@@ -177,7 +180,7 @@ bool ChunkManager::_chunkExists(const ChunkXZ& coord) {
 }
 
 void ChunkManager::_generateChunks() {
-	while(!World::disposed) {
+	while(true) {
 		int currentChunkX = int(World::getPlayer().position.x / CHUNK_SIZE);
 		int currentChunkZ = int(World::getPlayer().position.z / CHUNK_SIZE);
 
@@ -186,11 +189,12 @@ void ChunkManager::_generateChunks() {
 
 			for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
 			for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
+				if(World::disposed) return;
 				if(x <= 0 || z <= 0) continue;
 
 				Chunk* chunk = getChunk({ x, z });
 				if(!chunk->chunkDataGenerated)
-					chunk->generateChunkData();
+					World::worldGenerator->generateChunk(*chunk);
 		
 				if(chunk->chunkDataGenerated && !chunk->meshesGenerated)
 					chunk->generateChunkMesh();

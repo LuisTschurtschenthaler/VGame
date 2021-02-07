@@ -31,9 +31,6 @@ void AABB::update(ChunkXZ pos) {
 
 
 void AABB::collision(Player& player, const glm::vec3& velocity) {
-	//Block* block1 = BlockUtil::blocks[chunkManager->getBlockID({ player.position.x, player.position.y - 1, player.position.z })];
-	player.isSwimming = false; //((block1->meshType == FLUID) || (block2->meshType == FLUID));
-
 	for(int x = player.position.x - dimensions.x; x < player.position.x + dimensions.x; x++)
 	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.15; y++)
 	for(int z = player.position.z - dimensions.z; z < player.position.z + dimensions.z; z++) {

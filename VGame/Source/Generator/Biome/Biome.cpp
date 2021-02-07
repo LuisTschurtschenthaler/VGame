@@ -12,7 +12,7 @@ Biome::Biome(int treeFrequency, int plantFrequency, int seed)
 	settings.amplitude = 55;
 	settings.smoothness = 160;
 	settings.offset = 10;
-	settings.roughness = 0.45f;
+	settings.roughness = 0.5f;
 	_noise->setNoiseSettings(settings);
 }
 

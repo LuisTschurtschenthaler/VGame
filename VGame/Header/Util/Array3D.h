@@ -4,6 +4,7 @@
 #include <array>
 #include <vector>
 #include <algorithm>
+#include "Coordinates.h"
 
 
 template<class T, size_t WIDTH, size_t HEIGHT, size_t DEPTH>
@@ -35,7 +36,6 @@ public:
 	void set(const LocationXYZ& loc, const T& value) {
 		_data[loc.x][loc.y][loc.z] = value;
 	}
-
 };
 
 #endif // ARRAY_3D_H

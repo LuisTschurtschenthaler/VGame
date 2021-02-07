@@ -6,7 +6,6 @@
 #include "Camera.h"
 #include "RenderUtil.h"
 #include "Window.h"
-#include "TerrainGenerator.h"
 #include "TextRenderer.h"
 #include "World.h"
 #include "Player.h"

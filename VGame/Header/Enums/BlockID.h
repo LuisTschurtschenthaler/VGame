@@ -33,9 +33,8 @@ enum BlockID {
 	JUNGLE_LOG,
 	JUNGLE_LEAVE,
 	GLASS,
-	PINK_GLASS,
+	
 	ERROR,
-
 	TOTAL_BLOCKS
 };
 

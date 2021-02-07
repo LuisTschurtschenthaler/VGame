@@ -3,7 +3,6 @@
 
 class Chunk;
 
-/* Similar to: https://github.com/Hopson97/MineCraft-One-Week-Challenge */
 struct NoiseSettings {
 	int octaves;
 	int amplitude;
@@ -30,6 +29,7 @@ public:
 	float getNoise(float x, float y) const;
 
 	void setNoiseSettings(const NoiseSettings& settings) { _settings = settings; }
+	void setSeed(int seed) { _seed = seed; }
 
 private:
 	float _linearInterpolation(float x, float y, float z) const;

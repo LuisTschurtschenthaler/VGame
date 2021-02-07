@@ -74,7 +74,7 @@ BlockID Grassland::getUnderwaterBlock() const {
 
 
 Forest::Forest(int seed)
-	: Biome(150, 15, seed) {
+	: Biome(30, 15, seed) {
 }
 
 std::string Forest::getName() const {

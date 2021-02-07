@@ -2,10 +2,10 @@
 #include "Player.h"
 #include "Skybox.h"
 #include "ChunkManager.h"
-#include "TerrainGenerator.h"
+#include "WorldGenerator.h"
 
 
-TerrainGenerator* World::terrainGenerator = nullptr;
+WorldGenerator* World::worldGenerator = nullptr;
 bool World::gravityEnabled = true;
 bool World::disposed = false;
 
@@ -15,7 +15,7 @@ ChunkManager* World::_chunkManager = nullptr;
 
 
 World::World() {
-	terrainGenerator = new TerrainGenerator();
+	worldGenerator = new WorldGenerator();
 
 	_skybox = new Skybox();
 	_player = new Player();

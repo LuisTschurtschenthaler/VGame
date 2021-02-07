@@ -15,6 +15,7 @@
 class ChunkManager;
 class ChunkMap;
 class AABB;
+class WorldGeneration;
 
 
 class Chunk {
@@ -39,7 +40,6 @@ public:
 	void drawFluid();
 	void drawTransparent();
 
-	void generateChunkData();
 	void generateChunkMesh(ChunkMesh* solid = nullptr, ChunkMesh* fluid = nullptr, ChunkMesh* transparent = nullptr);
 	void recreateChunkMesh();
 

@@ -1,17 +1,16 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "TerrainGenerator.h"
-
 class Skybox;
 class Player;
 class ChunkManager;
+class WorldGenerator;
 
 
 class World {
 
 public:
-	static TerrainGenerator* terrainGenerator;
+	static WorldGenerator* worldGenerator;
 	static bool gravityEnabled, disposed;
 
 private:

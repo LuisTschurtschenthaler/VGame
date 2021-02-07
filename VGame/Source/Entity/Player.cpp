@@ -31,6 +31,9 @@ Player::~Player() {
 
 
 void Player::update() {
+	isSwimming = (World::getChunkManager().getBlockID({ int(position.x), int(position.y - 1), int(position.z) }) == WATER);
+	isUnderwater = (World::getChunkManager().getBlockID({ int(position.x), int(position.y), int(position.z) }) == WATER);
+
 	_input();
 
 	velocity.x *= 0.85;
@@ -40,12 +43,13 @@ void Player::update() {
 	camera->update();
 	box.update(position);
 
-	position.x += velocity.x;
-	box.collision(*this, { velocity.x, 0, 0 });
 
-	position.y += velocity.y;
-	box.collision(*this, { 0, velocity.y, 0 });
+	auto doCollision = [&](const glm::vec3& velocity) {
+		position += velocity;
+		box.collision(*this, velocity);
+	};
 
-	position.z += velocity.z;
-	box.collision(*this, { 0, 0, velocity.z });
+	doCollision({ velocity.x, 0, 0 });
+	doCollision({ 0, velocity.y, 0 });
+	doCollision({ 0, 0, velocity.z });
 }

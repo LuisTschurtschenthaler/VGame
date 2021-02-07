@@ -12,7 +12,7 @@ public:
 
 	glm::vec3 position, velocity;
 	float yaw, pitch;
-	bool isFlying, isOnGround, isJumping, isSwimming, isSprinting;
+	bool isFlying, isOnGround, isJumping, isSwimming, isUnderwater, isSprinting;
 
 
 public:

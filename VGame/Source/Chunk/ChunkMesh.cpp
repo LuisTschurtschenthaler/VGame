@@ -34,7 +34,10 @@ ChunkMesh::~ChunkMesh() {
 
 
 void ChunkMesh::draw() {
-	if(!_isBuffered && indices.size() > 0 && vertices.size() > 0) {
+	if(indices.size() <= 0 || vertices.size() <= 0)
+		return;
+
+	if(!_isBuffered) {
 		glGenBuffers(1, &_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
@@ -87,7 +90,7 @@ void ChunkMesh::clear() {
 }
 
 void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block) {
-	const std::vector<LocationXYZ> adjacents = {
+	static const std::vector<LocationXYZ> adjacents = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
 		{  0,  1,  0 },
