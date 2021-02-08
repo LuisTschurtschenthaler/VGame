@@ -21,7 +21,7 @@ public:
 		LocationXYZ blockPosition = Raycast::getBlockToPlace();
 
 		if(blockPosition.x == -1.f) return;
-		chunkManager->placeBlock(blockPosition, BlockID::STONE);
+		chunkManager->placeBlock(blockPosition, BlockID::GLASS);
 	}
 
 };

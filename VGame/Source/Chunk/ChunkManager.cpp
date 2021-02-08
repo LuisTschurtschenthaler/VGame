@@ -67,16 +67,27 @@ void ChunkManager::draw() {
 }
 
 void ChunkManager::findSpawnPoint(glm::vec3& position) {
-	const int c = 100;
+	int attempts = 0;
+	int height = 0;
 
-	int chunkPosX = Random::get(0, CHUNK_SIZE - 1),
+	int chunkX, chunkZ, chunkPosX, chunkPosZ;
+	do {
+		attempts++;
+
+		chunkX = Random::getIntInRange(100, 200);
+		chunkZ = Random::getIntInRange(100, 200);
+		chunkPosX = Random::get(0, CHUNK_SIZE - 1);
 		chunkPosZ = Random::get(0, CHUNK_SIZE - 1);
 
-	Biome* biome = World::worldGenerator->getBiomeAt(chunkPosX, chunkPosZ, { c, c });
-	int height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, c, c));
+		Biome* biome = World::worldGenerator->getBiomeAt(chunkPosX, chunkPosZ, { chunkX, chunkZ });
+		height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, chunkX, chunkZ)) + 5;
+	} while(height < WATER_LEVEL);
 
-	height = (height > WATER_LEVEL) ? height : WATER_LEVEL;
-	position = { chunkPosX + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE, height + 3, chunkPosZ + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE };
+	int worldPosX = chunkPosX + chunkX * CHUNK_SIZE,
+		worldPosZ = chunkPosZ + chunkZ * CHUNK_SIZE;
+
+	position = { worldPosX, height, worldPosZ };
+	std::cout << "Attempts for spawn finding: " << attempts << std::endl;
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
@@ -98,7 +109,7 @@ void ChunkManager::placeBlock(const LocationXYZ& loc, BlockID blockID) {
 	chunk->chunkData.set(blockLoc, blockID);
 
 	chunk->minimumPoint = std::min(chunk->minimumPoint, loc.y - 1);
-	chunk->highestPoint = std::max(chunk->highestPoint, loc.y);
+	chunk->highestPoint = std::max(chunk->highestPoint, loc.y + 1);
 }
 
 Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {
