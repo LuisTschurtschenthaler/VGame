@@ -15,8 +15,8 @@ int ChunkMesh::amountOfIndices = 0;
 ChunkMesh::ChunkMesh(Chunk* chunk)
 	: _chunk(chunk), _isBuffered(false) {
 
-	vertices.reserve(CHUNK_SIZE * 8);
-	indices.reserve(CHUNK_SIZE * 36);
+	vertices.reserve(CHUNK_AREA * 8);
+	indices.reserve(CHUNK_AREA * 36);
 }
 
 ChunkMesh::~ChunkMesh() {
@@ -31,6 +31,7 @@ ChunkMesh::~ChunkMesh() {
 	glDeleteBuffers(1, &_VBO);
 	glDeleteBuffers(1, &_IBO);
 }
+
 
 
 void ChunkMesh::draw() {

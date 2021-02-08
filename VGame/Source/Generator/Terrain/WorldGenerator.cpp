@@ -21,22 +21,23 @@ WorldGenerator::WorldGenerator() {
 
 	_biomeNoise = new NoiseGenerator(Random::get());
 
-
 	_heightMap = Array2D<float, CHUNK_SIZE, CHUNK_SIZE>();
 	_biomeMap = Array2D<Biome*, CHUNK_SIZE + 1, CHUNK_SIZE + 1>();
 }
 
 WorldGenerator::~WorldGenerator() {
+	delete _biomeNoise;
+	delete _desert;
+	delete _grassland;
+	delete _forest;
+	delete _snowForest;
+	delete _highLands;
 }
 
-
-Biome* WorldGenerator::getBiomeAt(const int& x, const int& z, const ChunkXZ& coord) {
-	return getBiomeType(_biomeNoise->getNoise(x, z, coord.x, coord.z));
-}
 
 void WorldGenerator::generateChunk(Chunk& chunk) {
 	_chunk = &chunk;
-	_biomeNoise->setSeed((chunk.coord.x ^ chunk.coord.z) << 2);
+	//_biomeNoise->setSeed((chunk.coord.x ^ chunk.coord.z) << 2);
 
 	generateBiomeMap();
 	generateHeightMap();
@@ -46,25 +47,12 @@ void WorldGenerator::generateChunk(Chunk& chunk) {
 }
 
 void WorldGenerator::generateHeightMap() {
-	auto getHeight = [&](int x, int z) {
-		return _biomeMap.get(x, z)->getHeight(x, z, _chunk->coord.x, _chunk->coord.z);
-	};
-
-	int topLeft = getHeight(0, 0);
-	int topRight = getHeight(CHUNK_SIZE, 0);
-	int bottomLeft = getHeight(0, CHUNK_SIZE);
-	int bottomRight = getHeight(CHUNK_SIZE, CHUNK_SIZE);
-
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++) {
-		_heightMap.set(x, z,
-					   //glm::mix(
-					   //	glm::mix(topLeft, topRight, x / (CHUNK_SIZE - 1.f)),
-					   //	glm::mix(bottomLeft, bottomRight, x / (CHUNK_SIZE - 1.f)),
-					   //	z / (CHUNK_SIZE - 1.f)
-					   //)
-					   getHeight(x, z)
-		);
+		int heightValue = _biomeMap.get(x, z)->getHeight(x, z, _chunk->coord.x, _chunk->coord.z);
+		_chunk->minimumPoint = std::min(_chunk->minimumPoint, heightValue);
+		_chunk->highestPoint = std::max(_chunk->highestPoint, heightValue + 10);
+		_heightMap.set(x, z, heightValue);
 	}
 }
 
@@ -91,7 +79,12 @@ void WorldGenerator::setBlocks() {
 			else if(y == height) {
 				if(y >= WATER_LEVEL) {
 					if(y < BEACH_LEVEL) {
-						_chunk->chunkData.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock());
+						if(y == BEACH_LEVEL - 3)
+							_chunk->chunkData.set(x, y, z, BlockID::SAND);
+						else if(y == BEACH_LEVEL - 2)
+							_chunk->chunkData.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockID::SAND : biome->getTopBlock());
+						else if(y == BEACH_LEVEL - 1)
+							_chunk->chunkData.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock());
 						continue;
 					}
 
@@ -124,14 +117,18 @@ void WorldGenerator::setBlocks() {
 	}
 }
 
+Biome* WorldGenerator::getBiomeAt(const int& x, const int& z, const ChunkXZ& coord) {
+	return getBiomeType(_biomeNoise->getNoise(x, z, coord.x, coord.z));
+}
+
 Biome* WorldGenerator::getBiomeType(const float& value) {
-	return _forest;
+	//return _forest;
 
 	//if(value > 160) return _ocean;
 	if(value > 150) return _grassland;
 	else if(value > 130) return _forest;
 	else if(value > 120) return _forest;
-	else if(value > 110) return _forest;
-	else if(value > 100) return _grassland;
+	else if(value > 110) return _grassland;
+	else if(value > 100) return _desert;
 	else return _desert;
 }

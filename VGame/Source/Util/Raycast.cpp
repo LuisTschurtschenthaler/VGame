@@ -15,7 +15,7 @@ glm::vec3 Raycast::getDirectBlock() {
 	glm::vec3 targetBlockPos(-1.f);
 
 	for(float i = 0; i < MAX_BLOCK_REACH_DISTANCE; i += 1.f) {
-		targetBlockPos = World::getPlayer().camera->ENTITY->position + static_cast<float>(i) * mouseRay;
+		targetBlockPos = World::getPlayer().camera->ENTITY->position + i * mouseRay;
 		BlockID BlockID = World::getChunkManager().getBlockID({
 			int(std::floor(targetBlockPos.x)),
 			int(std::floor(targetBlockPos.y)),

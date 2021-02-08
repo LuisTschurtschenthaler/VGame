@@ -56,11 +56,11 @@ struct LocationXYZ {
 		: x(x), y(y), z(z) { }
 
 
-	LocationXYZ operator+(const LocationXYZ& coord) {
+	LocationXYZ operator+(const LocationXYZ& coord) const {
 		return { x + coord.x, y + coord.y, z + coord.z };
 	}
 
-	LocationXYZ operator-(const LocationXYZ& coord) {
+	LocationXYZ operator-(const LocationXYZ& coord) const {
 		return { x - coord.x, y - coord.y, z - coord.z };
 	}
 

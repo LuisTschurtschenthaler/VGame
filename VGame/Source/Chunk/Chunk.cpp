@@ -1,3 +1,4 @@
+#include <chrono>
 #include <GLM/gtc/matrix_transform.hpp>
 #include <GLM/gtc/type_ptr.hpp>
 #include "Chunk.h"
@@ -21,12 +22,12 @@ Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 	meshesGenerated = false;
 	nearbyChunksDetected = false;
 	isDirty = false;
+
+	minimumPoint = CHUNK_HEIGHT;
+	highestPoint = WATER_LEVEL + 1;
 }
 
 Chunk::~Chunk() {
-	_fluid->clear();
-	_solid->clear();
-
 	delete _aabb;
 	delete _fluid;
 	delete _solid;
@@ -45,7 +46,6 @@ void Chunk::drawTransparent() {
 	_transparent->draw();
 }
 
-#include <chrono>
 void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* transparent) {
 	ChunkMesh* solidMesh = (solid == nullptr) ? this->_solid : solid;
 	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->_fluid : fluid;
@@ -61,12 +61,10 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 			World::worldGenerator->generateChunk(*chunk);
 	}
 	
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	
-
-	for(int x = 0; x < CHUNK_SIZE; x ++)
+	//std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++)
-	for(int y = 0; y < CHUNK_HEIGHT; y++) {
+	for(int y = minimumPoint; y < highestPoint; y++) {
 		BlockID blockID = chunkData.get(x, y, z);
 		if(blockID == BlockID::AIR)
 			continue;
@@ -99,9 +97,8 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		}
 	}
 	meshesGenerated = true;
-
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+	//std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	//std::cout << "Time needed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 }
 
 void Chunk::recreateChunkMesh() {

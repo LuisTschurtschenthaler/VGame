@@ -49,8 +49,10 @@ public:
 	static bool isLocationOutOfChunkRange(const LocationXYZ& location);
 
 private:
+	std::map<float, Chunk*> _getSortedCunks(const int& playerX, const int& playerZ);
 	void _setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location);
 	bool _chunkExists(const ChunkXZ& coord);
+	
 	void _generateChunks();
 
 };

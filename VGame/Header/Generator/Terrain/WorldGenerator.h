@@ -33,15 +33,12 @@ public:
 	WorldGenerator();
 	~WorldGenerator();
 
-	Biome* getBiomeAt(const int& x, const int& z, const ChunkXZ& coord);
-
 	void generateChunk(Chunk& chunk);
 	void generateHeightMap();
-
 	void generateBiomeMap();
-
 	void setBlocks();
 
+	Biome* getBiomeAt(const int& x, const int& z, const ChunkXZ& coord);
 	Biome* getBiomeType(const float& value);
 
 };

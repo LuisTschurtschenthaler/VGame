@@ -27,7 +27,8 @@ public:
 
 	Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
 	bool chunkDataGenerated, meshesGenerated, nearbyChunksDetected, isDirty;
-	
+	int highestPoint, minimumPoint;
+
 private:
 	ChunkMesh* _solid, *_fluid, *_transparent;
 	AABB* _aabb;

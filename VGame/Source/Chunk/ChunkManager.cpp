@@ -1,4 +1,5 @@
 #include <map>
+#include <algorithm>
 #include "ChunkManager.h"
 #include "Shader.h"
 #include "World.h"
@@ -10,7 +11,6 @@
 #include "Random.h"
 #include "World.h"
 #include "Biome.h"
-//#include "TerrainGenerator.h"
 #include "WorldGenerator.h"
 
 
@@ -46,44 +46,19 @@ void ChunkManager::draw() {
 	int playerX = int(World::getPlayer().position.x / CHUNK_SIZE),
 		playerZ = int(World::getPlayer().position.z / CHUNK_SIZE);
 
-	std::map<float, Chunk*> sortedChunks;
-	for(auto& it : _chunks) {
-		if(!it.second->meshesGenerated)
-			continue;
-
-		if(it.first.x < playerX - RENDER_DISTANCE || it.first.x > playerX + RENDER_DISTANCE ||
-		   it.first.z < playerZ - RENDER_DISTANCE || it.first.z > playerZ + RENDER_DISTANCE) {
-
-		}
-		else {
-			glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
-			glm::vec2 worldCoord = { it.second->worldCoord.x, it.second->worldCoord.z };
-
-			float distance = glm::length(playerPos - worldCoord);
-			sortedChunks[distance] = it.second;
-		}
-	}
+	std::map<float, Chunk*> sortedChunks = _getSortedCunks(playerX, playerZ);
 
 	_solidShader->bind();
 	_textureAtlas->getTexture().bind();
-
-	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
-		it != sortedChunks.rend(); it++) {
-
-		// Draw solid
+	
+	for(auto it = sortedChunks.rbegin(); it != sortedChunks.rend(); it++)
 		it->second->drawSolid();
-	}
-
-	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
-		it != sortedChunks.rend(); it++) {
+	for(auto it = sortedChunks.rbegin(); it != sortedChunks.rend(); it++)
 		it->second->drawTransparent();
-	}
+	
 	_solidShader->unbind();
 
-	for(std::map<float, Chunk*>::reverse_iterator it = sortedChunks.rbegin();
-		it != sortedChunks.rend(); it++) {
-
-		// Draw fluid
+	for(auto it = sortedChunks.rbegin(); it != sortedChunks.rend(); it++) {
 		_waterShader->bind();
 		_textureAtlas->getTexture().bind();
 		it->second->drawFluid();
@@ -93,22 +68,22 @@ void ChunkManager::draw() {
 
 void ChunkManager::findSpawnPoint(glm::vec3& position) {
 	const int c = 100;
-	
+
 	int chunkPosX = Random::get(0, CHUNK_SIZE - 1),
 		chunkPosZ = Random::get(0, CHUNK_SIZE - 1);
-	
+
 	Biome* biome = World::worldGenerator->getBiomeAt(chunkPosX, chunkPosZ, { c, c });
 	int height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, c, c));
-	
+
 	height = (height > WATER_LEVEL) ? height : WATER_LEVEL;
 	position = { chunkPosX + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE, height + 3, chunkPosZ + (c * CHUNK_SIZE) + HALF_BLOCK_SIZE };
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
 	nearbyChunks[CHUNK_RIGHT] = getChunk({ coord.x + 1, coord.z });
-	nearbyChunks[CHUNK_LEFT]  = getChunk({ coord.x - 1, coord.z });
+	nearbyChunks[CHUNK_LEFT] = getChunk({ coord.x - 1, coord.z });
 	nearbyChunks[CHUNK_FRONT] = getChunk({ coord.x, coord.z + 1 });
-	nearbyChunks[CHUNK_BACK]  = getChunk({ coord.x, coord.z - 1 });
+	nearbyChunks[CHUNK_BACK] = getChunk({ coord.x, coord.z - 1 });
 }
 
 void ChunkManager::removeBlock(const LocationXYZ& loc) {
@@ -121,6 +96,9 @@ void ChunkManager::placeBlock(const LocationXYZ& loc, BlockID blockID) {
 
 	_setNearbyChunksDirty(chunk, blockLoc);
 	chunk->chunkData.set(blockLoc, blockID);
+
+	chunk->minimumPoint = std::min(chunk->minimumPoint, loc.y - 1);
+	chunk->highestPoint = std::max(chunk->highestPoint, loc.y);
 }
 
 Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {
@@ -165,6 +143,28 @@ bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
 }
 
 
+std::map<float, Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int& playerZ) {
+	std::map<float, Chunk*> sortedChunks = std::map<float, Chunk*>();
+	for(auto it = _chunks.begin(); it != _chunks.end(); it++) {
+		if(!it->second->meshesGenerated)
+			continue;
+
+		int distanceX = playerX - it->first.x;
+		int distanceZ = playerZ - it->first.z;
+
+		if(distanceX < RENDER_DISTANCE && distanceX > -RENDER_DISTANCE &&
+		   distanceZ < RENDER_DISTANCE && distanceZ > -RENDER_DISTANCE) {
+
+			glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
+			glm::vec2 worldCoord = { it->second->worldCoord.x, it->second->worldCoord.z };
+
+			float distance = glm::length(playerPos - worldCoord);
+			sortedChunks[distance] = it->second;
+		}
+	}
+	return sortedChunks;
+}
+
 void ChunkManager::_setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location) {
 	chunk->isDirty = true;
 
@@ -195,7 +195,7 @@ void ChunkManager::_generateChunks() {
 				Chunk* chunk = getChunk({ x, z });
 				if(!chunk->chunkDataGenerated)
 					World::worldGenerator->generateChunk(*chunk);
-		
+
 				if(chunk->chunkDataGenerated && !chunk->meshesGenerated)
 					chunk->generateChunkMesh();
 				else if(chunk->isDirty)
