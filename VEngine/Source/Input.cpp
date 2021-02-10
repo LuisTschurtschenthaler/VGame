@@ -26,7 +26,7 @@ bool Key::wasPressedAndReleased() {
 
 
 Key Input::fullscreenKey = Key(KeyCode::KEY_F11);
-bool Input::_isEnabled = false;
+bool Input::isEnabled = false;
 SDL_Event Input::_event;
 int Input::_mouseX = 0;
 int Input::_mouseY = 0;
@@ -58,6 +58,8 @@ void Input::update() {
 				Window::setWindowSize(_event.window.data1, _event.window.data2);
 		} 
 
+		if(!isEnabled)
+			return;
 
 		// Keyboard
 		if(_event.type == SDL_KEYDOWN)
@@ -88,7 +90,7 @@ void Input::update() {
 bool Input::isKeyPressed(const int& key) {
 	bool result = false;
 
-	if(_isEnabled) {
+	if(isEnabled) {
 		std::map<int, bool>::iterator it = _keyStates.find(key);
 		if(it != _keyStates.end())
 			result = _keyStates[key];
@@ -110,7 +112,7 @@ bool Input::isMousebuttonPressed(const int& button) {
 
 void Input::setCursorVisible(bool visible) {
 	visible ? SDL_ShowCursor(1) : SDL_ShowCursor(0);
-	_isEnabled = !visible;
+	isEnabled = !visible;
 }
 
 void Input::setMousePosition(glm::vec2 position) {

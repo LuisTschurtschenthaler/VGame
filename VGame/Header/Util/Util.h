@@ -2,6 +2,10 @@
 #define UTIL_H
 
 #include <string>
+#include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
+#include <GLM/gtc/type_ptr.hpp>
+#include <GLEW/GL/glew.h>
 #include "Constants.h"
 
 template<typename Base, typename T>
@@ -13,6 +17,16 @@ inline bool instanceof(const T* ptr) {
 class Util {
 
 public:
+	static const glm::mat4& getModel(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) {
+		glm::mat4 model(1.f);
+		model = glm::translate(model, position);
+		model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+		model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+		model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+		model = glm::scale(model, scale);
+		return model;
+	}
+
 	static std::string angleToTime(float angle) {
 		std::string time = "";
 		return time;

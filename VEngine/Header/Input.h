@@ -23,10 +23,12 @@ struct Key {
 
 class Input {
 
+public:
+	static bool isEnabled;
+
 private:
 	static Key fullscreenKey;
 
-	static bool _isEnabled;
 	static SDL_Event _event;
 	static int _mouseX;
 	static int _mouseY;

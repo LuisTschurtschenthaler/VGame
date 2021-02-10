@@ -10,13 +10,15 @@
 #include "World.h"
 #include "Player.h"
 #include "Timer.h"
+#include "Input.h"
 #include "Crosshair.h"
 #include "EventDispatcher.h"
 #include "BlockEvents.h"
+#include "SplashScreen.h"
 
 
 EventDispatcher Game::eventDispatcher = EventDispatcher();
-GameState Game::gameState = GameState::GAME_ACTIVE;
+GameState Game::gameState = GameState::GAME_LOADING;
 bool Game::debugMode = false;
 float Game::dayTime = 0;
 
@@ -26,7 +28,6 @@ Game::Game() {
 
 	_textRenderer = new TextRenderer();
 	_textRenderer->init("./Resources/Fonts/font.ttf", 42);
-
 	EventDispatcher::registerEvents(eventDispatcher);
 }
 
@@ -43,7 +44,6 @@ void Game::update() {
 	if(Input::isKeyPressed(KeyCode::KEY_E))
 		dayTime += 1;
 	/* ------------ TEMP ------------ */
-
 	dayTime += CoreEngine::gameTimer->getDeltaTime();
 
 	_world->update();
@@ -53,8 +53,24 @@ void Game::update() {
 void Game::render() {
 	RenderUtil::clearScreen();
 
-	_world->draw();
-	_textRenderer->draw();
-	
-	Crosshair::draw();
+	switch(gameState) {
+		case GAME_LOADING:
+			if(_world->getChunkManager().getAmountOfLoadedChunks() >= SPAWN_CHUNKS) {
+				gameState = GAME_ACTIVE;
+			}
+			SplashScreen::draw(0);
+			break;
+
+		case GAME_ACTIVE:
+			if(!Input::isEnabled)
+				Input::isEnabled = true;
+
+			_world->draw();
+			_textRenderer->draw();
+			Crosshair::draw();
+			break;
+
+		case GAME_MENU:
+			break;
+	}
 }

@@ -14,14 +14,15 @@
 /* Player */
 #define RENDER_DISTANCE				10
 #define DESTROY_DISTANCE			(RENDER_DISTANCE + 2)
+#define SPAWN_CHUNKS				(4 * RENDER_DISTANCE * RENDER_DISTANCE)
 
 #define MOUSE_SENSITIVITY			0.075f
 #define MOUSE_TIMEOUT				0.05f
 
-#define WALK_SPEED					0.75f
+#define WALK_SPEED					0.8f
 #define FLY_SPEED					4.f
 #define JUMP_DURATION				1.f
-#define BLOCK_BREAK_DURATION		0.1f
+#define BLOCK_BREAK_DURATION		0.33f
 #define MAX_BLOCK_REACH_DISTANCE	6
 
 
@@ -31,7 +32,7 @@
 #define FOV_SPRINT_STEPS			3.f
 #define FOV_ZOOM					45.f
 #define NEAR_PLANE					0.001f
-#define FAR_PLANE					1000.f
+#define FAR_PLANE					500.f
 
 
 /* Physics */

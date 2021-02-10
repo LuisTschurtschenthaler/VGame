@@ -9,10 +9,10 @@ Player::Player()
 	: Entity() {
 	
 	World::getChunkManager().findSpawnPoint(position);
-	box = AABB({ 0.3f, 1.7f, 0.3f });
+	box = AABB({ 0.3f, 1.75f, 0.3f });
 	camera = new Camera(this);
 
-	isFlying = true;
+	isFlying = false;
 	isOnGround = false;
 	isJumping = false;
 	isSwimming = false;
@@ -35,7 +35,6 @@ void Player::update() {
 	isUnderwater = (World::getChunkManager().getBlockID({ int(position.x), int(position.y), int(position.z) }) == WATER);
 
 	_input();
-
 	camera->update();
 	box.update(position);
 

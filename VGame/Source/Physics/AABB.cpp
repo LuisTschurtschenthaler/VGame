@@ -32,7 +32,7 @@ void AABB::update(ChunkXZ pos) {
 
 void AABB::collision(Player& player, const glm::vec3& velocity) {
 	for(int x = player.position.x - dimensions.x; x < player.position.x + dimensions.x; x++)
-	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.3; y++)
+	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.15; y++)
 	for(int z = player.position.z - dimensions.z; z < player.position.z + dimensions.z; z++) {
 		
 		Block* block = BlockUtil::blocks[World::getChunkManager().getBlockID({ x, y, z })];
@@ -47,7 +47,7 @@ void AABB::collision(Player& player, const glm::vec3& velocity) {
 			}
 		
 			if(velocity.y > 0) {
-				player.position.y = y - 0.3;
+				player.position.y = y - 0.15;
 				player.velocity.y = 0;
 				player.isOnGround = false;
 			}

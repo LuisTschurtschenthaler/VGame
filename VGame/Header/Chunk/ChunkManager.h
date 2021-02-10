@@ -45,6 +45,8 @@ public:
 	LocationXYZ getBlockLocation(const LocationXYZ& location);
 	BlockID getBlockID(const LocationXYZ& location);
 
+	const int getAmountOfLoadedChunks() const { return _chunks.size(); }
+
 	static bool isLocationOutOfChunkRange(const LocationXYZ& location);
 
 private:

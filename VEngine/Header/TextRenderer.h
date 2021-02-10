@@ -22,11 +22,11 @@ struct Character {
 	unsigned int advance;
 };
 
-struct GameInfo {
+struct Text {
 	std::string text;
 	float x, y;
 
-	GameInfo(std::string text, float x, float y)
+	Text(std::string text, float x, float y)
 		: text(text), x(x), y(y) {
 	}
 };
@@ -58,7 +58,7 @@ public:
 	};
 
 private:
-	std::vector<GameInfo> _gameInfos;
+	std::vector<Text> _gameInfos;
 	std::map<GLchar, Character> _characters;
 	FT_Library _freeType;
 	FT_Face _face;
@@ -74,7 +74,6 @@ public:
 
 	void init(std::string fontPath, int fontSize);
 	void update(Player* player);
-	//void draw(std::string text, float x, float y, float scale = 1.f, glm::vec3 color = glm::vec3(1.f));
 	void draw();
 
 };

@@ -1,6 +1,4 @@
 #include <chrono>
-#include <GLM/gtc/matrix_transform.hpp>
-#include <GLM/gtc/type_ptr.hpp>
 #include "Chunk.h"
 #include "World.h"
 #include "ChunkManager.h"
@@ -115,16 +113,6 @@ void Chunk::recreateChunkMesh() {
 	_fluid = fluid;
 	_transparent = transparent;
 	isDirty = false;
-}
-
-const glm::mat4& Chunk::getModel() {
-	glm::mat4 model(1.f);
-	model = glm::translate(model, glm::vec3(worldCoord.x, 0, worldCoord.z));
-	model = glm::rotate(model, glm::radians(0.f), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, glm::radians(0.f), glm::vec3(0, 1, 0));
-	model = glm::rotate(model, glm::radians(0.f), glm::vec3(0, 0, 1));
-	model = glm::scale(model, glm::vec3(1.f));
-	return model;
 }
 
 const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
