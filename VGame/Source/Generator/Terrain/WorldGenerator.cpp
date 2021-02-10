@@ -37,7 +37,6 @@ WorldGenerator::~WorldGenerator() {
 
 void WorldGenerator::generateChunk(Chunk& chunk) {
 	_chunk = &chunk;
-	//_biomeNoise->setSeed((chunk.coord.x ^ chunk.coord.z) << 2);
 
 	generateBiomeMap();
 	generateHeightMap();

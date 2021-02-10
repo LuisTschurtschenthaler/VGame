@@ -9,7 +9,7 @@ Player::Player()
 	: Entity() {
 	
 	World::getChunkManager().findSpawnPoint(position);
-	box = AABB({ 0.3f, 1.75f, 0.3f });
+	box = AABB({ 0.3f, 1.7f, 0.3f });
 	camera = new Camera(this);
 
 	isFlying = true;
@@ -36,12 +36,12 @@ void Player::update() {
 
 	_input();
 
+	camera->update();
+	box.update(position);
+
 	velocity.x *= 0.85;
 	if(isFlying) velocity.y *= 0.85;
 	velocity.z *= 0.85;
-
-	camera->update();
-	box.update(position);
 
 
 	auto doCollision = [&](const glm::vec3& velocity) {

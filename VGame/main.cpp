@@ -20,7 +20,7 @@
 
 int main() {
 	Window::create(1980, 1020, false, true, "VGame");
-	
+
 	Game game;
 	CoreEngine coreEngine(&game);
 	coreEngine.start();

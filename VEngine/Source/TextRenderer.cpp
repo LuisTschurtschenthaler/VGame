@@ -120,7 +120,7 @@ void TextRenderer::update(Player* player) {
 	
 	std::string chunkPositionXYZ = "Chunk: " 
 				+ std::to_string(static_cast<int>(std::floor(playerPos.x / CHUNK_SIZE))) 
-		+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.y / CHUNK_SIZE)))
+		//+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.y / CHUNK_SIZE)))
 		+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.z / CHUNK_SIZE)));
 
 	//std::string biome = "Biome: " + World::terrainGenerator->getBiomeAt()

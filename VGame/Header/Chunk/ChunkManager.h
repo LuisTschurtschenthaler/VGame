@@ -34,7 +34,6 @@ public:
 	void draw();
 
 	void findSpawnPoint(glm::vec3& position);
-	
 	void getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks);
 
 	void removeBlock(const LocationXYZ& location);
@@ -51,6 +50,7 @@ public:
 private:
 	std::map<float, Chunk*> _getSortedCunks(const int& playerX, const int& playerZ);
 	void _setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location);
+	void _setNearbyChunksMinMax(Chunk* chunk, const int& min, const int& max);
 	bool _chunkExists(const ChunkXZ& coord);
 	
 	void _generateChunks();

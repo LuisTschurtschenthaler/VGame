@@ -1,4 +1,5 @@
 #include <map>
+#include <vector>
 #include <algorithm>
 #include "ChunkManager.h"
 #include "Shader.h"
@@ -72,29 +73,29 @@ void ChunkManager::findSpawnPoint(glm::vec3& position) {
 
 	int chunkX, chunkZ, chunkPosX, chunkPosZ;
 	do {
-		attempts++;
-
 		chunkX = Random::getIntInRange(100, 200);
 		chunkZ = Random::getIntInRange(100, 200);
 		chunkPosX = Random::get(0, CHUNK_SIZE - 1);
 		chunkPosZ = Random::get(0, CHUNK_SIZE - 1);
 
 		Biome* biome = World::worldGenerator->getBiomeAt(chunkPosX, chunkPosZ, { chunkX, chunkZ });
-		height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, chunkX, chunkZ)) + 5;
-	} while(height < WATER_LEVEL);
+		height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, chunkX, chunkZ));
+		
+		attempts++;
+	} while(height <= WATER_LEVEL);
 
 	int worldPosX = chunkPosX + chunkX * CHUNK_SIZE,
 		worldPosZ = chunkPosZ + chunkZ * CHUNK_SIZE;
 
-	position = { worldPosX, height, worldPosZ };
+	position = { worldPosX, height + 5, worldPosZ };
 	std::cout << "Attempts for spawn finding: " << attempts << std::endl;
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
 	nearbyChunks[CHUNK_RIGHT] = getChunk({ coord.x + 1, coord.z });
-	nearbyChunks[CHUNK_LEFT] = getChunk({ coord.x - 1, coord.z });
+	nearbyChunks[CHUNK_LEFT]  = getChunk({ coord.x - 1, coord.z });
 	nearbyChunks[CHUNK_FRONT] = getChunk({ coord.x, coord.z + 1 });
-	nearbyChunks[CHUNK_BACK] = getChunk({ coord.x, coord.z - 1 });
+	nearbyChunks[CHUNK_BACK]  = getChunk({ coord.x, coord.z - 1 });
 }
 
 void ChunkManager::removeBlock(const LocationXYZ& loc) {
@@ -106,10 +107,8 @@ void ChunkManager::placeBlock(const LocationXYZ& loc, BlockID blockID) {
 	LocationXYZ blockLoc = getBlockLocation(loc);
 
 	_setNearbyChunksDirty(chunk, blockLoc);
+	_setNearbyChunksMinMax(chunk, loc.y - 1, loc.y + 1);
 	chunk->chunkData.set(blockLoc, blockID);
-
-	chunk->minimumPoint = std::min(chunk->minimumPoint, loc.y - 1);
-	chunk->highestPoint = std::max(chunk->highestPoint, loc.y + 1);
 }
 
 Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {
@@ -156,33 +155,52 @@ bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
 
 std::map<float, Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int& playerZ) {
 	std::map<float, Chunk*> sortedChunks = std::map<float, Chunk*>();
-	for(auto it = _chunks.begin(); it != _chunks.end(); it++) {
-		if(!it->second->meshesGenerated)
+
+	for(auto& it : _chunks) {
+		if(!it.second->meshesGenerated)
 			continue;
 
-		int distanceX = playerX - it->first.x;
-		int distanceZ = playerZ - it->first.z;
+		int distanceX = playerX - it.first.x;
+		int distanceZ = playerZ - it.first.z;
 
 		if(distanceX < RENDER_DISTANCE && distanceX > -RENDER_DISTANCE &&
 		   distanceZ < RENDER_DISTANCE && distanceZ > -RENDER_DISTANCE) {
 
 			glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
-			glm::vec2 worldCoord = { it->second->worldCoord.x, it->second->worldCoord.z };
+			glm::vec2 worldCoord = { it.second->worldCoord.x, it.second->worldCoord.z };
 
 			float distance = glm::length(playerPos - worldCoord);
-			sortedChunks[distance] = it->second;
+			sortedChunks[distance] = it.second;
 		}
 	}
 	return sortedChunks;
 }
 
 void ChunkManager::_setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location) {
-	chunk->isDirty = true;
+	auto setNearbyChunkDirty = [](Chunk* nearbyChunk, bool locationCheck) {
+		if(nearbyChunk != nullptr && locationCheck) nearbyChunk->isDirty = true;
+	};
 
-	if(chunk->nearbyChunks[CHUNK_LEFT] != nullptr && location.x == 0) chunk->nearbyChunks[CHUNK_LEFT]->isDirty = true;
-	if(chunk->nearbyChunks[CHUNK_BACK] != nullptr && location.z == 0) chunk->nearbyChunks[CHUNK_BACK]->isDirty = true;
-	if(chunk->nearbyChunks[CHUNK_RIGHT] != nullptr && location.x == CHUNK_SIZE - 1) chunk->nearbyChunks[CHUNK_RIGHT]->isDirty = true;
-	if(chunk->nearbyChunks[CHUNK_FRONT] != nullptr && location.z == CHUNK_SIZE - 1) chunk->nearbyChunks[CHUNK_FRONT]->isDirty = true;
+	chunk->isDirty = true;
+	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_LEFT], (location.x == 0));
+	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_BACK], (location.z == 0));
+	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_RIGHT], (location.x == CHUNK_SIZE - 1));
+	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_FRONT], (location.z == CHUNK_SIZE - 1));
+}
+
+void ChunkManager::_setNearbyChunksMinMax(Chunk* chunk, const int& min, const int& max) {
+	auto setMinMax = [](Chunk* nearbyChunk, const int& min, const int& max) {
+		if(nearbyChunk != nullptr) {
+			nearbyChunk->minimumPoint = std::min(nearbyChunk->minimumPoint, min);
+			nearbyChunk->highestPoint = std::max(nearbyChunk->highestPoint, max);
+		}
+	};
+
+	setMinMax(chunk, min, max);
+	setMinMax(chunk->nearbyChunks[CHUNK_LEFT], min, max);
+	setMinMax(chunk->nearbyChunks[CHUNK_BACK], min, max);
+	setMinMax(chunk->nearbyChunks[CHUNK_RIGHT], min, max);
+	setMinMax(chunk->nearbyChunks[CHUNK_FRONT], min, max);
 }
 
 bool ChunkManager::_chunkExists(const ChunkXZ& coord) {
@@ -195,23 +213,20 @@ void ChunkManager::_generateChunks() {
 		int currentChunkX = int(World::getPlayer().position.x / CHUNK_SIZE);
 		int currentChunkZ = int(World::getPlayer().position.z / CHUNK_SIZE);
 
-		for(int i = 0; i < RENDER_DISTANCE; i++) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+		for(int i = 0; i <= RENDER_DISTANCE; i++)
+		for(int x = currentChunkX - i; x < currentChunkX + i; x++)
+		for(int z = currentChunkZ - i; z < currentChunkZ + i; z++) {
+			if(World::disposed) return;
+			if(x <= 0 || z <= 0) continue;
 
-			for(int x = currentChunkX - i; x <= currentChunkX + i; x++)
-			for(int z = currentChunkZ - i; z <= currentChunkZ + i; z++) {
-				if(World::disposed) return;
-				if(x <= 0 || z <= 0) continue;
+			Chunk* chunk = getChunk({ x, z });
+			if(!chunk->chunkDataGenerated)
+				World::worldGenerator->generateChunk(*chunk);
 
-				Chunk* chunk = getChunk({ x, z });
-				if(!chunk->chunkDataGenerated)
-					World::worldGenerator->generateChunk(*chunk);
-
-				if(chunk->chunkDataGenerated && !chunk->meshesGenerated)
-					chunk->generateChunkMesh();
-				else if(chunk->isDirty)
-					chunk->recreateChunkMesh();
-			}
+			if(chunk->chunkDataGenerated && !chunk->meshesGenerated)
+				chunk->generateChunkMesh();
+			else if(chunk->isDirty)
+				chunk->recreateChunkMesh();
 		}
 	}
 }
