@@ -1,31 +1,31 @@
 #include <GLEW/GL/glew.h>
 #include <GLM/glm.hpp>
-#include "SplashScreen.h"
+#include "LoadingScreen.h"
 #include "Shader.h"
 #include "Texture.h"
 
 
-float SplashScreen::_vertices[] = {
+float LoadingScreen::_vertices[] = {
 	 0.5f,  0.5f, 0.f,	1.f, 0.f,
 	 0.5f, -0.5f, 0.f,	1.f, 1.f,
 	-0.5f, -0.5f, 0.f,	0.f, 1.f,
 	-0.5f,  0.5f, 0.f,	0.f, 0.f
 };
 
-unsigned int SplashScreen::_indices[] = {
+unsigned int LoadingScreen::_indices[] = {
 	0, 1, 3,
 	1, 2, 3
 };
 
-Shader* SplashScreen::_shader = nullptr;
-Texture* SplashScreen::_textureLogo = nullptr;
-unsigned int SplashScreen::_VBO = 0;
-unsigned int SplashScreen::_IBO = 0;
+Shader* LoadingScreen::_shader = nullptr;
+Texture* LoadingScreen::_textureLogo = nullptr;
+unsigned int LoadingScreen::_VBO = 0;
+unsigned int LoadingScreen::_IBO = 0;
 
 
-void SplashScreen::init() {
+void LoadingScreen::init() {
 	_shader = new Shader("basic_vert.glsl", "basic_frag.glsl");
-	_textureLogo = new Texture("./Resources/Textures/Window/Logo.png", 1);
+	_textureLogo = new Texture("Window/Logo.png", 1);
 
 	glGenBuffers(1, &_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
@@ -36,7 +36,7 @@ void SplashScreen::init() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices), _indices, GL_STATIC_DRAW);
 }
 
-void SplashScreen::draw(const int& loadedChunks) {
+void LoadingScreen::draw(const int& loadedChunks) {
 	_shader->bind();
 	_textureLogo->bind();
 	_shader->setInt("test", _textureLogo->getID());

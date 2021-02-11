@@ -14,11 +14,11 @@
 #include "Crosshair.h"
 #include "EventDispatcher.h"
 #include "BlockEvents.h"
-#include "SplashScreen.h"
+#include "LoadingScreen.h"
 
 
 EventDispatcher Game::eventDispatcher = EventDispatcher();
-GameState Game::gameState = GameState::GAME_LOADING;
+GameState Game::gameState = GameState::GAME_ACTIVE;
 bool Game::debugMode = false;
 float Game::dayTime = 0;
 
@@ -55,10 +55,10 @@ void Game::render() {
 
 	switch(gameState) {
 		case GAME_LOADING:
-			if(_world->getChunkManager().getAmountOfLoadedChunks() >= SPAWN_CHUNKS) {
+			if(_world->getChunkManager().getAmountOfLoadedChunks() >= SPAWN_CHUNKS)
 				gameState = GAME_ACTIVE;
-			}
-			SplashScreen::draw(0);
+
+			LoadingScreen::draw(0);
 			break;
 
 		case GAME_ACTIVE:

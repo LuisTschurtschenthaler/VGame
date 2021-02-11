@@ -1,7 +1,7 @@
 #ifndef MATH_H
 #define MATH_H
 
-#include "WorldConstants.h"
+#include "Constants.h"
 
 namespace Math {
 

@@ -136,10 +136,10 @@ void Player::_handleMouseButtons() {
 }
 
 void Player::_handleFOV() {
-	if(Input::isKeyPressed(KeyCode::KEY_C))
+	/*if(Input::isKeyPressed(KeyCode::KEY_C))
 		camera->fov = FOV_ZOOM;
 
-	else if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
+	else*/ if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
 	   Input::isKeyPressed(KeyCode::KEY_W)) {
 
 		if(camera->fov < FOV_SPRINT)

@@ -1,19 +1,37 @@
 #version 440 core
 out vec4 color;
 
-in vec2 vs_texCoord;
+in vec3 vs_position;
 in vec3 vs_normal;
+in vec2 vs_texCoord;
 in float vs_ambientOcclusion;
 
 uniform sampler2D textureAtlas;
+uniform vec3 playerPosition;
+uniform int renderDistance;
+
+const vec3 FOG_COLOR = vec3(220.f/255.f, 219.f/255.f, 223.f/255.f);
+
+
+float getFogFactor() {
+	const float FOG_MAX = renderDistance;
+	const float FOG_MIN = FOG_MAX - 100.f;
+
+	float dist = distance(playerPosition, vs_position);
+	return ((dist - FOG_MIN) / (FOG_MAX - FOG_MIN));
+}
 
 
 void main() {
 	vec4 textureColor = texture(textureAtlas, vs_texCoord.xy);
-	if(textureColor.a == 0.f) discard;
 
-	float ambient = clamp((vs_ambientOcclusion + 1.f) / 4.f, 0.5f, 1.f);
+	float fogFactor = getFogFactor();
+	fogFactor = clamp(fogFactor, 0.f, 1.f);
 
-	vec3 result = (textureColor.rgb * (ambient));
+	if(textureColor.a == 0.f || fogFactor >= 1.f) discard;
+
+	vec3 result = textureColor.rgb;
+	result = mix(result, vec3(0.05f), vs_ambientOcclusion * 0.3f * distance(vs_texCoord, vec2(0.5f)));
+	result = mix(result, FOG_COLOR, fogFactor);
 	color = (vec4(result, textureColor.a));
 }

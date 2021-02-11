@@ -57,15 +57,15 @@ void Structure::fillY(const LocationXYZ& start, BlockID block, int height) {
 }
 
 void Structure::clearEdges(const LocationXYZ& pos, int distance) {
-	auto remove = [&](const LocationXYZ& location) {
+	auto removeBlock = [&](const LocationXYZ& location) {
 		_structureBlocks.erase(
 		std::remove_if(_structureBlocks.begin(), _structureBlocks.end(),
 			[&](SturctureBlock it) { return (it.position == location); }
 		));
 	};
 
-	remove({ pos.x + distance, pos.y, pos.z + distance });
-	remove({ pos.x + distance, pos.y, pos.z - distance });
-	remove({ pos.x - distance, pos.y, pos.z + distance });
-	remove({ pos.x - distance, pos.y, pos.z - distance });
+	removeBlock({ pos.x + distance, pos.y, pos.z + distance });
+	removeBlock({ pos.x + distance, pos.y, pos.z - distance });
+	removeBlock({ pos.x - distance, pos.y, pos.z + distance });
+	removeBlock({ pos.x - distance, pos.y, pos.z - distance });
 }

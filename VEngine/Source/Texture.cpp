@@ -3,15 +3,17 @@
 #include <GLEW/GL/glew.h>
 #include "Texture.h"
 #include "Log.h"
+#include "Constants.h"
 
 
-Texture::Texture(const char* filename, int unit)
+Texture::Texture(const std::string& filename, int unit)
 	: _unit(unit) {
 
 	glGenTextures(1, &_id);
 	glBindTexture(GL_TEXTURE_2D, _id);
 	
-	unsigned char* data = stbi_load(filename, &_width, &_height, NULL, STBI_rgb_alpha);
+	std::string path = PATH_TEXTURES + filename;
+	unsigned char* data = stbi_load(path.c_str(), &_width, &_height, NULL, STBI_rgb_alpha);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -51,7 +53,7 @@ GLuint Texture::loadCubemap(std::vector<std::string> textures) {
 	unsigned char* data;
 
 	for(unsigned int i = 0; i < textures.size(); i++) {
-		std::string path = "./Resources/Textures/" + textures[i];
+		std::string path = PATH_TEXTURES + textures[i];
 		data = stbi_load(path.c_str(), &width, &height, NULL, 0);
 
 		if(data)

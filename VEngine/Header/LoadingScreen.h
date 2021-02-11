@@ -1,5 +1,5 @@
-#ifndef SPLASH_SCREEN_H
-#define SPLASH_SCREEN_H
+#ifndef LOADING_SCREEN_H
+#define LOADING_SCREEN_H
 
 #include <vector>
 #include "Vertex.h"
@@ -8,14 +8,17 @@ class Shader;
 class Texture;
 
 
-class SplashScreen {
+class LoadingScreen {
 
 private:
 	static Shader* _shader;
 	static Texture* _textureLogo;
+	static Texture* _loadingBar[];
+
 	static float _vertices[];
 	static unsigned int _indices[];
 	static unsigned int _VBO, _IBO;
+
 
 public:
 	static void init();
@@ -23,4 +26,4 @@ public:
 
 };
 
-#endif // SPLASH_SCREEN_H
+#endif // LOADING_SCREEN_H

@@ -9,7 +9,7 @@
 #include "TextRenderer.h"
 #include "FramerateCounter.h"
 #include "Timer.h"
-#include "SplashScreen.h"
+#include "LoadingScreen.h"
 
 
 Timer* CoreEngine::gameTimer = new Timer();
@@ -43,7 +43,7 @@ void CoreEngine::_run() {
 	Log::setFile("./VGame.log");
 	Input::init();
 	Random::init();
-	SplashScreen::init();
+	LoadingScreen::init();
 
 	while(_isRunning) {
 		if(Window::shouldClose())

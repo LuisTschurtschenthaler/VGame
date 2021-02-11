@@ -10,6 +10,10 @@
 /* General */
 #define CARDIAL_POINT_RANGE			22.5
 
+/* File system */
+#define PATH_SHADERS				"./Resources/Shaders/"
+#define PATH_TEXTURES				"./Resources/Textures/"
+
 
 /* Player */
 #define RENDER_DISTANCE				10

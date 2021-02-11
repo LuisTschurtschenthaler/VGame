@@ -83,7 +83,6 @@ void Input::update() {
 		// --------> SDL_MOUSEWHEEL
 	}
 
-
 	fullscreenKey.update();
 }
 
@@ -95,7 +94,6 @@ bool Input::isKeyPressed(const int& key) {
 		if(it != _keyStates.end())
 			result = _keyStates[key];
 	}
-
 	return result;
 
 }
@@ -106,13 +104,12 @@ bool Input::isMousebuttonPressed(const int& button) {
 	std::map<int, bool>::iterator it = _mousebuttonStates.find(button);
 	if(it != _mousebuttonStates.end())
 		result = _mousebuttonStates[button];
-
 	return result;
 }
 
 void Input::setCursorVisible(bool visible) {
 	visible ? SDL_ShowCursor(1) : SDL_ShowCursor(0);
-	isEnabled = !visible;
+	isEnabled = !isEnabled;
 }
 
 void Input::setMousePosition(glm::vec2 position) {

@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 
+
 class Texture {
 
 private:
@@ -15,7 +16,7 @@ private:
 
 public:
 	Texture() { }
-	Texture(const char* filename, int unit);
+	Texture(const std::string& filename, int unit);
 	~Texture();
 
 	void bind();

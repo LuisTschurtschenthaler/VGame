@@ -18,7 +18,7 @@
 ChunkManager::ChunkManager() {
 	_solidShader = new Shader("ChunkShader/solid_vert.glsl", "ChunkShader/solid_frag.glsl");
 	_waterShader = new Shader("ChunkShader/fluid_vert.glsl", "ChunkShader/fluid_frag.glsl");
-	_textureAtlas = new TextureAtlas("./Resources/Textures/Blocks/Atlas.png", 0);
+	_textureAtlas = new TextureAtlas("Blocks/Atlas.png", 0);
 
 	_threads.emplace_back([&]() { _generateChunks(); });
 }
@@ -37,10 +37,14 @@ void ChunkManager::update() {
 	_solidShader->setInt("textureAtlas", _textureAtlas->getTextureID());
 	_solidShader->setMat4("projection", World::getPlayer().camera->getProjection());
 	_solidShader->setMat4("view", World::getPlayer().camera->getView());
+	_solidShader->setVec3("playerPosition", World::getPlayer().position);
+	_solidShader->setInt("renderDistance", (RENDER_DISTANCE * CHUNK_SIZE));
 
 	_waterShader->setInt("textureAtlas", _textureAtlas->getTextureID());
 	_waterShader->setMat4("projection", World::getPlayer().camera->getProjection());
 	_waterShader->setMat4("view", World::getPlayer().camera->getView());
+	_waterShader->setVec3("playerPosition", World::getPlayer().position);
+	_waterShader->setInt("renderDistance", (RENDER_DISTANCE * CHUNK_SIZE));
 }
 
 void ChunkManager::draw() {

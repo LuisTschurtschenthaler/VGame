@@ -4,6 +4,7 @@
 #include "TextureAtlas.h"
 #include "Game.h"
 #include "Player.h"
+#include "Constants.h"
 
 
 Shader::Shader(const std::string& vertexShader, const std::string& fragmentShader, const std::string& geometryShader) {
@@ -151,8 +152,7 @@ void Shader::_link() {
 }
 
 std::string Shader::_readFile(const std::string path) {
-	std::string dir = "./Resources/Shaders/";
-	std::ifstream file(dir + path);
+	std::ifstream file(PATH_SHADERS + path);
 	std::string code = "";
 
 	if(!file)
