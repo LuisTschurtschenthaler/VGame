@@ -10,12 +10,10 @@ uniform sampler2D textureAtlas;
 uniform vec3 playerPosition;
 uniform int renderDistance;
 
-const vec3 FOG_COLOR = vec3(220.f/255.f, 219.f/255.f, 223.f/255.f);
-
 
 float getFogFactor() {
 	const float FOG_MAX = renderDistance;
-	const float FOG_MIN = FOG_MAX - 100.f;
+	const float FOG_MIN = FOG_MAX - 25.f;
 
 	float dist = distance(playerPosition, vs_position);
 	return ((dist - FOG_MIN) / (FOG_MAX - FOG_MIN));
@@ -32,6 +30,5 @@ void main() {
 
 	vec3 result = textureColor.rgb;
 	result = mix(result, vec3(0.05f), vs_ambientOcclusion * 0.3f * distance(vs_texCoord, vec2(0.5f)));
-	result = mix(result, FOG_COLOR, fogFactor);
-	color = (vec4(result, textureColor.a));
+	color = (vec4(result, (textureColor.a - fogFactor)));
 }

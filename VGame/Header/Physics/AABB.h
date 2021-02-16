@@ -3,6 +3,7 @@
 
 #include <GLM/glm.hpp>
 #include "Coordinates.h"
+#include "ParticleEmitter.h"
 
 class Player;
 class ChunkManager;
@@ -23,6 +24,8 @@ public:
 	void update(glm::vec3 pos);
 	void update(ChunkXZ pos);
 	void collision(Player& player, const glm::vec3& velocity);
+	
+	static void collision(Particle& particle);
 
 	static glm::vec3 rayIntersectionWithBlock(glm::vec3 playerPos, glm::vec3 targetPos, glm::vec3 blockPos);
 

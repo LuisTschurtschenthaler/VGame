@@ -17,9 +17,9 @@
 
 void Player::_input() {
 	_handleKeyboardInputs();
+	_handleFOV();
 	_handleMouseMove();
 	_handleMouseButtons();
-	_handleFOV();
 }
 
 void Player::_handleKeyboardInputs() {
@@ -32,21 +32,20 @@ void Player::_handleKeyboardInputs() {
 	/* Input */
 	glm::vec3 change(0.f);
 	if(Input::isKeyPressed(KeyCode::KEY_W))
-		change += _toHorizontal(camera->movingFront) * movementSpeed;
+		change += camera->movingFront * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_A))
-		change -= _toHorizontal(camera->right) * movementSpeed;
+		change -= camera->right * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_S))
-		change -= _toHorizontal(camera->movingFront) * movementSpeed;
+		change -= camera->movingFront * movementSpeed;
 
 	if(Input::isKeyPressed(KeyCode::KEY_D))
-		change += _toHorizontal(camera->right) * movementSpeed;
+		change += camera->right * movementSpeed;
 
 
 	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
-		if(isFlying) 
-			change.y += -movementSpeed - 0.05;
+		if(isFlying) change.y += -movementSpeed - 0.05;
 
 	//if(Input::isKeyDoublePressed(KeyCode::KEY_SPACE)) else if
 	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {
@@ -73,7 +72,7 @@ void Player::_handleKeyboardInputs() {
 			change.y -= gravity;
 
 			_jump += 0.125;
-			change.y += (1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0125;
+			change.y += std::sqrt((1 - _jump / JUMP_DURATION) * gravity * 0.175f); //(1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0125;
 
 			if(_jump >= JUMP_DURATION)
 				isJumping = false;
@@ -136,10 +135,7 @@ void Player::_handleMouseButtons() {
 }
 
 void Player::_handleFOV() {
-	/*if(Input::isKeyPressed(KeyCode::KEY_C))
-		camera->fov = FOV_ZOOM;
-
-	else*/ if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
+	if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
 	   Input::isKeyPressed(KeyCode::KEY_W)) {
 
 		if(camera->fov < FOV_SPRINT)
@@ -153,8 +149,4 @@ void Player::_handleFOV() {
 	}
 
 	else camera->fov = FOV;
-}
-
-glm::vec3 Player::_toHorizontal(const glm::vec3& vec) {
-	return { vec.x, 0.f, vec.z };
 }

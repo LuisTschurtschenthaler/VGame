@@ -26,6 +26,10 @@ int Random::getIntInRange(int min, int max) {
 	return dist(_rd);
 }
 
+float Random::getFloatInRange(float min, float max) {
+	return (((float) rand() / RAND_MAX) * (max - min) + min);
+}
+
 bool Random::getBool() {
 	return (0 + (rand() % (1 - 0 + 1)) == 1);
 }

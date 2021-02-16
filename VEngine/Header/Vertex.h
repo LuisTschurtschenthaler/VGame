@@ -20,8 +20,17 @@ struct Vertex {
 		texCoords = TextureAtlas::getTextureCoords(uv, ((textureID == -1) ? 255 : textureID));
 	}
 
-	Vertex(glm::vec3 positions, glm::vec2 texCoords)
+	Vertex(glm::vec3 position, glm::vec2 texCoords)
 		: position(position), texCoords(texCoords) {
+	}
+};
+
+struct ParticleVertex {
+	glm::vec3 position;
+	glm::vec2 texCoords;
+
+	ParticleVertex()
+		: position(glm::vec3(0.f)), texCoords(glm::vec2(0.f)) {
 	}
 };
 

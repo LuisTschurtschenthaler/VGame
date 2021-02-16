@@ -5,6 +5,7 @@ class Skybox;
 class Player;
 class ChunkManager;
 class WorldGenerator;
+class ParticleSystem;
 
 
 class World {
@@ -17,6 +18,7 @@ private:
 	static Skybox* _skybox;
 	static Player* _player;
 	static ChunkManager* _chunkManager;
+	static ParticleSystem* _particleSystem;
 
 
 public:
@@ -28,6 +30,7 @@ public:
 	
 	static Player& getPlayer() { return *_player; }
 	static ChunkManager& getChunkManager() { return *_chunkManager; }
+	static ParticleSystem& getParticleSystem() { return *_particleSystem; }
 
 };
 

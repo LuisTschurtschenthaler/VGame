@@ -15,6 +15,13 @@ TextureAtlas::TextureAtlas(const char* texturePath, int textureUnit) {
 TextureAtlas::~TextureAtlas() {
 }
 
+
+void TextureAtlas::updateUniforms(Shader* shader) {
+	_textureAtlas->bind();
+
+	shader->setInt("textureAtlas", _textureAtlas->getID());
+}
+
 glm::vec2 TextureAtlas::getTextureCoords(glm::vec2 uv, const int textureID) {
 	float x = textureID % _tileSize;
 	float y = std::floor(textureID / _tileSize);
@@ -32,10 +39,4 @@ glm::vec2 TextureAtlas::getTextureCoords(glm::vec2 uv, const int textureID) {
 	else if(uv == glm::vec2(0.f, 1.f))
 		result = glm::vec2((x * _tileSize / _atlasSize), ((y + 1.f) * _tileSize / _atlasSize));
 	return result;
-}
-
-void TextureAtlas::updateUniforms(Shader* shader) {
-	_textureAtlas->bind();
-
-	shader->setInt("textureAtlas", _textureAtlas->getID());
 }

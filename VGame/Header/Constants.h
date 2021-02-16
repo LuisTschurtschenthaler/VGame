@@ -1,7 +1,6 @@
 #ifndef WORLD_CONSTANTS_H
 #define WORLD_CONSTANTS_H
 
-
 /* Maths */
 #define PI							3.14159265359
 #define PI2							(PI * 2)
@@ -9,6 +8,8 @@
 
 /* General */
 #define CARDIAL_POINT_RANGE			22.5
+#define MAX_BLOCK_BREAK_PARTICLES	50
+
 
 /* File system */
 #define PATH_SHADERS				"./Resources/Shaders/"
@@ -17,14 +18,14 @@
 
 /* Player */
 #define RENDER_DISTANCE				10
-#define DESTROY_DISTANCE			(RENDER_DISTANCE + 2)
+#define DESTROY_DISTANCE			(RENDER_DISTANCE + 5)
 #define SPAWN_CHUNKS				(4 * RENDER_DISTANCE * RENDER_DISTANCE)
 
 #define MOUSE_SENSITIVITY			0.075f
 #define MOUSE_TIMEOUT				0.05f
 
 #define WALK_SPEED					0.8f
-#define FLY_SPEED					4.f
+#define FLY_SPEED					3.f
 #define JUMP_DURATION				1.f
 #define BLOCK_BREAK_DURATION		0.33f
 #define MAX_BLOCK_REACH_DISTANCE	6
@@ -46,8 +47,6 @@
 /* World */
 #define MIN_LIGHT_LEVEL				0
 #define MAX_LIGHT_LEVEL				15
-
-#define MAX_DECORATIONS				8
 
 #define BLOCK_SIZE					1.f
 #define HALF_BLOCK_SIZE				(BLOCK_SIZE / 2.f)

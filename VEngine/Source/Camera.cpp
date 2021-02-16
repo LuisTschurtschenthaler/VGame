@@ -69,3 +69,7 @@ glm::mat4 Camera::getProjectionView() {
 
 	return (proj * view);
 }
+
+glm::mat3 Camera::getBillboard() {
+	return glm::mat3(glm::vec3(right.x, right.y, right.z), glm::vec3(up.x, up.y, up.z), glm::vec3(front.x, front.y, front.z));
+}

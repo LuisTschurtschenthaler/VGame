@@ -34,6 +34,7 @@ public:
 	glm::mat4 getView();
 	glm::mat4 getProjection();
 	glm::mat4 getProjectionView();
+	glm::mat3 getBillboard();
 
 };
 

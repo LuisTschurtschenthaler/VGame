@@ -59,7 +59,7 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 			World::worldGenerator->generateChunk(*chunk);
 	}
 	
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	//std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++)
 	for(int y = minimumPoint; y < highestPoint; y++) {
@@ -67,7 +67,7 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		if(blockID == BlockID::AIR)
 			continue;
 
-		Block* block = BlockUtil::blocks[blockID];
+		Block* block = BlockManager::blocks[blockID];
 		switch(block->meshType) {
 			case MeshType::SOLID:
 				if(block->isTransparent)
@@ -95,8 +95,8 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		}
 	}
 	meshesGenerated = true;
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	std::cout << "Time needed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+	//std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	//std::cout << "Time needed: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 }
 
 void Chunk::recreateChunkMesh() {
@@ -116,6 +116,10 @@ void Chunk::recreateChunkMesh() {
 }
 
 const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
+	for(auto& nearbyChunk : nearbyChunks)
+		if(nearbyChunk->coord.x > 100000 || nearbyChunk->coord.x < -100000)
+			std::cout << "NEGA" << std::endl;
+
 	// Right -> X+
 	if(loc.x >= CHUNK_SIZE
 	   && loc.y < CHUNK_HEIGHT
@@ -143,7 +147,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 		
-		return BlockUtil::blocks[AIR];
+		return BlockManager::blocks[AIR];
 	}
 
 	// Bottom -> Y- 
@@ -153,7 +157,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 
-		return BlockUtil::blocks[ERROR];
+		return BlockManager::blocks[ERROR];
 	}
 
 	// Front -> Z+
@@ -191,9 +195,9 @@ const Block* Chunk::getBlockRelative(const int& x, const int& y, const int& z) c
 
 const Block* Chunk::_getBlock(const LocationXYZ& location) const {
 	if(ChunkManager::isLocationOutOfChunkRange(location))
-		return BlockUtil::blocks[AIR];
+		return BlockManager::blocks[AIR];
 
-	return BlockUtil::blocks[chunkData.get(location)];
+ 	return BlockManager::blocks[chunkData.get(location)];
 }
 
 const Block* Chunk::_getBlock(const int& x, const int& y, const int& z) const {

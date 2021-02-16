@@ -11,7 +11,6 @@
 
 	Left mouse button	->	Break block
 	Right mouse button	->	Place block
-	C					->	Zoom
 
 	Escape				->	Lose window focus
 	F2					->	Take screenshot

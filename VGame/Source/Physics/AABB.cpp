@@ -35,7 +35,7 @@ void AABB::collision(Player& player, const glm::vec3& velocity) {
 	for(int y = player.position.y - dimensions.y; y < player.position.y + 0.15; y++)
 	for(int z = player.position.z - dimensions.z; z < player.position.z + dimensions.z; z++) {
 		
-		Block* block = BlockUtil::blocks[World::getChunkManager().getBlockID({ x, y, z })];
+		Block* block = BlockManager::blocks[World::getChunkManager().getBlockID({ x, y, z })];
 		if(block->hasHitbox) {
 			if(velocity.x > 0) {
 				player.position.x = x - dimensions.x;
@@ -68,7 +68,28 @@ void AABB::collision(Player& player, const glm::vec3& velocity) {
 			}
 		}
 	}
+}
 
+void AABB::collision(Particle& particle) {
+	glm::vec3 pos = particle.position;
+	glm::vec3 vel = particle.velocity;
+
+	if(BlockManager::blocks[World::getChunkManager().getBlockID({ int(pos.x + vel.x), int(pos.y), int(pos.z) })]->hasHitbox) {
+		particle.position.x = int(pos.x);
+		particle.velocity.x = 0;
+	}
+
+	if(BlockManager::blocks[World::getChunkManager().getBlockID({ int(pos.x), int(pos.y + vel.y), int(pos.z) })]->hasHitbox) {
+		particle.position.y = int(pos.y);
+		particle.velocity.y = 0;
+		particle.velocity.x *= 0.85f;
+		particle.velocity.z *= 0.85f;
+	}
+
+	if(BlockManager::blocks[World::getChunkManager().getBlockID({ int(pos.x), int(pos.y), int(pos.z + vel.z) })]->hasHitbox) {
+		particle.position.z = int(pos.z);
+		particle.velocity.z = 0;
+	}
 }
 
 glm::vec3 AABB::rayIntersectionWithBlock(glm::vec3 playerPos, glm::vec3 targetPos, glm::vec3 blockPos) {

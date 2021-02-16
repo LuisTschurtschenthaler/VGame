@@ -30,10 +30,9 @@ public:
 private:
 	void _input();
 	void _handleKeyboardInputs();
+	void _handleFOV();
 	void _handleMouseMove();
 	void _handleMouseButtons();
-	void _handleFOV();
-	glm::vec3 _toHorizontal(const glm::vec3& vec);
 
 };
 

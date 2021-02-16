@@ -160,22 +160,48 @@ bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
 std::map<float, Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int& playerZ) {
 	std::map<float, Chunk*> sortedChunks = std::map<float, Chunk*>();
 
-	for(auto& it : _chunks) {
-		if(!it.second->meshesGenerated)
-			continue;
+	//std::cout << _chunks.size() << std::endl;
 
-		int distanceX = playerX - it.first.x;
-		int distanceZ = playerZ - it.first.z;
+	std::unordered_map<ChunkXZ, Chunk*>::iterator it = _chunks.begin();
+	for(; it != _chunks.end(); ) {
+		if(!it->second->meshesGenerated) {
+			it++;
+			continue;
+		}
+
+		int distanceX = playerX - it->first.x;
+		int distanceZ = playerZ - it->first.z;
 
 		if(distanceX < RENDER_DISTANCE && distanceX > -RENDER_DISTANCE &&
 		   distanceZ < RENDER_DISTANCE && distanceZ > -RENDER_DISTANCE) {
 
 			glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
-			glm::vec2 worldCoord = { it.second->worldCoord.x, it.second->worldCoord.z };
+			glm::vec2 worldCoord = { it->second->worldCoord.x, it->second->worldCoord.z };
 
 			float distance = glm::length(playerPos - worldCoord);
-			sortedChunks[distance] = it.second;
+
+			sortedChunks[distance] = it->second;
 		}
+		/*else if(distanceX >= DESTROY_DISTANCE || distanceX <= -DESTROY_DISTANCE ||
+				distanceZ >= DESTROY_DISTANCE || distanceZ <= -DESTROY_DISTANCE) {
+			//std::cout << "Deleting: " << it->second->coord << std::endl;
+			
+			it->second->nearbyChunks[0]->nearbyChunksDetected = false;
+			it->second->nearbyChunks[1]->nearbyChunksDetected = false;
+			it->second->nearbyChunks[2]->nearbyChunksDetected = false;
+			it->second->nearbyChunks[3]->nearbyChunksDetected = false;
+
+			delete it->second;
+			it->second = nullptr;
+			
+			if(it == _chunks.end()) {
+				_chunks.erase(it);
+				break;
+			}
+			else it = _chunks.erase(it);
+		}*/
+
+		it++;
 	}
 	return sortedChunks;
 }

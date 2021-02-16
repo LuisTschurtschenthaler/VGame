@@ -5,7 +5,6 @@
 #include <mutex>
 #include <vector>
 #include <thread>
-#include <queue>
 #include "BlockID.h"
 #include "Chunk.h"
 #include "Coordinates.h"
@@ -45,6 +44,7 @@ public:
 	LocationXYZ getBlockLocation(const LocationXYZ& location);
 	BlockID getBlockID(const LocationXYZ& location);
 
+	const int getTextureAtlasID() const { return _textureAtlas->getTextureID(); }
 	const int getAmountOfLoadedChunks() const { return _chunks.size(); }
 
 	static bool isLocationOutOfChunkRange(const LocationXYZ& location);
