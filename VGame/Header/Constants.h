@@ -8,7 +8,7 @@
 
 /* General */
 #define CARDIAL_POINT_RANGE			22.5
-#define MAX_BLOCK_BREAK_PARTICLES	50
+#define MAX_BLOCK_BREAK_PARTICLES	30
 
 
 /* File system */

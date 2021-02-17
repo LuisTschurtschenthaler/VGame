@@ -12,6 +12,7 @@
 Key Screenshot::key = Key(KeyCode::KEY_F2);
 
 bool Screenshot::take() {
+	/*
 	int w = Window::getWidth();
 	int h = Window::getHeight();
 	unsigned char* pixels = new unsigned char[w * h * 4];
@@ -33,6 +34,7 @@ bool Screenshot::take() {
 	SDL_UnlockSurface(surface);
 	SDL_FreeSurface(surface);
 	delete[] pixels;
+	*/
 	return true;
 }
 
@@ -42,7 +44,7 @@ void Screenshot::handle() {
 	if(key.wasPressedAndReleased())
 		take();
 }
-
+/*
 bool Screenshot::_invert(SDL_Surface* surface) {
 	Uint8* t;
 	Uint8* last;
@@ -85,7 +87,7 @@ bool Screenshot::_invert(SDL_Surface* surface) {
 	free(t);
 	SDL_UNLOCKIFMUST(surface);
 	return true;
-}
+}*/
 
 std::string Screenshot::_getScreenshotFilename() {
 	time_t rawtime;

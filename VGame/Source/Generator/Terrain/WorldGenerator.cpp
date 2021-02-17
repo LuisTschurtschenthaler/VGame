@@ -22,6 +22,7 @@ WorldGenerator::WorldGenerator() {
 	_biomeNoise = new NoiseGenerator(Random::get());
 
 	_heightMap = Array2D<float, CHUNK_SIZE, CHUNK_SIZE>();
+	_heightMap3D = Array3D<float, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>();
 	_biomeMap = Array2D<Biome*, CHUNK_SIZE + 1, CHUNK_SIZE + 1>();
 }
 

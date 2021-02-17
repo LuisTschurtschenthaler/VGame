@@ -1,8 +1,8 @@
-#include <SDL2/SDL.h>
-#include <GLEW/GL/glew.h>
 #include "Window.h"
-#include "SDLHandler.h"
+#include "Input.h"
 
+
+GLFWwindow* Window::_window = nullptr;
 
 int Window::_width = 0;
 int Window::_height = 0;
@@ -16,35 +16,50 @@ void Window::create(int width, int height, bool fullscreen, bool vSync, const st
 	_fullscreen = fullscreen;
 	_title = title;
 
-	SDL_Init(SDL_INIT_EVERYTHING);
-	SDLcreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, fullscreen, vSync);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	if(!glfwInit())
+		fprintf(stderr, "Error: Couldn't initialize GLFW\n");
+
+	_window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
+	if(!_window) glfwTerminate();
 	
+	//glfwSetWindowIcon(_window, 1, load_icon);
+	glfwSetWindowAttrib(_window, GLFW_FOCUSED, GLFW_TRUE);
+	glfwMakeContextCurrent(_window);
+	Input::setCallbacks(_window);
+
 	GLenum res = glewInit();
 	if(res != GLEW_OK)
 		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+
+	glfwSetWindowSizeCallback(_window, Window::_windowResizeCallback);
+	glfwSwapInterval(vSync ? 1 : 0);
 }
 
 void Window::render() {
-	swapBuffers();
+	glfwSwapBuffers(_window);
+	glfwPollEvents();
 	glFlush();
 }
 
 void Window::dispose() {
-	destroyWindow();
-	SDL_Quit();
+	glfwTerminate();
 }
 
 bool Window::shouldClose() {
-	return getCloseRequested();
+	return glfwWindowShouldClose(_window);
 }
 
 void Window::setFullscreen() {
 	_fullscreen = !_fullscreen;
-	SDLsetFullscreen(_fullscreen);
 }
 
-void Window::setWindowSize(int width, int height) {
-	SDLSetWindowSize(width, height);
+
+void Window::_windowResizeCallback(GLFWwindow* window, int width, int height) {
+	glfwSetWindowSize(_window, width, height);
 	glViewport(0, 0, width, height);
 	_width = width;
 	_height = height;

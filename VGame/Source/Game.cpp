@@ -62,9 +62,6 @@ void Game::render() {
 			break;
 
 		case GAME_ACTIVE:
-			if(!Input::isEnabled)
-				Input::isEnabled = true;
-
 			_world->draw();
 			_textRenderer->draw();
 			Crosshair::draw();

@@ -91,8 +91,9 @@ void ChunkManager::findSpawnPoint(glm::vec3& position) {
 	int worldPosX = chunkPosX + chunkX * CHUNK_SIZE,
 		worldPosZ = chunkPosZ + chunkZ * CHUNK_SIZE;
 
-	position = { worldPosX, height + 5, worldPosZ };
+	position = { worldPosX + 0.5f, height + 5, worldPosZ + 0.5f };
 	std::cout << "Attempts for spawn finding: " << attempts << std::endl;
+	std::cout << "Spawnlocation fount at: " << position.x << " " << position.y << " " << position.z << std::endl;
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {

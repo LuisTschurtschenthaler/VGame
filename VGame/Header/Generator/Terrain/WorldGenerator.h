@@ -26,6 +26,7 @@ private:
 	HighLands* _highLands;
 
 	Array2D<float, CHUNK_SIZE, CHUNK_SIZE> _heightMap;
+	Array3D<float, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> _heightMap3D;
 	Array2D<Biome*, CHUNK_SIZE + 1, CHUNK_SIZE + 1> _biomeMap;
 
 

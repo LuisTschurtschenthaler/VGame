@@ -2,7 +2,6 @@
 #define SCREENSHOT_H
 
 #include <string>
-#include <SDL2/SDL.h>
 #include "Input.h"
 
 class Screenshot {
@@ -16,7 +15,7 @@ public:
 	static void handle();
 
 private:
-	static bool _invert(SDL_Surface* surface);
+	//static bool _invert(SDL_Surface* surface);
 	static std::string _getScreenshotFilename();
 
 };

@@ -32,9 +32,9 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 	for(int i = 0; i < _particles.size(); i++) {
 		_particles[i].position = position + getRand();
 		_particles[i].velocity = (getRand() / glm::vec3(6.5f));
-		_particles[i].lifeTime = Random::getFloatInRange(1.25f, 1.5f);
+		_particles[i].lifeTime = Random::getFloatInRange(1.f, 1.25f);
 
-		float texOffset = (1.f / 16.f) / Random::getIntInRange(4, 12);
+		float texOffset = (BLOCK_SIZE / 16.f) / Random::getIntInRange(6, 12);
 
 		glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0, 1), block->blockBreakTexture);
 		texCoordsTopLeft.x += texOffset;
@@ -83,7 +83,7 @@ void ParticleEmitter::update() {
 void ParticleEmitter::draw() {
 	glm::mat3 billboard = World::getPlayer().camera->getBillboard();
 	float gravity = GRAVITY * (CoreEngine::gameTimer->getDeltaTime() / 20);
-	float size = 1.f / 16.f;
+	float size = 0.1f;
 
 	for(int i = 0; i < _particles.size(); i++) {
 		Particle* particle = &_particles[i];

@@ -25,30 +25,32 @@ void Player::_input() {
 void Player::_handleKeyboardInputs() {
 	float gravity = GRAVITY * (CoreEngine::gameTimer->getDeltaTime() / 20);
 	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * CoreEngine::gameTimer->getDeltaTime();
-
-	if(Input::isKeyPressed(KeyCode::KEY_LCTRL)) movementSpeed *= 1.25f;
+	
+	if(Input::isKeyPressed(GLFW_KEY_LEFT_CONTROL)) movementSpeed *= 1.25f;
 	if(isSwimming) movementSpeed /= 1.25f;
 
 	/* Input */
 	glm::vec3 change(0.f);
-	if(Input::isKeyPressed(KeyCode::KEY_W))
+	if(Input::isKeyPressed(GLFW_KEY_W))
 		change += camera->movingFront * movementSpeed;
 
-	if(Input::isKeyPressed(KeyCode::KEY_A))
+	if(Input::isKeyPressed(GLFW_KEY_A))
 		change -= camera->right * movementSpeed;
 
-	if(Input::isKeyPressed(KeyCode::KEY_S))
+	if(Input::isKeyPressed(GLFW_KEY_S))
 		change -= camera->movingFront * movementSpeed;
 
-	if(Input::isKeyPressed(KeyCode::KEY_D))
+	if(Input::isKeyPressed(GLFW_KEY_D))
 		change += camera->right * movementSpeed;
 
 
-	if(Input::isKeyPressed(KeyCode::KEY_LSHIFT))
+	if(Input::isKeyPressed(GLFW_KEY_LEFT_SHIFT))
 		if(isFlying) change.y += -movementSpeed - 0.05;
 
-	//if(Input::isKeyDoublePressed(KeyCode::KEY_SPACE)) else if
-	if(Input::isKeyPressed(KeyCode::KEY_SPACE)) {
+	if(Input::isKeyPressedRepeatedly(GLFW_KEY_SPACE))
+		isFlying = !isFlying;
+
+	else if(Input::isKeyPressed(GLFW_KEY_SPACE)) {
 		if(isFlying)
 			change.y += movementSpeed + 0.05;
 		
@@ -89,11 +91,11 @@ void Player::_handleKeyboardInputs() {
 void Player::_handleMouseMove() {
 	glm::vec2 centerMousePosition = Window::getMouseCenterPosition();
 
-	if(Input::isKeyPressed(KeyCode::KEY_ESCAPE)) {
+	if(_mouseLocked && Input::isKeyPressed(GLFW_KEY_ESCAPE)) {
 		Input::setCursorVisible(true);
 		_mouseLocked = false;
 	}
-	else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
+	else if(!_mouseLocked && Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		Input::setCursorVisible(false);
 		Input::setMousePosition(centerMousePosition);
 		_mouseLocked = true;
@@ -101,7 +103,6 @@ void Player::_handleMouseMove() {
 
 	if(_mouseLocked) {
 		glm::vec2 deltaPosition = Input::getMousePosition() - centerMousePosition;
-		
 		yaw += deltaPosition.x * MOUSE_SENSITIVITY;
 		pitch += deltaPosition.y * -MOUSE_SENSITIVITY;
 
@@ -121,13 +122,13 @@ void Player::_handleMouseMove() {
 void Player::_handleMouseButtons() {
 	if(_mouseTimer->elapse() >= BLOCK_BREAK_DURATION) {
 		// Break block
-		if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_LEFT)) {
+		if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, &World::getChunkManager());
 			_mouseTimer->update();
 		}
 
 		// Place block
-		else if(Input::isMousebuttonPressed(KeyCode::MOUSE_BUTTON_RIGHT)) {
+		else if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 			Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, &World::getChunkManager());
 			_mouseTimer->update();
 		}
@@ -135,8 +136,8 @@ void Player::_handleMouseButtons() {
 }
 
 void Player::_handleFOV() {
-	if(Input::isKeyPressed(KeyCode::KEY_LCTRL) &&
-	   Input::isKeyPressed(KeyCode::KEY_W)) {
+	if(Input::isKeyPressed(GLFW_KEY_LEFT_CONTROL) &&
+	   Input::isKeyPressed(GLFW_KEY_W)) {
 
 		if(camera->fov < FOV_SPRINT)
 			camera->fov += FOV_SPRINT_STEPS;

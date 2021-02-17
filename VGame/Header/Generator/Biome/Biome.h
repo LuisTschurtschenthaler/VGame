@@ -30,6 +30,7 @@ public:
 	Biome(int treeFrequency, int plantFrequency, int seed);
 	~Biome();
 
+
 	int getHeight(int x, int z, int chunkX, int chunkZ);
 
 	virtual std::string getName() const = 0;

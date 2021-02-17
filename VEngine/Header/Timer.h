@@ -14,7 +14,7 @@ public:
 	void update();
 	double elapse();
 
-	double const getDeltaTime() const { return (_deltaTime / 1000); }
+	double const getDeltaTime() const { return _deltaTime; }
 
 };
 

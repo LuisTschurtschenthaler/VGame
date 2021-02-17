@@ -1,7 +1,7 @@
+#include <cmath>
 #include "NoiseGenerator.h"
 #include "Constants.h"
 #include "Chunk.h"
-#include <cmath>
 
 
 NoiseGenerator::NoiseGenerator(int seed) 
@@ -34,19 +34,14 @@ float NoiseGenerator::getNoise(int x, int z, int chunkX, int chunkZ) const {
 	return (val > 0.f) ? val : 1.f;
 }
 
-float NoiseGenerator::getNoise(float x) const {
-	int newX = static_cast<int>(x);
+float NoiseGenerator::getNoise(float x, float y) const {
+	int newX = static_cast<int>(x * 1619 + y * 31337);
 	newX += _seed;
 	newX = (newX << 10) ^ newX;
 	newX = (newX * (newX * newX * 60493 + 19990303) + 1376312589) & 0x7FFFFFFF;
 
 	return (1.f - (static_cast<float>(newX) / 1073741824.f));
 }
-
-float NoiseGenerator::getNoise(float x, float y) const {
-	return getNoise(x + y * 18.f);
-}
-
 
 float NoiseGenerator::_linearInterpolation(float x, float y, float z) const {
 	float lerp = (1.f - std::cos(z * PI)) / 2.f;

@@ -3,6 +3,7 @@
 
 class Chunk;
 
+
 struct NoiseSettings {
 	int octaves;
 	int amplitude;
@@ -25,7 +26,6 @@ public:
 
 	float getNoise(int x, int z, int chunkX, int chunkZ) const;
 
-	float getNoise(float x) const;
 	float getNoise(float x, float y) const;
 
 	void setNoiseSettings(const NoiseSettings& settings) { _settings = settings; }
