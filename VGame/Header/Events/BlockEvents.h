@@ -13,20 +13,20 @@
 class BlockEvents {
 
 public:
+	static void onBlockPlace(ChunkManager* chunkManager) {
+		LocationXYZ blockPosition = Raycast::getBlockToPlace();
+		if(blockPosition.x == -1.f) return;
+		
+		chunkManager->placeBlock(blockPosition, BlockID::TNT);
+	}
+
 	static void onBlockBreak(ChunkManager* chunkManager) {
 		LocationXYZ blockPosition = Raycast::getBlockToBreak();
 		if(blockPosition.x == -1.f) return;
 
+		chunkManager->removeBlock(blockPosition);
 		BlockID blockID = World::getChunkManager().getBlockID(blockPosition);
 		World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, blockPosition));
-		chunkManager->removeBlock(blockPosition);
-	}
-
-	static void onBlockPlace(ChunkManager* chunkManager) {
-		LocationXYZ blockPosition = Raycast::getBlockToPlace();
-
-		if(blockPosition.x == -1.f) return;
-		chunkManager->placeBlock(blockPosition, BlockID::TNT);
 	}
 
 };

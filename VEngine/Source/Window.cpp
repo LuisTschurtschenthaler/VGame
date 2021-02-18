@@ -1,3 +1,4 @@
+#include <STB/stb_image.h>
 #include "Window.h"
 #include "Input.h"
 
@@ -26,10 +27,8 @@ void Window::create(int width, int height, bool fullscreen, bool vSync, const st
 	_window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
 	if(!_window) glfwTerminate();
 	
-	//glfwSetWindowIcon(_window, 1, load_icon);
 	glfwSetWindowAttrib(_window, GLFW_FOCUSED, GLFW_TRUE);
 	glfwMakeContextCurrent(_window);
-	Input::setCallbacks(_window);
 
 	GLenum res = glewInit();
 	if(res != GLEW_OK)
@@ -37,6 +36,9 @@ void Window::create(int width, int height, bool fullscreen, bool vSync, const st
 
 	glfwSetWindowSizeCallback(_window, Window::_windowResizeCallback);
 	glfwSwapInterval(vSync ? 1 : 0);
+
+	_setWindowIcon();
+	Input::setCallbacks(_window);
 }
 
 void Window::render() {
@@ -57,6 +59,16 @@ void Window::setFullscreen() {
 	_fullscreen = !_fullscreen;
 }
 
+
+void Window::_setWindowIcon() {
+	GLFWimage images[2];
+	images[0].pixels = stbi_load("./Resources/Textures/Window/Icon.png", &images[0].width, &images[0].height, 0, 4);
+	images[1].pixels = stbi_load("./Resources/Textures/Window/Icon_low.png", &images[1].width, &images[1].height, 0, 4);
+	glfwSetWindowIcon(_window, 1, images);
+
+	stbi_image_free(images[0].pixels);
+	stbi_image_free(images[1].pixels);
+}
 
 void Window::_windowResizeCallback(GLFWwindow* window, int width, int height) {
 	glfwSetWindowSize(_window, width, height);

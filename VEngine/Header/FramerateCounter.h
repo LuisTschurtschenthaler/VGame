@@ -7,7 +7,6 @@ class FramerateCounter {
 private:
 	static int _frames;
 	static double _startTime;
-	static bool _first;
 	static float _fps;
 
 

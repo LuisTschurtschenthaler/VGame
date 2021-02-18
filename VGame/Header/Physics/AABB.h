@@ -27,11 +27,6 @@ public:
 	
 	static void collision(Particle& particle);
 
-	static glm::vec3 rayIntersectionWithBlock(glm::vec3 playerPos, glm::vec3 targetPos, glm::vec3 blockPos);
-
-private:
-	static bool _isPositionInSquare(const glm::vec2& position, const glm::vec4& square);
-
 };
 
 #endif // AABB_H

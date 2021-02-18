@@ -17,7 +17,7 @@
 
 
 /* Player */
-#define RENDER_DISTANCE				10
+#define RENDER_DISTANCE				5
 #define DESTROY_DISTANCE			(RENDER_DISTANCE + 5)
 #define SPAWN_CHUNKS				(4 * RENDER_DISTANCE * RENDER_DISTANCE)
 
@@ -28,7 +28,7 @@
 #define FLY_SPEED					3.f
 #define JUMP_DURATION				1.f
 #define BLOCK_BREAK_DURATION		0.33f
-#define MAX_BLOCK_REACH_DISTANCE	6
+#define MAX_BLOCK_REACH_DISTANCE	5
 
 
 /* Camera */

@@ -36,6 +36,7 @@ public:
 	static const glm::vec2 getMouseCenterPosition() { return glm::vec2(_width / 2.f, _height / 2.f); }
 
 private:
+	static void _setWindowIcon();
 	static void _windowResizeCallback(GLFWwindow* window, int width, int height);
 
 };

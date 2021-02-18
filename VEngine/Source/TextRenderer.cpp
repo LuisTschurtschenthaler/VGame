@@ -13,7 +13,7 @@
 #include "Util.h"
 
 
-bool TextRenderer::shouldShowText = false;
+bool TextRenderer::shouldShowText = true;
 Key TextRenderer::key = Key(KeyCode::KEY_F3);
 
 

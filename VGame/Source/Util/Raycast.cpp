@@ -7,19 +7,68 @@
 #include "World.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Input.h"
 
 
 // Pseudo code from: https://antongerdelan.net/opengl/raycasting.html
+LocationXYZ Raycast::getBlockToPlace() {
+	glm::vec3 position = World::getPlayer().position;
+	glm::vec3 direction = World::getPlayer().camera->front;
+
+	glm::vec3 blockPos, sign;
+
+	for(uint8_t i = 0; i < 3; i++)
+		sign[i] = direction[i] > 0;
+
+	for(int i = 0; i < 6; i++) {
+		glm::vec3 tvec = (floor(position + sign) - position) / direction;
+		float t = std::min(tvec.x, std::min(tvec.y, tvec.z));
+
+		position += direction * (t + 0.001f);
+
+		BlockID blockID = World::getChunkManager().getBlockID({
+			int(position.x),
+			int(position.y),
+			int(position.z)
+		});
+
+		if(BlockManager::blocks[blockID]->hasHitbox) {
+			glm::vec3 normal;
+			for(int i = 0; i < 3; i++) {
+				normal[i] = (t == tvec[i]);
+				if(sign[i]) normal[i] = -normal[i];
+			}
+
+			position += normal;
+
+			blockPos = floor(glm::vec3{
+				position.x,
+				position.y,
+				position.z
+			});
+
+			return _getBlockPosition(position);
+		}
+	}
+
+	return LocationXYZ(-1, -1, -1);
+}
+
+LocationXYZ Raycast::getBlockToBreak() {
+	glm::vec3 directBlock = getDirectBlock();
+	return _getBlockPosition(directBlock);
+}
+
 glm::vec3 Raycast::getDirectBlock() {
 	glm::vec3 mouseRay = _getMouseRay();
 	glm::vec3 targetBlockPos(-1.f);
 
 	for(float i = 0; i < MAX_BLOCK_REACH_DISTANCE; i += 0.1f) {
-		targetBlockPos = World::getPlayer().camera->ENTITY->position + i * mouseRay;
+		targetBlockPos = World::getPlayer().position + i * mouseRay;
 		BlockID BlockID = World::getChunkManager().getBlockID({
-			int(std::floor(targetBlockPos.x)),
-			int(std::floor(targetBlockPos.y)),
-			int(std::floor(targetBlockPos.z))
+			int(targetBlockPos.x),
+			int(targetBlockPos.y),
+			int(targetBlockPos.z)
 		});
 
 		if(BlockID != BlockID::AIR &&
@@ -35,34 +84,15 @@ glm::vec3 Raycast::getDirectBlock() {
 	return glm::vec3(-1.f);
 }
 
-LocationXYZ Raycast::getBlockToBreak() {
-	glm::vec3 directBlock = getDirectBlock();
-	return _getBlockPosition(directBlock);
-}
-
-LocationXYZ Raycast::getBlockToPlace() {
-	glm::vec3 directBlock = getDirectBlock();
-
-	if(directBlock == glm::vec3(-1.f))
-		return _getBlockPosition(directBlock);
-
-	int targetX = int(directBlock.x),
-		targetY = int(directBlock.y),
-		targetZ = int(directBlock.z);
-
-	glm::vec3 change = AABB::rayIntersectionWithBlock(World::getPlayer().position, directBlock, glm::vec3(targetX, targetY, targetZ));
-	return _getBlockPosition(directBlock += change);
-}
-
-
 LocationXYZ Raycast::_getBlockPosition(const glm::vec3& pos) {
 	return LocationXYZ(pos.x, pos.y, pos.z);
 }
 
-glm::vec3 Raycast::_getMouseRay() {
-	glm::vec2 mousePosition = Window::getMouseCenterPosition();
 
-	// Normalised device space
+glm::vec3 Raycast::_getMouseRay() {
+	glm::vec2 mousePosition = Input::getMousePosition();
+
+	// Normalized device space
 	float ndsX = (2.f * mousePosition.x) / Window::getWidth() - 1.f;
 	float ndsY = 1.f - (2.f * mousePosition.y) / Window::getHeight();
 
@@ -74,9 +104,9 @@ glm::vec3 Raycast::_getMouseRay() {
 	eyeCoords.z = -1.f;
 	eyeCoords.w = 0.f;
 
-	// 4d world coordinates
-	glm::vec4 worldCoords = glm::inverse(World::getPlayer().camera->getView()) * eyeCoords;
-	glm::vec4 mouseRay = glm::normalize(worldCoords);
+	// 3d world coordinates
+	glm::vec3 worldCoords = glm::inverse(World::getPlayer().camera->getView()) * eyeCoords;
+	glm::vec3 mouseRay = glm::normalize(worldCoords);
 
-	return glm::vec3(mouseRay.x, mouseRay.y, mouseRay.z);
+	return mouseRay;
 }

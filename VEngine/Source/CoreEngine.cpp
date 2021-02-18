@@ -41,6 +41,7 @@ void CoreEngine::_run() {
 	RenderUtil::initGraphics();
 	Log::setFile("./VGame.log");
 	Random::init();
+	FramerateCounter::init();
 	LoadingScreen::init();
 
 	while(_isRunning) {
