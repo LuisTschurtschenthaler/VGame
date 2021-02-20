@@ -23,9 +23,14 @@ void Player::_input() {
 }
 
 void Player::_handleKeyboardInputs() {
+	if(Input::isKeyDoublePressed(GLFW_KEY_SPACE)) {
+		isFlying = !isFlying;
+		if(!isFlying) velocity.y = 0;
+	}
+
 	float gravity = GRAVITY * (CoreEngine::gameTimer->getDeltaTime() / 20);
-	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * CoreEngine::gameTimer->getDeltaTime();
-	
+	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * (CoreEngine::gameTimer->getDeltaTime());
+
 	if(Input::isKeyPressed(GLFW_KEY_LEFT_CONTROL)) movementSpeed *= 1.25f;
 	if(isSwimming) movementSpeed /= 1.25f;
 
@@ -45,17 +50,15 @@ void Player::_handleKeyboardInputs() {
 
 
 	if(Input::isKeyPressed(GLFW_KEY_LEFT_SHIFT))
-		if(isFlying) change.y += -movementSpeed - 0.05;
+		if(isFlying) change.y += -movementSpeed - 0.02;
 
-	if(Input::isKeyPressedRepeatedly(GLFW_KEY_SPACE))
-		isFlying = !isFlying;
 
-	else if(Input::isKeyPressed(GLFW_KEY_SPACE)) {
+	if(Input::isKeyPressed(GLFW_KEY_SPACE)) {
 		if(isFlying)
-			change.y += movementSpeed + 0.05;
+			change.y += movementSpeed + 0.02;
 		
 		else if(isSwimming)
-			change.y += movementSpeed;
+			change.y += movementSpeed + 0.01;
 		
 		if(!isJumping && isOnGround) {
 			isJumping = true;
@@ -74,7 +77,7 @@ void Player::_handleKeyboardInputs() {
 			change.y -= gravity;
 
 			_jump += 0.125;
-			change.y += std::sqrt((1 - _jump / JUMP_DURATION) * gravity * 0.175f); //(1 - _jump / JUMP_DURATION) * (movementSpeed + gravity) + 0.0125;
+			change.y += std::sqrt((1 - _jump / JUMP_DURATION) * gravity * 0.175f);
 
 			if(_jump >= JUMP_DURATION)
 				isJumping = false;
@@ -85,23 +88,26 @@ void Player::_handleKeyboardInputs() {
 		else change.y -= gravity;
 	}
 
+	if(change.x != 0.f || change.z != 0.f)
+		Game::eventDispatcher.dispatchEvent(EventType::PLAYER_MOVE_EVENT, this);
+
 	velocity += change;
 }
 
 void Player::_handleMouseMove() {
 	glm::vec2 centerMousePosition = Window::getMouseCenterPosition();
 
-	if(_mouseLocked && Input::isKeyPressed(GLFW_KEY_ESCAPE)) {
+	if(Input::mouseLocked && Input::isKeyPressed(GLFW_KEY_ESCAPE)) {
 		Input::setCursorVisible(true);
-		_mouseLocked = false;
+		Input::mouseLocked = false;
 	}
-	else if(!_mouseLocked && Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+	else if(!Input::mouseLocked && Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		Input::setCursorVisible(false);
 		Input::setMousePosition(centerMousePosition);
-		_mouseLocked = true;
+		Input::mouseLocked = true;
 	}
 
-	if(_mouseLocked) {
+	if(Input::mouseLocked) {
 		glm::vec2 deltaPosition = Input::getMousePosition() - centerMousePosition;
 		yaw += deltaPosition.x * MOUSE_SENSITIVITY;
 		pitch += deltaPosition.y * -MOUSE_SENSITIVITY;
@@ -123,13 +129,13 @@ void Player::_handleMouseButtons() {
 	if(_mouseTimer->elapse() >= BLOCK_BREAK_DURATION) {
 		// Break block
 		if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-			Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, &World::getChunkManager());
+			Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT);
 			_mouseTimer->update();
 		}
 
 		// Place block
 		else if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-			Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, &World::getChunkManager());
+			Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT);
 			_mouseTimer->update();
 		}
 	}

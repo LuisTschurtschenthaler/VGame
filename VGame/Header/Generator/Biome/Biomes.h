@@ -51,11 +51,11 @@ public:
 };
 
 
-class SnowForest
+class BirchForest
 	: public Biome {
 
 public:
-	SnowForest(int seed);
+	BirchForest(int seed);
 
 	std::string getName() const override;
 	BlockID getPlant() const override;
@@ -66,11 +66,11 @@ public:
 };
 
 
-class HighLands
+class JungleForest
 	: public Biome {
 
 public:
-	HighLands(int seed);
+	JungleForest(int seed);
 
 	std::string getName() const override;
 	BlockID getPlant() const override;
@@ -79,5 +79,6 @@ public:
 	BlockID getUnderEarth() const override;
 	BlockID getUnderwaterBlock() const override;
 };
+
 
 #endif // BIOMES_H

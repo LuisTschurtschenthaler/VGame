@@ -2,30 +2,12 @@
 #include "Window.h"
 
 
-Key::Key(int key)
-	: key(key), wasPressed(false), isReleased(false) {
-}
-
-void Key::update() {
-	if(!wasPressed && Input::isKeyPressed(key))
-		wasPressed = true;
-
-	if(!isReleased && wasPressed && !Input::isKeyPressed(key))
-		isReleased = true;
-}
-
-bool Key::wasPressedAndReleased() {
-	if(wasPressed && isReleased) {
-		wasPressed = false;
-		isReleased = false;
-		return true;
-	}
-	return false;
-}
-
+bool Input::mouseLocked = false;
 
 unsigned int Input::_keyStates[GLFW_KEY_LAST];
 unsigned int Input::_keyStatesPrevious[GLFW_KEY_LAST];
+std::chrono::time_point<std::chrono::system_clock> Input::_timeStamps[GLFW_KEY_LAST];
+
 unsigned int Input::_mouseButtonStates[GLFW_MOUSE_BUTTON_LAST];
 unsigned int Input::_mouseButtonStatesPrevious[GLFW_MOUSE_BUTTON_LAST];
 int Input::_mouseScollState[2];
@@ -33,8 +15,15 @@ int Input::_mouseScollState[2];
 glm::vec2 Input::_mousePosition = { 0.f, 0.f };
 glm::vec2 Input::_mousePositionPrevious = { 0.f, 0.f };
 
-bool Input::_mouseVisible = false;
 
+void Input::init() {
+	auto now = std::chrono::system_clock::now();
+	for(int i = 0; i < GLFW_KEY_LAST; i++)
+		_timeStamps[i] = now;
+
+	//setCursorVisible(false);
+	//setMousePosition(Window::getMouseCenterPosition());
+}
 
 void Input::update() {
 	for(int i = 0; i < GLFW_KEY_LAST; i++)
@@ -45,15 +34,19 @@ void Input::update() {
 
 	_mouseScollState[0] = 0;
 	_mouseScollState[1] = 0;
+	glfwPollEvents();
 }
 
 bool Input::isKeyPressed(const int& key) {
-	return (_keyStates[key] == GLFW_PRESS
-			|| _keyStates[key] == GLFW_REPEAT);
+	return (_keyStates[key] == GLFW_PRESS || _keyStates[key] == GLFW_REPEAT || _keyStates[key] == GLFW_DOUBLE_PRESS);
 }
 
-bool Input::isKeyPressedRepeatedly(const int& key) {
-	return false;
+bool Input::isKeyDoublePressed(const int& key) {
+	return ((_keyStates[key] == GLFW_DOUBLE_PRESS ) && _keyStatesPrevious[key] == GLFW_RELEASE);
+}
+
+bool Input::isKeyPressedAndReleased(const int& key) {
+	return ((_keyStates[key] == GLFW_PRESS || _keyStates[key] == GLFW_REPEAT) && _keyStatesPrevious[key] == GLFW_RELEASE);
 }
 
 bool Input::isMouseButtonPressed(const int& button) {
@@ -76,7 +69,17 @@ void Input::setMousePosition(glm::vec2 position) {
 	_mousePosition = position;
 }
 
+
 void Input::_keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if(_keyStatesPrevious[key] == GLFW_RELEASE) {
+		auto now = std::chrono::system_clock::now();
+		double timeDifference = std::chrono::duration<double, std::milli>(now - _timeStamps[key]).count();
+		_timeStamps[key] = now;
+
+		if(timeDifference > 10 && timeDifference < 300)
+			action = GLFW_DOUBLE_PRESS;
+	}
+
 	_keyStates[key] = action;
 }
 

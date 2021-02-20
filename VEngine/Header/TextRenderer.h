@@ -1,7 +1,6 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include "Input.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -9,6 +8,7 @@
 #include <GLM/glm.hpp>
 #include <FREETYPE/ft2build.h>
 #include FT_FREETYPE_H
+#include "Input.h"
 
 class Shader;
 class Player;
@@ -36,7 +36,6 @@ class TextRenderer {
 
 public:
 	static bool shouldShowText;
-	static Key key;
 
 	enum Colors {
 		GREEN,		  // &a

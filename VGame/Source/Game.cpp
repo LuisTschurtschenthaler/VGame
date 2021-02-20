@@ -39,9 +39,9 @@ Game::~Game() {
 
 void Game::update() {
 	/* ------------ TEMP ------------ */
-	if(Input::isKeyPressed(KeyCode::KEY_Q))
+	if(Input::isKeyPressed(GLFW_KEY_Q))
 		dayTime -= 1;
-	if(Input::isKeyPressed(KeyCode::KEY_E))
+	if(Input::isKeyPressed(GLFW_KEY_E))
 		dayTime += 1;
 	/* ------------ TEMP ------------ */
 	dayTime += CoreEngine::gameTimer->getDeltaTime();
@@ -55,10 +55,10 @@ void Game::render() {
 
 	switch(gameState) {
 		case GAME_LOADING:
+			LoadingScreen::draw(0);
+
 			if(_world->getChunkManager().getAmountOfLoadedChunks() >= SPAWN_CHUNKS)
 				gameState = GAME_ACTIVE;
-
-			LoadingScreen::draw(0);
 			break;
 
 		case GAME_ACTIVE:

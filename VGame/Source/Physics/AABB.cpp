@@ -39,11 +39,13 @@ void AABB::collision(Player& player, const glm::vec3& velocity) {
 		if(block->hasHitbox) {
 			if(velocity.x > 0) {
 				player.position.x = x - dimensions.x;
-				player.velocity.x = -player.velocity.x;
+				player.velocity.x = 0;
+				//player.velocity.x = -player.velocity.x;
 			}
 			else if(velocity.x < 0) {
 				player.position.x = x + dimensions.x + BLOCK_SIZE;
-				player.velocity.x = -player.velocity.x;
+				player.velocity.x = 0;
+				//player.velocity.x = -player.velocity.x;
 			}
 		
 			if(velocity.y > 0) {
@@ -60,11 +62,13 @@ void AABB::collision(Player& player, const glm::vec3& velocity) {
 		
 			if(velocity.z > 0) {
 				player.position.z = z - dimensions.z;
-				player.velocity.z = -player.velocity.z;
+				player.velocity.z = 0;
+				//player.velocity.z = -player.velocity.z;
 			}
 			else if(velocity.z < 0) {
 				player.position.z = z + dimensions.z + BLOCK_SIZE;
-				player.velocity.z = -player.velocity.z;
+				player.velocity.z = 0;
+				//player.velocity.z = -player.velocity.z;
 			}
 		}
 	}

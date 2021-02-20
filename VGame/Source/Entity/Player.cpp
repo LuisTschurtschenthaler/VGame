@@ -12,7 +12,7 @@ Player::Player()
 	box = AABB({ 0.3f, 1.75f, 0.3f });
 	camera = new Camera(this);
 
-	isFlying = true;
+	isFlying = false;
 	isOnGround = false;
 	isJumping = false;
 	isSwimming = false;
@@ -20,7 +20,6 @@ Player::Player()
 	velocity = glm::vec3(0.f);
 
 	_mouseTimer = new Timer();
-	_mouseLocked = false;
 	_jump = 0;
 }
 
@@ -38,9 +37,10 @@ void Player::update() {
 	camera->update();
 	box.update(position);
 
-	velocity.x *= 0.85;
-	if(isFlying) velocity.y *= 0.85;
-	velocity.z *= 0.85;
+	float drag = isFlying ? 0.95f : 0.85f;
+	velocity.x *= drag;
+	velocity.z *= drag;
+	if(isFlying) velocity.y *= 0.9;
 
 
 	auto doCollision = [&](const glm::vec3& velocity) {

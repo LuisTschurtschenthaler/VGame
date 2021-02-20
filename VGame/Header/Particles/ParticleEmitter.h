@@ -29,7 +29,7 @@ private:
 
 
 public:
-	ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation);
+	ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation, const int& amountOfParticles);
 	~ParticleEmitter();
 
 	void update();

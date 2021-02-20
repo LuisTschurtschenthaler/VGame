@@ -18,26 +18,31 @@ void Structure::build() {
 	}
 }
 
-void Structure::generateTree(const LocationXYZ& pos) {
+void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, const BlockID& leaveBlock) {
 	int height = Random::get(4, 6);
 
 	int y = pos.y + height;
 	fillXZ({ pos.x - CROWN_RADIUS, y - 1, pos.z - CROWN_RADIUS },
 		   { pos.x + CROWN_RADIUS, y - 1, pos.z + CROWN_RADIUS },
-		   BlockID::OAK_LEAVE);
+		   leaveBlock);
 
 	fillXZ({ pos.x - BUSH_RADIUS, y - 2, pos.z - BUSH_RADIUS },
 		   { pos.x + BUSH_RADIUS, y - 2, pos.z + BUSH_RADIUS },
-		   BlockID::OAK_LEAVE);
+		   leaveBlock);
 
 	fillXZ({ pos.x - BUSH_RADIUS, y - 3, pos.z - BUSH_RADIUS },
 		   { pos.x + BUSH_RADIUS, y - 3, pos.z + BUSH_RADIUS },
-		   BlockID::OAK_LEAVE);
+		   leaveBlock);
 
-	fillY(pos, BlockID::OAK_LOG, height - 1);
+	fillY(pos, logBlock, height - 1);
 	clearEdges({ pos.x, y - 2, pos.z }, BUSH_RADIUS);
 	clearEdges({ pos.x, y - 1, pos.z }, CROWN_RADIUS);
-	_structureBlocks.emplace_back(pos.x, y, pos.z, BlockID::OAK_LEAVE);
+	_structureBlocks.emplace_back(pos.x, y, pos.z, leaveBlock);
+}
+
+void Structure::generateJungleTree(const LocationXYZ& pos) {
+	int height = Random::get(15, 30);
+	int y = pos.y + height;
 }
 
 void Structure::generateCactus(const LocationXYZ& pos) {

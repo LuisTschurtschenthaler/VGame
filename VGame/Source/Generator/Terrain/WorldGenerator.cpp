@@ -10,29 +10,30 @@
 
 
 WorldGenerator::WorldGenerator() {
-	int seed = Random::get(1000, 9999);
+	int seed = Random::get(100, 9999);
 	std::cout << "Biome-Seed: " << seed << std::endl;
 
 	_desert = new Desert(seed);
 	_grassland = new Grassland(seed);
 	_forest = new Forest(seed);
-	_snowForest = new SnowForest(seed);
-	_highLands = new HighLands(seed);
+	_birchForest = new BirchForest(seed);
+	_jungleForest = new JungleForest(seed);
 
 	_biomeNoise = new NoiseGenerator(Random::get());
 
 	_heightMap = Array2D<float, CHUNK_SIZE, CHUNK_SIZE>();
-	_heightMap3D = Array3D<float, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>();
 	_biomeMap = Array2D<Biome*, CHUNK_SIZE + 1, CHUNK_SIZE + 1>();
+	//_heightMap3D = Array3D<float, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>();
 }
 
 WorldGenerator::~WorldGenerator() {
 	delete _biomeNoise;
-	delete _desert;
-	delete _grassland;
+
+	delete _jungleForest;
+	delete _birchForest;
 	delete _forest;
-	delete _snowForest;
-	delete _highLands;
+	delete _grassland;
+	delete _desert;
 }
 
 
@@ -111,7 +112,24 @@ void WorldGenerator::setBlocks() {
 		Structure structure;
 		if(instanceof<Desert>(tree.first))
 			structure.generateCactus({ tree.second.x + _chunk->coord.x * CHUNK_SIZE, tree.second.y, tree.second.z + _chunk->coord.z * CHUNK_SIZE });
-		else structure.generateTree({ tree.second.x + _chunk->coord.x * CHUNK_SIZE, tree.second.y, tree.second.z + _chunk->coord.z * CHUNK_SIZE });
+		else {
+			BlockID logBlock = AIR, leaveBlock = AIR;
+			if(instanceof<BirchForest>(tree.first)) {
+				logBlock = BlockID::BIRCH_LOG;
+				leaveBlock = BlockID::BIRCH_LEAVE;
+			}
+			else if(instanceof<JungleForest>(tree.first)) {
+				logBlock = BlockID::JUNGLE_LOG;
+				leaveBlock = BlockID::JUNGLE_LEAVE;
+			}
+			else {
+				logBlock = BlockID::OAK_LOG;
+				leaveBlock = BlockID::OAK_LEAVE;
+			}
+			
+			structure.generateTree({ tree.second.x + _chunk->coord.x * CHUNK_SIZE, tree.second.y, tree.second.z + _chunk->coord.z * CHUNK_SIZE },
+								   logBlock, leaveBlock);
+		}
 
 		structure.build();
 	}
@@ -127,7 +145,7 @@ Biome* WorldGenerator::getBiomeType(const float& value) {
 	//if(value > 160) return _ocean;
 	if(value > 150) return _grassland;
 	else if(value > 130) return _forest;
-	else if(value > 120) return _forest;
+	else if(value > 120) return _birchForest;
 	else if(value > 110) return _grassland;
 	else if(value > 100) return _desert;
 	else return _desert;

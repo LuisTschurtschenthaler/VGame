@@ -30,7 +30,7 @@ Block* BlockManager::blocks[TOTAL_BLOCKS] = {
 	new Block{ "Dead bush",		22, { -1, -1, -1, -1, 22, 22 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false, false, false },
 	new Block{ "Grass",			23, { -1, -1, -1, -1, 23, 23 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false, false, false },
 	new Block{ "Tall grass",	24, { -1, -1, 24, 25, -1, -1 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false, false, false },
-	new Block{ "TNT",			27, { 27, 27, 27, 27, 27, 27 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true },
+	new Block{ "TNT",			27, { 27, 27, 28, 26, 27, 27 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true },
 	new Block{ "Dandelion",		29, { -1, -1, -1, -1, 29, 29 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false, false, false },
 	new Block{ "Poppy",			30, { -1, -1, -1, -1, 30, 30 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false, false, false },
 	new Block{ "Blue Orchid",	31, { -1, -1, -1, -1, 31, 31 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, false, false, false },

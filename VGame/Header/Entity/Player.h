@@ -17,7 +17,6 @@ public:
 private:
 	Timer* _mouseTimer;
 	glm::vec3 _lastChunkPosition;
-	bool _mouseLocked;
 	float _jump;
 
 

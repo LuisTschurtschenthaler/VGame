@@ -101,60 +101,60 @@ BlockID Forest::getUnderwaterBlock() const {
 	return (Random::get(0, 10) > 8) ? BlockID::GRAVEL : BlockID::SAND;
 }
 
-SnowForest::SnowForest(int seed)
-	: Biome(150, 15, seed) {
+
+BirchForest::BirchForest(int seed)
+	: Biome(30, 15, seed) {
 }
 
-std::string SnowForest::getName() const {
-	return "SnowForest";
+std::string BirchForest::getName() const {
+	return "Birch forest";
 }
 
-BlockID SnowForest::getPlant() const {
+BlockID BirchForest::getPlant() const {
 	return (Random::get(0, 10) > 8) ? BlockID::TALL_GRASS : BlockID::GRASS2;
 }
 
-BlockID SnowForest::getTopBlock() const {
-	return BlockID::SNOW; // SNOWGRASS
+BlockID BirchForest::getTopBlock() const {
+	return BlockID::GRASS;
 }
 
-BlockID SnowForest::getBelowTopBlock() const {
+BlockID BirchForest::getBelowTopBlock() const {
 	return BlockID::DIRT;
 }
 
-BlockID SnowForest::getUnderEarth() const {
+BlockID BirchForest::getUnderEarth() const {
 	return BlockID::STONE;
 }
 
-BlockID SnowForest::getUnderwaterBlock() const {
-	return (Random::get(0, 10) > 8) ? BlockID::DIRT : BlockID::SAND;
+BlockID BirchForest::getUnderwaterBlock() const {
+	return (Random::get(0, 10) > 8) ? BlockID::GRAVEL : BlockID::SAND;
 }
 
 
-HighLands::HighLands(int seed)
-	: Biome(150, 100, seed) {
+JungleForest::JungleForest(int seed)
+	: Biome(30, 15, seed) {
 }
 
-std::string HighLands::getName() const {
-	return "HighLands";
+std::string JungleForest::getName() const {
+	return "Jungle forest";
 }
 
-BlockID HighLands::getPlant() const {
-	return BlockID::GRASS2;
+BlockID JungleForest::getPlant() const {
+	return (Random::get(0, 10) > 8) ? BlockID::TALL_GRASS : BlockID::GRASS2;
 }
 
-BlockID HighLands::getTopBlock() const {
-	return (Random::get(0, 10) > 9) ? BlockID::GRAVEL : BlockID::DIRT;
+BlockID JungleForest::getTopBlock() const {
+	return BlockID::GRASS;
 }
 
-BlockID HighLands::getBelowTopBlock() const {
+BlockID JungleForest::getBelowTopBlock() const {
 	return BlockID::DIRT;
 }
 
-BlockID HighLands::getUnderEarth() const {
+BlockID JungleForest::getUnderEarth() const {
 	return BlockID::STONE;
 }
 
-BlockID HighLands::getUnderwaterBlock() const {
-	return (Random::get(0, 10) > 8) ? BlockID::DIRT : BlockID::SAND;
+BlockID JungleForest::getUnderwaterBlock() const {
+	return (Random::get(0, 10) > 8) ? BlockID::GRAVEL : BlockID::SAND;
 }
-

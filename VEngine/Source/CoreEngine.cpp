@@ -8,6 +8,7 @@
 #include "TextRenderer.h"
 #include "FramerateCounter.h"
 #include "Timer.h"
+#include "Screenshot.h"
 #include "LoadingScreen.h"
 
 
@@ -40,6 +41,7 @@ void CoreEngine::_run() {
 
 	RenderUtil::initGraphics();
 	Log::setFile("./VGame.log");
+	Input::init();
 	Random::init();
 	FramerateCounter::init();
 	LoadingScreen::init();
@@ -54,7 +56,7 @@ void CoreEngine::_run() {
 		_game->update();
 		Input::update();
 
-		//Screenshot::handle();
+		Screenshot::handle();
 		TextRenderer::handle();
 
 		_game->render();

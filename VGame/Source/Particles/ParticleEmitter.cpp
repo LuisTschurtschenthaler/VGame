@@ -14,10 +14,10 @@
 #include "AABB.h"
 
 
-ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation) {
-	_particles.resize(MAX_BLOCK_BREAK_PARTICLES);
-	_vertices.resize(MAX_BLOCK_BREAK_PARTICLES * 4);
-	_indices.resize(MAX_BLOCK_BREAK_PARTICLES * 6);
+ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation, const int& amountOfParticles) {
+	_particles.resize(amountOfParticles);
+	_vertices.resize(amountOfParticles * 4);
+	_indices.resize(amountOfParticles * 6);
 
 	auto getRand = [] {
 		float r1 = ((rand() % 100) / 100.f - 0.5f),
@@ -27,18 +27,18 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 	};
 
 	glm::vec3 position = { blockLocation.x + 0.5f, blockLocation.y + 0.5f, blockLocation.z + 0.5f };
+	
 	Block* block = BlockManager::blocks[blockID];
+	float texOffset = (BLOCK_SIZE / 16.f) / Random::getIntInRange(6, 12);
+
+	glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0, 1), block->blockBreakTexture);
+	texCoordsTopLeft.x += texOffset;
+	texCoordsTopLeft.y -= texOffset;
 
 	for(int i = 0; i < _particles.size(); i++) {
 		_particles[i].position = position + getRand();
 		_particles[i].velocity = (getRand() / glm::vec3(6.5f));
 		_particles[i].lifeTime = Random::getFloatInRange(1.f, 1.25f);
-
-		float texOffset = (BLOCK_SIZE / 16.f) / Random::getIntInRange(6, 12);
-
-		glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0, 1), block->blockBreakTexture);
-		texCoordsTopLeft.x += texOffset;
-		texCoordsTopLeft.y -= texOffset;
 
 		_vertices[(i * 4) + 0].texCoords = glm::vec2(texCoordsTopLeft.x, texCoordsTopLeft.y - texOffset);
 		_vertices[(i * 4) + 1].texCoords = glm::vec2(texCoordsTopLeft.x, texCoordsTopLeft.y);

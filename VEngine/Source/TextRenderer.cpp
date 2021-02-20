@@ -13,8 +13,7 @@
 #include "Util.h"
 
 
-bool TextRenderer::shouldShowText = true;
-Key TextRenderer::key = Key(KeyCode::KEY_F3);
+bool TextRenderer::shouldShowText = false;
 
 
 TextRenderer::TextRenderer() {
@@ -26,9 +25,7 @@ TextRenderer::~TextRenderer() {
 
 
 void TextRenderer::handle() {
-	key.update();
-
-	if(key.wasPressedAndReleased()) {
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F3)) {
 		shouldShowText = !shouldShowText;
 		Game::debugMode = !Game::debugMode;
 	}
@@ -110,7 +107,7 @@ void TextRenderer::update(Player* player) {
 
 	std::string positionXYZ = "XYZ: " 
 				+ std::to_string(playerPos.x) 
-		+ " / " + std::to_string(playerPos.y) 
+		+ " / " + std::to_string(playerPos.y - 1.25f)
 		+ " / " + std::to_string(playerPos.z);
 	
 	std::string blockPositionXYZ = "Block: " 

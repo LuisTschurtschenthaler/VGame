@@ -11,6 +11,8 @@ class Window {
 
 private:
 	static GLFWwindow* _window;
+	static GLFWmonitor* _monitor;
+	static const GLFWvidmode* _mode;
 
 	static int _width;
 	static int _height;
@@ -19,7 +21,7 @@ private:
 
 
 public:
-	static void create(int width, int height, bool fullscreen, bool vSync, const std::string& title);
+	static void create(bool fullscreen, bool vSync, const std::string& title);
 	static void render();
 	static void dispose();
 

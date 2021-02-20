@@ -6,6 +6,7 @@
 #include "Raycast.h"
 #include "Camera.h"
 #include "World.h"
+#include "Constants.h"
 #include "ParticleSystem.h"
 #include "ParticleEmitter.h"
 
@@ -13,20 +14,20 @@
 class BlockEvents {
 
 public:
-	static void onBlockPlace(ChunkManager* chunkManager) {
+	static void onBlockPlace() {
 		LocationXYZ blockPosition = Raycast::getBlockToPlace();
 		if(blockPosition.x == -1.f) return;
 		
-		chunkManager->placeBlock(blockPosition, BlockID::TNT);
+		World::getChunkManager().placeBlock(blockPosition, BlockID::TNT);
 	}
 
-	static void onBlockBreak(ChunkManager* chunkManager) {
+	static void onBlockBreak() {
 		LocationXYZ blockPosition = Raycast::getBlockToBreak();
 		if(blockPosition.x == -1.f) return;
 
-		chunkManager->removeBlock(blockPosition);
 		BlockID blockID = World::getChunkManager().getBlockID(blockPosition);
-		World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, blockPosition));
+		World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, blockPosition, MAX_BLOCK_BREAK_PARTICLES));
+		World::getChunkManager().removeBlock(blockPosition);
 	}
 
 };

@@ -1,93 +1,55 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include "Screenshot.h"
-#include "Window.h"
-#include "Log.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <GLEW/GL/glew.h>
+#include <STB/stb_image_write.h>
 #include <ctime>
 #include <iostream>
-#include <GLEW/GL/glew.h>
+#include "Screenshot.h"
+#include "Constants.h"
+#include "Input.h"
+#include "Log.h"
 
-#define SDL_LOCKIFMUST(s) (SDL_MUSTLOCK(s) ? SDL_LockSurface(s) : 0)
-#define SDL_UNLOCKIFMUST(s) { if(SDL_MUSTLOCK(s)) SDL_UnlockSurface(s); }
-
-Key Screenshot::key = Key(KeyCode::KEY_F2);
-
-bool Screenshot::take() {
-	/*
-	int w = Window::getWidth();
-	int h = Window::getHeight();
-	unsigned char* pixels = new unsigned char[w * h * 4];
-
-	glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-	SDL_Surface* surface = SDL_CreateRGBSurfaceFrom(pixels, w, h, 8 * 4, w * 4, 0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000);
-
-	std::string file =  _getScreenshotFilename();
-	std::string path = "./Screenshots/" + file;
-
-	if(_invert(surface)) {
-		SDL_SaveBMP(surface, path.c_str());
-		Log::write(Log::INFO, "Successfully saved screenshot: " + file);
-	} else {
-		Log::write(Log::WARN, "Failed to save screenshot: " + file);
-		return false;
-	}
-
-	SDL_UnlockSurface(surface);
-	SDL_FreeSurface(surface);
-	delete[] pixels;
-	*/
-	return true;
-}
 
 void Screenshot::handle() {
-	key.update();
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F2)) {
+		GLint viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
 
-	if(key.wasPressedAndReleased())
-		take();
+		int x = viewport[0],
+			y = viewport[1];
+
+		int width = viewport[2],
+			height = viewport[3];
+
+		char* imageData = (char*) malloc((size_t) (width * height * 3));
+		if(!imageData) return;
+
+		glPixelStorei(GL_PACK_ALIGNMENT, 1);
+		glReadPixels(x, y, width, height, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+		_invertImage(imageData, width, height);
+
+		std::string filename = PATH_SCREENSHOTS + _getScreenshotFilename();
+		stbi_write_png(filename.c_str(), width, height, 3, imageData, 0);
+
+		free(imageData);
+	}
 }
-/*
-bool Screenshot::_invert(SDL_Surface* surface) {
-	Uint8* t;
-	Uint8* last;
-	register Uint8* a;
-	register Uint8* b;
-	register Uint16 pitch;
 
-	if(SDL_LOCKIFMUST(surface) < 0)
-		return false;
 
-	if(surface->h < 2) {
-		SDL_UNLOCKIFMUST(surface);
-		return true;
+void Screenshot::_invertImage(char* imageData, const int& width, const int& height) {
+	char rgb[3];
+
+	for(int y = 0; y < height / 2; y++) {
+		for(int x = 0; x < width; x++) {
+			int top = (x + y * width) * 3;
+			int bottom = (x + (height - y - 1) * width) * 3;
+
+			memcpy(rgb, imageData + top, sizeof(rgb));
+			memcpy(imageData + top, imageData + bottom, sizeof(rgb));
+			memcpy(imageData + bottom, rgb, sizeof(rgb));
+		}
 	}
-
-	pitch = surface->pitch;
-	t = (Uint8*) malloc(pitch);
-
-	if(t == NULL) {
-		SDL_UNLOCKIFMUST(surface);
-		return false;
-	}
-
-	memcpy(t, surface->pixels, pitch);
-
-	a = (Uint8*) surface->pixels;
-	last = a + pitch * (surface->h - 1);
-	b = last;
-
-	while(a < b) {
-		memcpy(a, b, pitch);
-		a += pitch;
-		memcpy(b, a, pitch);
-		b -= pitch;
-	}
-
-	memmove(b, b + pitch, last - b);
-	memcpy(last, t, pitch);
-
-	free(t);
-	SDL_UNLOCKIFMUST(surface);
-	return true;
-}*/
+}
 
 std::string Screenshot::_getScreenshotFilename() {
 	time_t rawtime;

@@ -4,6 +4,8 @@
 
 
 GLFWwindow* Window::_window = nullptr;
+GLFWmonitor* Window::_monitor = nullptr;
+const GLFWvidmode* Window::_mode = nullptr;
 
 int Window::_width = 0;
 int Window::_height = 0;
@@ -11,9 +13,7 @@ bool Window::_fullscreen = false;
 std::string Window::_title = "";
 
 
-void Window::create(int width, int height, bool fullscreen, bool vSync, const std::string& title) {
-	_width = width;
-	_height = height;
+void Window::create(bool fullscreen, bool vSync, const std::string& title) {
 	_fullscreen = fullscreen;
 	_title = title;
 
@@ -24,9 +24,20 @@ void Window::create(int width, int height, bool fullscreen, bool vSync, const st
 	if(!glfwInit())
 		fprintf(stderr, "Error: Couldn't initialize GLFW\n");
 
-	_window = glfwCreateWindow(_width, _height, _title.c_str(), NULL, NULL);
+	_monitor = glfwGetPrimaryMonitor();
+	_mode = glfwGetVideoMode(_monitor);
+	_width = _mode->width;
+	_height = _mode->height;
+
+	glfwWindowHint(GLFW_RED_BITS, _mode->redBits);
+	glfwWindowHint(GLFW_GREEN_BITS, _mode->greenBits);
+	glfwWindowHint(GLFW_BLUE_BITS, _mode->blueBits);
+	glfwWindowHint(GLFW_REFRESH_RATE, _mode->refreshRate);
+	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+
+	_window = glfwCreateWindow(_width, _height, _title.c_str(), fullscreen ? _monitor : nullptr, nullptr);
 	if(!_window) glfwTerminate();
-	
+
 	glfwSetWindowAttrib(_window, GLFW_FOCUSED, GLFW_TRUE);
 	glfwMakeContextCurrent(_window);
 
@@ -43,11 +54,11 @@ void Window::create(int width, int height, bool fullscreen, bool vSync, const st
 
 void Window::render() {
 	glfwSwapBuffers(_window);
-	glfwPollEvents();
 	glFlush();
 }
 
 void Window::dispose() {
+	glfwDestroyWindow(_window);
 	glfwTerminate();
 }
 
@@ -57,6 +68,7 @@ bool Window::shouldClose() {
 
 void Window::setFullscreen() {
 	_fullscreen = !_fullscreen;
+	glfwSetWindowMonitor(_window, _fullscreen ? glfwGetPrimaryMonitor() : NULL, 0, 0, _width, _height, GLFW_DONT_CARE);
 }
 
 
@@ -71,6 +83,8 @@ void Window::_setWindowIcon() {
 }
 
 void Window::_windowResizeCallback(GLFWwindow* window, int width, int height) {
+	if(width <= 0 || height <= 0) return;
+	
 	glfwSetWindowSize(_window, width, height);
 	glViewport(0, 0, width, height);
 	_width = width;

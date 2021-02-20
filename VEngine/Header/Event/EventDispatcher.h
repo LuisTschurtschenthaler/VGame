@@ -9,6 +9,7 @@
 #include "Log.h"
 
 #include "BlockEvents.h"
+#include "PlayerEvents.h"
 
 class Camera;
 class ChunkManager;
@@ -25,8 +26,9 @@ public:
 
 
 	static void registerEvents(EventDispatcher& dispatcher) {
-		dispatcher.registerEvent(new Event<ChunkManager*>(EventType::BLOCK_BREAK_EVENT, &BlockEvents::onBlockBreak));
-		dispatcher.registerEvent(new Event<ChunkManager*>(EventType::BLOCK_PLACE_EVENT, &BlockEvents::onBlockPlace));
+		dispatcher.registerEvent(new Event<>(EventType::BLOCK_BREAK_EVENT, &BlockEvents::onBlockBreak));
+		dispatcher.registerEvent(new Event<>(EventType::BLOCK_PLACE_EVENT, &BlockEvents::onBlockPlace));
+		dispatcher.registerEvent(new Event<Player*>(EventType::PLAYER_MOVE_EVENT, &PlayerEvents::onPlayerMoveEvent));
 	}
 
 	void registerEvent(IEvent* e) {

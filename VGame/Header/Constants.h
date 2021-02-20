@@ -14,10 +14,11 @@
 /* File system */
 #define PATH_SHADERS				"./Resources/Shaders/"
 #define PATH_TEXTURES				"./Resources/Textures/"
+#define PATH_SCREENSHOTS			"./Screenshots/"
 
 
 /* Player */
-#define RENDER_DISTANCE				5
+#define RENDER_DISTANCE				8
 #define DESTROY_DISTANCE			(RENDER_DISTANCE + 5)
 #define SPAWN_CHUNKS				(4 * RENDER_DISTANCE * RENDER_DISTANCE)
 
@@ -25,7 +26,7 @@
 #define MOUSE_TIMEOUT				0.05f
 
 #define WALK_SPEED					0.8f
-#define FLY_SPEED					3.f
+#define FLY_SPEED					1.2f
 #define JUMP_DURATION				1.f
 #define BLOCK_BREAK_DURATION		0.33f
 #define MAX_BLOCK_REACH_DISTANCE	5
@@ -34,7 +35,7 @@
 /* Camera */
 #define FOV							110.f
 #define FOV_SPRINT					(FOV + 15.f)
-#define FOV_SPRINT_STEPS			3.f
+#define FOV_SPRINT_STEPS			2.f
 #define FOV_ZOOM					45.f
 #define NEAR_PLANE					0.001f
 #define FAR_PLANE					500.f
