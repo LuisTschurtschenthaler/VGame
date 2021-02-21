@@ -1,4 +1,4 @@
-![Logo](/media/Logo.png)
+![Logo](https://github.com/LuisTschurtschenthaler/VGame/tree/master/Media/Logo.png)
 # VGame
 ## Screenshots
 Coming soon...
