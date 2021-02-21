@@ -1,4 +1,4 @@
-![Logo](https://github.com/LuisTschurtschenthaler/VGame/tree/master/Media/Logo.png)
+![Logo](https://raw.githubusercontent.com/LuisTschurtschenthaler/VGame/master/Media/Logo.png)
 # VGame
 ## Screenshots
 Coming soon...
