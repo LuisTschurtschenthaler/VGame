@@ -27,6 +27,7 @@ private:
 	CoreEngine* _coreEngine;
 	TextRenderer* _textRenderer;
 	World* _world;
+	bool _HUDvisible;
 
 
 public:

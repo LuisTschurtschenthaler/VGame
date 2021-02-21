@@ -100,11 +100,13 @@ void Player::_handleMouseMove() {
 	if(Input::mouseLocked && Input::isKeyPressed(GLFW_KEY_ESCAPE)) {
 		Input::setCursorVisible(true);
 		Input::mouseLocked = false;
+		Input::enabled = false;
 	}
 	else if(!Input::mouseLocked && Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 		Input::setCursorVisible(false);
 		Input::setMousePosition(centerMousePosition);
 		Input::mouseLocked = true;
+		Input::enabled = true;
 	}
 
 	if(Input::mouseLocked) {

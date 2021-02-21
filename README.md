@@ -14,24 +14,38 @@ Space/Double space | Jump/Fly up
 Left Control | Sprint
 Left shift | Sneak (coming soon)/Fly down
 Escape | Lose window focus
-F2 | Take screenshot
-F3 | Show/Hide game infos
+F1 | Show/Hide HUD
+F2 | Show/Hide game infos
+F3 | Take screenshot
 F11 | Toggle fullscreen
 
 ## To-do-list
 - [x] Collision
 - [x] Basic physics
-- [x] Ambient occlusion
+- [x] Per-Vertex AO
 - [x] Day/Night
 - [x] Break/place blocks
 - [x] Particle system
 - [x] Transparent water
 - [x] Multithreading
 - [x] Distance fog
-- [ ] Sounds
+- [ ] Sounds/Background music
 - [ ] Saving/loading system
+- [ ] Frustum culling
+- [ ] World generation
+  - [ ] Ore veins
+  - [ ] Caves
+  - [ ] More biomes, blocks, structures :smile:
+- [ ] Post processing effects
 - [ ] (Colored) Lightsources + sunlight
 - [ ] Transparent blocks
 - [ ] UI (menu, inventory)
 - [ ] Crafting system
 - [ ] ??Multiplayer??
+
+## Dependencies
+* [GLEW](http://glew.sourceforge.net/): Managing OpenGL extensions
+* [GLFW](https://www.glfw.org/download): Used for creating a window
+* [glm](https://github.com/g-truc/glm): OpenGL Mathematics
+* [stb](https://github.com/nothings/stb): Image loading
+* [freetype](https://www.freetype.org/download.html): Font loading

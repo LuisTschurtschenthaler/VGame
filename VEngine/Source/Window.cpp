@@ -7,15 +7,17 @@ GLFWwindow* Window::_window = nullptr;
 GLFWmonitor* Window::_monitor = nullptr;
 const GLFWvidmode* Window::_mode = nullptr;
 
+std::string Window::_title = "";
 int Window::_width = 0;
 int Window::_height = 0;
 bool Window::_fullscreen = false;
-std::string Window::_title = "";
+bool Window::_vSync = false;
 
 
-void Window::create(bool fullscreen, bool vSync, const std::string& title) {
-	_fullscreen = fullscreen;
+void Window::create(const std::string& title, bool fullscreen, bool vSync) {
 	_title = title;
+	_fullscreen = fullscreen;
+	_vSync = vSync;
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -46,7 +48,7 @@ void Window::create(bool fullscreen, bool vSync, const std::string& title) {
 		fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
 
 	glfwSetWindowSizeCallback(_window, Window::_windowResizeCallback);
-	glfwSwapInterval(vSync ? 1 : 0);
+	glfwSwapInterval(_vSync ? 1 : 0);
 
 	_setWindowIcon();
 	Input::setCallbacks(_window);
@@ -62,13 +64,16 @@ void Window::dispose() {
 	glfwTerminate();
 }
 
-bool Window::shouldClose() {
-	return glfwWindowShouldClose(_window);
+void Window::handle() {
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F11)) {
+		_fullscreen = !_fullscreen;
+		glfwSetWindowMonitor(_window, _fullscreen ? glfwGetPrimaryMonitor() : NULL, 0, 0, _width, _height, _mode->refreshRate);
+		glfwSwapInterval(_vSync ? 1 : 0);
+	}
 }
 
-void Window::setFullscreen() {
-	_fullscreen = !_fullscreen;
-	glfwSetWindowMonitor(_window, _fullscreen ? glfwGetPrimaryMonitor() : NULL, 0, 0, _width, _height, GLFW_DONT_CARE);
+bool Window::shouldClose() {
+	return glfwWindowShouldClose(_window);
 }
 
 

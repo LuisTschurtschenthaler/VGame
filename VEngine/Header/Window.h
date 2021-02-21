@@ -14,20 +14,18 @@ private:
 	static GLFWmonitor* _monitor;
 	static const GLFWvidmode* _mode;
 
-	static int _width;
-	static int _height;
-	static bool _fullscreen;
 	static std::string _title;
+	static int _width, _height;
+	static bool _fullscreen, _vSync;
 
 
 public:
-	static void create(bool fullscreen, bool vSync, const std::string& title);
+	static void create(const std::string& title, bool fullscreen, bool vSync);
 	static void render();
 	static void dispose();
 
+	static void handle();
 	static bool shouldClose();
-
-	static void setFullscreen();
 
 	static GLFWwindow* getWindow() { return _window; }
 	static const int getWidth() { return _width; }

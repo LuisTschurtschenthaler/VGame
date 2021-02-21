@@ -56,6 +56,7 @@ void CoreEngine::_run() {
 		_game->update();
 		Input::update();
 
+		Window::handle();
 		Screenshot::handle();
 		TextRenderer::handle();
 

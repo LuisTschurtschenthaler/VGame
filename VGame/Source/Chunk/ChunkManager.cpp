@@ -161,8 +161,6 @@ bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
 std::map<float, Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int& playerZ) {
 	std::map<float, Chunk*> sortedChunks = std::map<float, Chunk*>();
 
-	//std::cout << _chunks.size() << std::endl;
-
 	std::unordered_map<ChunkXZ, Chunk*>::iterator it = _chunks.begin();
 	for(; it != _chunks.end(); ) {
 		if(!it->second->meshesGenerated) {
@@ -185,13 +183,8 @@ std::map<float, Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const 
 		}
 		/*else if(distanceX >= DESTROY_DISTANCE || distanceX <= -DESTROY_DISTANCE ||
 				distanceZ >= DESTROY_DISTANCE || distanceZ <= -DESTROY_DISTANCE) {
-			//std::cout << "Deleting: " << it->second->coord << std::endl;
+			std::cout << "Deleting: " << it->second->coord << std::endl;
 			
-			it->second->nearbyChunks[0]->nearbyChunksDetected = false;
-			it->second->nearbyChunks[1]->nearbyChunksDetected = false;
-			it->second->nearbyChunks[2]->nearbyChunksDetected = false;
-			it->second->nearbyChunks[3]->nearbyChunksDetected = false;
-
 			delete it->second;
 			it->second = nullptr;
 			

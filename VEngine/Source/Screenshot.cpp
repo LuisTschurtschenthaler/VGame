@@ -11,7 +11,7 @@
 
 
 void Screenshot::handle() {
-	if(Input::isKeyPressedAndReleased(GLFW_KEY_F2)) {
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F1)) {
 		GLint viewport[4];
 		glGetIntegerv(GL_VIEWPORT, viewport);
 

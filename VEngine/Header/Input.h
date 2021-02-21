@@ -11,6 +11,7 @@
 class Input {
 
 public:
+	static bool enabled;
 	static bool mouseLocked;
 
 private:

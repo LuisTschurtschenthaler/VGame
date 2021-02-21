@@ -23,7 +23,9 @@ bool Game::debugMode = false;
 float Game::dayTime = 0;
 
 
-Game::Game() {
+Game::Game()
+	: _HUDvisible(true) {
+
 	_world = new World();
 
 	_textRenderer = new TextRenderer();
@@ -63,8 +65,14 @@ void Game::render() {
 
 		case GAME_ACTIVE:
 			_world->draw();
-			_textRenderer->draw();
-			Crosshair::draw();
+
+			if(Input::isKeyPressedAndReleased(GLFW_KEY_F1))
+				_HUDvisible = !_HUDvisible;
+
+			if(_HUDvisible) {
+				_textRenderer->draw();
+				Crosshair::draw();
+			}
 			break;
 
 		case GAME_MENU:

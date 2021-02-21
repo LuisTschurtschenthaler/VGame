@@ -25,7 +25,7 @@ TextRenderer::~TextRenderer() {
 
 
 void TextRenderer::handle() {
-	if(Input::isKeyPressedAndReleased(GLFW_KEY_F3)) {
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F2)) {
 		shouldShowText = !shouldShowText;
 		Game::debugMode = !Game::debugMode;
 	}
