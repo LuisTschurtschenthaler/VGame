@@ -1,5 +1,7 @@
+![Logo](/media/Logo.png)
 # VGame
 ## Screenshots
+Coming soon...
 
 ## Controls
 Button | Action
@@ -17,3 +19,19 @@ F3 | Show/Hide game infos
 F11 | Toggle fullscreen
 
 ## To-do-list
+- [x] Collision
+- [x] Basic physics
+- [x] Ambient occlusion
+- [x] Day/Night
+- [x] Break/place blocks
+- [x] Particle system
+- [x] Transparent water
+- [x] Multithreading
+- [x] Distance fog
+- [ ] Sounds
+- [ ] Saving/loading system
+- [ ] (Colored) Lightsources + sunlight
+- [ ] Transparent blocks
+- [ ] UI (menu, inventory)
+- [ ] Crafting system
+- [ ] ??Multiplayer??
