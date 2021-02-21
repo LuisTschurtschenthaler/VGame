@@ -14,5 +14,6 @@ Left shift | Sneak (coming soon)/Fly down
 Escape | Lose window focus
 F2 | Take screenshot
 F3 | Show/Hide game infos
+F11 | Toggle fullscreen
 
 ## To-do-list
