@@ -8,6 +8,12 @@
 #include <GLM/glm.hpp>
 
 
+enum ScrollType {
+	HORIZONTAL = 0,
+	VERTICAL = 1
+};
+
+
 class Input {
 
 public:
@@ -15,12 +21,12 @@ public:
 	static bool mouseLocked;
 
 private:
-	static unsigned int _keyStates[GLFW_KEY_LAST];
-	static unsigned int _keyStatesPrevious[GLFW_KEY_LAST];
-	static std::chrono::time_point<std::chrono::system_clock> _timeStamps[GLFW_KEY_LAST];
+	static unsigned int _keyStates[GLFW_KEY_LAST + 1];
+	static unsigned int _keyStatesPrevious[GLFW_KEY_LAST + 1];
+	static std::chrono::time_point<std::chrono::system_clock> _timeStamps[GLFW_KEY_LAST + 1];
 	
-	static unsigned int _mouseButtonStates[GLFW_MOUSE_BUTTON_LAST];
-	static unsigned int _mouseButtonStatesPrevious[GLFW_MOUSE_BUTTON_LAST];
+	static unsigned int _mouseButtonStates[GLFW_MOUSE_BUTTON_LAST + 1];
+	static unsigned int _mouseButtonStatesPrevious[GLFW_MOUSE_BUTTON_LAST + 1];
 	static int _mouseScollState[2];
 
 	static glm::vec2 _mousePosition, _mousePositionPrevious;
@@ -31,10 +37,13 @@ public:
 	static void update();
 
 	static bool isKeyPressed(const int& key);
+	static bool isKeyHeldDown(const int& key);
 	static bool isKeyDoublePressed(const int& key);
 	static bool isKeyPressedAndReleased(const int& key);
 
 	static bool isMouseButtonPressed(const int& button);
+	static bool isMouseButtonPressedAndReleased(const int& button);
+	static int getMouseScroll(const ScrollType& scrollType);
 
 	static void setCursorVisible(bool value);
 	static void setCallbacks(GLFWwindow* window);

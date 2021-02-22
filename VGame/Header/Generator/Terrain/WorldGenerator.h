@@ -9,15 +9,15 @@
 #include "Coordinates.h"
 #include "Biomes.h"
 
-class Chunk;
 class NoiseGenerator;
+class Chunk;
 
 
 class WorldGenerator {
 
 private:
-	Chunk* _chunk;
 	NoiseGenerator* _biomeNoise;
+	Chunk* _chunk;
 
 	Desert* _desert;
 	Grassland* _grassland;

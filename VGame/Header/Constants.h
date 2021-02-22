@@ -23,7 +23,6 @@
 #define SPAWN_CHUNKS				(4 * RENDER_DISTANCE * RENDER_DISTANCE)
 
 #define MOUSE_SENSITIVITY			0.075f
-#define MOUSE_TIMEOUT				0.05f
 
 #define WALK_SPEED					0.8f
 #define FLY_SPEED					1.2f
@@ -35,7 +34,7 @@
 /* Camera */
 #define FOV							110.f
 #define FOV_SPRINT					(FOV + 15.f)
-#define FOV_SPRINT_STEPS			2.f
+#define FOV_SPRINT_STEPS			2.5f
 #define FOV_ZOOM					45.f
 #define NEAR_PLANE					0.001f
 #define FAR_PLANE					500.f

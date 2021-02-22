@@ -39,6 +39,10 @@ Block* BlockManager::blocks[TOTAL_BLOCKS] = {
 	new Block{ "Jungle log",	35, { 35, 35, 36, 36, 35, 35 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true },
 	new Block{ "Jungle leave",	37, { 37, 37, 37, 37, 37, 37 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, true, true, false, true },
 	new Block{ "Glass",			38, { 38, 38, 38, 38, 38, 38 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, true, false },
+	new Block{ "Oak planks",	39, { 39, 39, 39, 39, 39, 39 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true },
+	new Block{ "Birch planks",	40, { 40, 40, 40, 40, 40, 40 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true },
+	new Block{ "Jungle planks",	41, { 41, 41, 41, 41, 41, 41 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true },
+	new Block{ "Cobblestone",	42, { 42, 42, 42, 42, 42, 42 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true },
 	
 	new Block{ "Error",			255, { 255, 255, 255, 255, 255, 255 }, { 0, 0, 0, 0, 0, 0 }, SOLID,  0.f, false, true, false, true }
 };

@@ -18,7 +18,7 @@ public:
 		auto now = std::chrono::system_clock::now();
 		double timeDifference = std::chrono::duration<double, std::milli>(now - before).count();
 		
-		if(timeDifference <= 300) return;
+		if(timeDifference <= 400) return;
 		before = now;
 
 		if(player->isOnGround || player->isJumping) {

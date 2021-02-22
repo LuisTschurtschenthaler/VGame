@@ -19,7 +19,7 @@ void Player::_input() {
 	_handleKeyboardInputs();
 	_handleFOV();
 	_handleMouseMove();
-	_handleMouseButtons();
+	_handleMouseInputs();
 }
 
 void Player::_handleKeyboardInputs() {
@@ -127,19 +127,41 @@ void Player::_handleMouseMove() {
 	}
 }
 
-void Player::_handleMouseButtons() {
-	if(_mouseTimer->elapse() >= BLOCK_BREAK_DURATION) {
-		// Break block
-		if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-			Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT);
-			_mouseTimer->update();
-		}
+void Player::_handleMouseInputs() {
+	// Handle mouse wheel
+	int mouseWheelScroll = Input::getMouseScroll(ScrollType::VERTICAL);
+	if(mouseWheelScroll != 0) {
+		_selectedBlock += mouseWheelScroll;
+		_selectedBlock = (_selectedBlock % (TOTAL_BLOCKS - 1));
 
-		// Place block
-		else if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-			Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT);
-			_mouseTimer->update();
-		}
+		if(_selectedBlock < 1)
+			_selectedBlock = (mouseWheelScroll < 1) ? (TOTAL_BLOCKS - 1) : 1;
+
+		std::cout << BlockManager::blocks[_selectedBlock]->name << std::endl;
+	}
+
+	// Select block
+	if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
+		LocationXYZ blockLocation = Raycast::getBlockToBreak();
+		_selectedBlock = World::getChunkManager().getBlockID(blockLocation);
+	}
+
+
+	// Break block
+	if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_LEFT)
+	   || (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
+
+		LocationXYZ blockBreakLocation = Raycast::getBlockToBreak();
+		Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, blockBreakLocation);
+		_mouseTimer->update();
+	}
+	// Place block
+	else if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_RIGHT)
+			|| (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
+
+		LocationXYZ blockPlaceLocation = Raycast::getBlockToPlace();
+		Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, blockPlaceLocation, static_cast<BlockID>(_selectedBlock));
+		_mouseTimer->update();
 	}
 }
 

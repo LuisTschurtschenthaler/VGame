@@ -5,12 +5,12 @@
 bool Input::enabled = false;
 bool Input::mouseLocked = false;
 
-unsigned int Input::_keyStates[GLFW_KEY_LAST];
-unsigned int Input::_keyStatesPrevious[GLFW_KEY_LAST];
-std::chrono::time_point<std::chrono::system_clock> Input::_timeStamps[GLFW_KEY_LAST];
+unsigned int Input::_keyStates[GLFW_KEY_LAST + 1];
+unsigned int Input::_keyStatesPrevious[GLFW_KEY_LAST + 1];
+std::chrono::time_point<std::chrono::system_clock> Input::_timeStamps[GLFW_KEY_LAST + 1];
 
-unsigned int Input::_mouseButtonStates[GLFW_MOUSE_BUTTON_LAST];
-unsigned int Input::_mouseButtonStatesPrevious[GLFW_MOUSE_BUTTON_LAST];
+unsigned int Input::_mouseButtonStates[GLFW_MOUSE_BUTTON_LAST + 1];
+unsigned int Input::_mouseButtonStatesPrevious[GLFW_MOUSE_BUTTON_LAST + 1];
 int Input::_mouseScollState[2];
 
 glm::vec2 Input::_mousePosition = { 0.f, 0.f };
@@ -19,16 +19,16 @@ glm::vec2 Input::_mousePositionPrevious = { 0.f, 0.f };
 
 void Input::init() {
 	auto now = std::chrono::system_clock::now();
-	for(int i = 0; i < GLFW_KEY_LAST; i++)
+	for(int i = 0; i < GLFW_KEY_LAST + 1; i++)
 		_timeStamps[i] = now;
 }
 
 void Input::update() {
-	for(int i = 0; i < GLFW_KEY_LAST; i++)
+	for(int i = 0; i < GLFW_KEY_LAST + 1; i++)
 		_keyStatesPrevious[i] = _keyStates[i];
 
-	for(int i = 0; i < GLFW_MOUSE_BUTTON_LAST; i++)
-		_mouseButtonStatesPrevious[i] = _keyStates[i];
+	for(int i = 0; i < GLFW_MOUSE_BUTTON_LAST + 1; i++)
+		_mouseButtonStatesPrevious[i] = _mouseButtonStates[i];
 
 	_mouseScollState[0] = 0;
 	_mouseScollState[1] = 0;
@@ -40,9 +40,14 @@ bool Input::isKeyPressed(const int& key) {
 	return (_keyStates[key] == GLFW_PRESS || _keyStates[key] == GLFW_REPEAT || _keyStates[key] == GLFW_DOUBLE_PRESS);
 }
 
+bool Input::isKeyHeldDown(const int& key) {
+	if(!enabled) return false;
+	return (_keyStates[key] == GLFW_PRESS || _keyStates[key] == GLFW_REPEAT || _keyStates[key] == GLFW_REPEAT);
+}
+
 bool Input::isKeyDoublePressed(const int& key) {
 	if(!enabled) return false;
-	return ((_keyStates[key] == GLFW_DOUBLE_PRESS ) && _keyStatesPrevious[key] == GLFW_RELEASE);
+	return ((_keyStates[key] == GLFW_DOUBLE_PRESS) && _keyStatesPrevious[key] == GLFW_RELEASE);
 }
 
 bool Input::isKeyPressedAndReleased(const int& key) {
@@ -52,6 +57,14 @@ bool Input::isKeyPressedAndReleased(const int& key) {
 
 bool Input::isMouseButtonPressed(const int& button) {
 	return (_mouseButtonStates[button] == GLFW_PRESS);
+}
+
+bool Input::isMouseButtonPressedAndReleased(const int& button) {
+	return (_mouseButtonStates[button] == GLFW_PRESS && _mouseButtonStatesPrevious[button] == GLFW_RELEASE);
+}
+
+int Input::getMouseScroll(const ScrollType& scrollType) {
+	return _mouseScollState[scrollType];
 }
 
 void Input::setCursorVisible(bool visible) {

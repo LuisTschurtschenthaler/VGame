@@ -103,8 +103,12 @@ void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block) 
 	for(int i = 0; i < TOTAL_BLOCK_FACES; i++) {
 		const Block* relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + adjacents[i]);
 
-		if(!relativeBlock->hasHitbox || relativeBlock->isFloraBlock || relativeBlock->isTransparent)
+		if(!relativeBlock->hasHitbox 
+		   || relativeBlock->isFloraBlock
+		   || (!block->isTransparent && (relativeBlock->isTransparent || relativeBlock->isFloraBlock))) {
+		
 			addBlockFace(chunk, x, y, z, static_cast<BlockFace>(i), block);
+		}
 	}
 }
 

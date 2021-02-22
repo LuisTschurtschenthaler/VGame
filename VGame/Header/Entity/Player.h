@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <GLM/glm.hpp>
+#include "BlockID.h"
 #include "Entity.h"
 #include "Camera.h"
 
@@ -17,6 +18,7 @@ public:
 private:
 	Timer* _mouseTimer;
 	glm::vec3 _lastChunkPosition;
+	int _selectedBlock;
 	float _jump;
 
 
@@ -31,7 +33,7 @@ private:
 	void _handleKeyboardInputs();
 	void _handleFOV();
 	void _handleMouseMove();
-	void _handleMouseButtons();
+	void _handleMouseInputs();
 
 };
 
