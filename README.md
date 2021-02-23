@@ -1,7 +1,10 @@
 ![Logo](https://raw.githubusercontent.com/LuisTschurtschenthaler/VGame/master/Media/Logo.png)
 # VGame
 ## Screenshots
-Coming soon...
+### First house
+![First house](https://raw.githubusercontent.com/LuisTschurtschenthaler/VGame/master/Media/First_house.jpg)
+### Ore generation
+![Ore generation](https://raw.githubusercontent.com/LuisTschurtschenthaler/VGame/master/Media/Ore_generation.jpg)
 
 ## Controls
 Button | Action
@@ -33,7 +36,7 @@ F11 | Toggle fullscreen
 - [ ] Saving/loading system
 - [ ] Frustum culling
 - [ ] World generation
-  - [ ] Ore veins
+  - [x] Ore veins
   - [ ] Caves
   - [ ] More biomes, blocks, structures :smile:
 - [ ] Post processing effects
@@ -49,3 +52,8 @@ F11 | Toggle fullscreen
 * [glm](https://github.com/g-truc/glm): OpenGL Mathematics
 * [stb](https://github.com/nothings/stb): Image loading
 * [freetype](https://www.freetype.org/download.html): Font loading
+
+## Helpful links
+* [Basic OpenGL](https://learnopengl.com/)
+* [Raycasting](https://antongerdelan.net/opengl/raycasting.html)
+* [Ores](https://minecraft.gamepedia.com/Mineral_vein)

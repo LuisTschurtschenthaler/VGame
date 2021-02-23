@@ -81,8 +81,6 @@ void Player::_handleKeyboardInputs() {
 
 			if(_jump >= JUMP_DURATION)
 				isJumping = false;
-
-			isOnGround = false;
 		}
 
 		else change.y -= gravity;
@@ -142,7 +140,7 @@ void Player::_handleMouseInputs() {
 
 	// Select block
 	if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
-		LocationXYZ blockLocation = Raycast::getBlockToBreak();
+		LocationXYZ blockLocation = Raycast::getBlockToBreak().blockToBreak;
 		_selectedBlock = World::getChunkManager().getBlockID(blockLocation);
 	}
 
@@ -151,7 +149,7 @@ void Player::_handleMouseInputs() {
 	if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_LEFT)
 	   || (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
 
-		LocationXYZ blockBreakLocation = Raycast::getBlockToBreak();
+		LocationXYZ blockBreakLocation = Raycast::getBlockToBreak().blockToBreak;
 		Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, blockBreakLocation);
 		_mouseTimer->update();
 	}
@@ -159,7 +157,7 @@ void Player::_handleMouseInputs() {
 	else if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_RIGHT)
 			|| (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
 
-		LocationXYZ blockPlaceLocation = Raycast::getBlockToPlace();
+		LocationXYZ blockPlaceLocation = Raycast::getBlockToPlace().blockToPlace;
 		Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, blockPlaceLocation, static_cast<BlockID>(_selectedBlock));
 		_mouseTimer->update();
 	}

@@ -7,6 +7,8 @@
 #include "Biome.h"
 #include "Structure.h"
 #include "Util.h"
+#include "BlockID.h"
+#include "Vein.h"
 
 
 WorldGenerator::WorldGenerator() {
@@ -40,14 +42,33 @@ WorldGenerator::~WorldGenerator() {
 void WorldGenerator::generateChunk(Chunk& chunk) {
 	_chunk = &chunk;
 
-	generateBiomeMap();
-	generateHeightMap();
-	setBlocks();
+	_generateBiomeMap();
+	_generateHeightMap();
+	_setBlocks();
+	// Caves
+	_generateVeins();
 
 	chunk.chunkDataGenerated = true;
 }
 
-void WorldGenerator::generateHeightMap() {
+Biome* WorldGenerator::getBiomeAt(const int& x, const int& z, const ChunkXZ& coord) {
+	return getBiomeType(_biomeNoise->getNoise(x, z, coord.x, coord.z));
+}
+
+Biome* WorldGenerator::getBiomeType(const float& value) {
+	//return _forest;
+
+	//if(value > 160) return _ocean;
+	if(value > 150) return _grassland;
+	else if(value > 130) return _forest;
+	else if(value > 120) return _birchForest;
+	else if(value > 110) return _grassland;
+	else if(value > 100) return _desert;
+	else return _desert;
+}
+
+
+void WorldGenerator::_generateHeightMap() {
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++) {
 		int heightValue = _biomeMap.get(x, z)->getHeight(x, z, _chunk->coord.x, _chunk->coord.z);
@@ -57,13 +78,13 @@ void WorldGenerator::generateHeightMap() {
 	}
 }
 
-void WorldGenerator::generateBiomeMap() {
+void WorldGenerator::_generateBiomeMap() {
 	for(int x = 0; x < CHUNK_SIZE + 1; x++)
 	for(int z = 0; z < CHUNK_SIZE + 1; z++)
 		_biomeMap.set(x, z, getBiomeType(_biomeNoise->getNoise(x, z, _chunk->coord.x, _chunk->coord.z)));
 }
 
-void WorldGenerator::setBlocks() {
+void WorldGenerator::_setBlocks() {
 	std::vector<std::pair<Biome*, LocationXYZ>> plants, trees;
 
 	for(int x = 0; x < CHUNK_SIZE; x++)
@@ -101,6 +122,17 @@ void WorldGenerator::setBlocks() {
 
 			else if(y > height - 3)
 				_chunk->chunkData.set(x, y, z, biome->getBelowTopBlock());
+			
+			else if(y == 0)
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+			else if(y == 1 && Random::getIntInRange(0, 10) <= 9)
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+			else if(y == 2 && Random::getIntInRange(0, 10) <= 6)
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+			else if(y == 3 && Random::getIntInRange(0, 10) <= 3)
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+			else if(y == 4 && Random::getIntInRange(0, 10) <= 1)
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else _chunk->chunkData.set(x, y, z, biome->getUnderEarth());
 		}
 	}
@@ -135,18 +167,14 @@ void WorldGenerator::setBlocks() {
 	}
 }
 
-Biome* WorldGenerator::getBiomeAt(const int& x, const int& z, const ChunkXZ& coord) {
-	return getBiomeType(_biomeNoise->getNoise(x, z, coord.x, coord.z));
-}
+void WorldGenerator::_generateVeins() {
+	Vein::generate(_chunk->worldCoord, { BlockID::COAL_ORE, 25, 2, 12, 1, 128 });
+	Vein::generate(_chunk->worldCoord, { BlockID::IRON_ORE, 18, 1, 7, 1, 64 });
+	Vein::generate(_chunk->worldCoord, { BlockID::LAPIS_ORE, 6, 1, 6, 1, 30 });
+	Vein::generate(_chunk->worldCoord, { BlockID::GOLD_ORE, 9, 1, 6, 1, 32 });
+	Vein::generate(_chunk->worldCoord, { BlockID::DIAMOND_ORE, 9, 1, 7, 1, 16 });
+	Vein::generate(_chunk->worldCoord, { BlockID::EMERALD_ORE, 2, 1, 2, 4, 32 });
 
-Biome* WorldGenerator::getBiomeType(const float& value) {
-	//return _forest;
-
-	//if(value > 160) return _ocean;
-	if(value > 150) return _grassland;
-	else if(value > 130) return _forest;
-	else if(value > 120) return _birchForest;
-	else if(value > 110) return _grassland;
-	else if(value > 100) return _desert;
-	else return _desert;
+	Vein::generate(_chunk->worldCoord, { BlockID::DIRT, 5, 1, 33, 0, 255 });
+	Vein::generate(_chunk->worldCoord, { BlockID::GRAVEL, 3, 1, 33, 0, 255 });
 }

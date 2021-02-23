@@ -92,10 +92,10 @@ void TextRenderer::update(Player* player) {
 
 	glm::vec3 playerPos = player->position;
 
-	std::string fps = std::to_string(std::ceil(FramerateCounter::getFPS()));
+	std::string fps = std::to_string(FramerateCounter::getFPS());
 	std::string title = "VGame FPS: " + fps.substr(0, fps.find("."));
 
-	std::string time = "Time: " + std::to_string(Game::dayTime) + " " + Util::angleToTime(Game::dayTime);
+	std::string time = "Time: " + std::to_string(Game::dayTime);
 
 	std::string pitch = std::to_string(player->pitch);
 	std::string yaw = std::to_string(player->yaw);

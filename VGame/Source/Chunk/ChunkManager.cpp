@@ -91,7 +91,7 @@ void ChunkManager::findSpawnPoint(glm::vec3& position) {
 	int worldPosX = chunkPosX + chunkX * CHUNK_SIZE,
 		worldPosZ = chunkPosZ + chunkZ * CHUNK_SIZE;
 
-	position = { worldPosX + 0.5f, height + 5, worldPosZ + 0.5f };
+	position = { worldPosX + 0.5f, height + 5.f, worldPosZ + 0.5f };
 	std::cout << "Attempts for spawn finding: " << attempts << std::endl;
 	std::cout << "Spawnlocation fount at: " << position.x << " " << position.y << " " << position.z << std::endl;
 }
@@ -111,9 +111,21 @@ void ChunkManager::placeBlock(const LocationXYZ& loc, BlockID blockID) {
 	Chunk* chunk = getChunkFromLocation(loc);
 	LocationXYZ blockLoc = getBlockLocation(loc);
 
+	if(isLocationOutOfChunkRange(blockLoc))
+		return;
+
 	_setNearbyChunksDirty(chunk, blockLoc);
 	_setNearbyChunksMinMax(chunk, loc.y - 1, loc.y + 1);
 	chunk->chunkData.set(blockLoc, blockID);
+}
+
+void ChunkManager::replaceBlock(const LocationXYZ& location, const BlockID& blockToReplace, const BlockID& block) {
+	if(getBlockID(location) == blockToReplace) {
+		Chunk* chunk = getChunkFromLocation(location);
+		LocationXYZ blockLoc = getBlockLocation(location);
+
+		chunk->chunkData.set(blockLoc, block);
+	}
 }
 
 Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {
@@ -152,7 +164,7 @@ bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
 	return(!(location.x >= 0
 		   && location.x < CHUNK_SIZE
 		   && location.y >= 0
-		   && location.y < CHUNK_HEIGHT
+		   && location.y < CHUNK_HEIGHT - 1
 		   && location.z >= 0
 		   && location.z < CHUNK_SIZE));
 }
@@ -215,8 +227,8 @@ void ChunkManager::_setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& locati
 void ChunkManager::_setNearbyChunksMinMax(Chunk* chunk, const int& min, const int& max) {
 	auto setMinMax = [](Chunk* nearbyChunk, const int& min, const int& max) {
 		if(nearbyChunk != nullptr) {
-			nearbyChunk->minimumPoint = std::min(nearbyChunk->minimumPoint, min);
-			nearbyChunk->highestPoint = std::max(nearbyChunk->highestPoint, max);
+			nearbyChunk->minimumPoint = std::min(nearbyChunk->minimumPoint, (min < 0) ? 0 : min);
+			nearbyChunk->highestPoint = std::max(nearbyChunk->highestPoint, (max > CHUNK_HEIGHT - 1) ? CHUNK_HEIGHT - 1 : max);
 		}
 	};
 

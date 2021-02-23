@@ -37,6 +37,7 @@ public:
 
 	void removeBlock(const LocationXYZ& location);
 	void placeBlock(const LocationXYZ& location, BlockID blockID);
+	void replaceBlock(const LocationXYZ& location, const BlockID& blockToReplace, const BlockID& block);
 
 	Chunk* getChunk(const ChunkXZ& coord);
 	Chunk* getChunkFromLocation(const LocationXYZ& location);

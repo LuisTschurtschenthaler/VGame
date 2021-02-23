@@ -116,10 +116,6 @@ void Chunk::recreateChunkMesh() {
 }
 
 const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
-	for(auto& nearbyChunk : nearbyChunks)
-		if(nearbyChunk->coord.x > 100000 || nearbyChunk->coord.x < -100000)
-			std::cout << "NEGA" << std::endl;
-
 	// Right -> X+
 	if(loc.x >= CHUNK_SIZE
 	   && loc.y < CHUNK_HEIGHT
@@ -147,7 +143,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 		
-		return BlockManager::blocks[AIR];
+		return BlockManager::blocks[ERROR];
 	}
 
 	// Bottom -> Y- 

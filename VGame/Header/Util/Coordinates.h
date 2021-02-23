@@ -52,6 +52,8 @@ struct ChunkXYZ {
 struct LocationXYZ {
 	int x, y, z;
 
+	LocationXYZ(): x(0), y(0), z(0) { }
+
 	LocationXYZ(int x, int y, int z)
 		: x(x), y(y), z(z) { }
 

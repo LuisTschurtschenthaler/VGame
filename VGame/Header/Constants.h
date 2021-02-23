@@ -25,7 +25,7 @@
 #define MOUSE_SENSITIVITY			0.075f
 
 #define WALK_SPEED					0.8f
-#define FLY_SPEED					1.2f
+#define FLY_SPEED					1.f
 #define JUMP_DURATION				1.f
 #define BLOCK_BREAK_DURATION		0.33f
 #define MAX_BLOCK_REACH_DISTANCE	5

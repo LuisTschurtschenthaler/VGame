@@ -10,8 +10,7 @@
 #include "Input.h"
 
 
-// Pseudo code from: https://antongerdelan.net/opengl/raycasting.html
-LocationXYZ Raycast::getBlockToPlace() {
+RayHit Raycast::getBlockToPlace() {
 	glm::vec3 position = World::getPlayer().position;
 	glm::vec3 direction = World::getPlayer().camera->front;
 
@@ -20,7 +19,7 @@ LocationXYZ Raycast::getBlockToPlace() {
 	for(uint8_t i = 0; i < 3; i++)
 		sign[i] = direction[i] > 0;
 
-	for(int i = 0; i < 6; i++) {
+	for(int i = 0; i < MAX_BLOCK_REACH_DISTANCE + 1; i++) {
 		glm::vec3 tvec = (floor(position + sign) - position) / direction;
 		float t = std::min(tvec.x, std::min(tvec.y, tvec.z));
 
@@ -34,9 +33,9 @@ LocationXYZ Raycast::getBlockToPlace() {
 
 		if(BlockManager::blocks[blockID]->hasHitbox) {
 			glm::vec3 normal;
-			for(int i = 0; i < 3; i++) {
-				normal[i] = (t == tvec[i]);
-				if(sign[i]) normal[i] = -normal[i];
+			for(int j = 0; j < 3; j++) {
+				normal[j] = (t == tvec[j]);
+				if(sign[j]) normal[j] = -normal[j];
 			}
 
 			position += normal;
@@ -47,16 +46,16 @@ LocationXYZ Raycast::getBlockToPlace() {
 				position.z
 			});
 
-			return _getBlockPosition(position);
+			return { _getBlockPosition(position), LocationXYZ(-1, -1, -1), normal };
 		}
 	}
 
-	return LocationXYZ(-1, -1, -1);
+	return { LocationXYZ(-1, -1, -1), LocationXYZ(-1, -1, -1), glm::vec3(0.f) };
 }
 
-LocationXYZ Raycast::getBlockToBreak() {
+RayHit Raycast::getBlockToBreak() {
 	glm::vec3 directBlock = getDirectBlock();
-	return _getBlockPosition(directBlock);
+	return { LocationXYZ(-1, -1, -1), _getBlockPosition(directBlock), glm::vec3(0.f) };
 }
 
 glm::vec3 Raycast::getDirectBlock() {

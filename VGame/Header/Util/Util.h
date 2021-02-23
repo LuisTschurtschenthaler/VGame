@@ -27,11 +27,6 @@ public:
 		return model;
 	}
 
-	static std::string angleToTime(float angle) {
-		std::string time = "";
-		return time;
-	}
-
 	static std::string yawToCardinalPoint(float yaw) {
 		if(_isInRange(yaw, 0, 0) || _isInRange(yaw, 360, -360))
 			return "N";

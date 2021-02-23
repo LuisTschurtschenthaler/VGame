@@ -5,11 +5,17 @@
 #include "Coordinates.h"
 
 
+struct RayHit {
+	LocationXYZ blockToPlace, blockToBreak;
+	glm::vec3 normal;
+};
+
+
 class Raycast {
 
 public:
-	static LocationXYZ getBlockToPlace();
-	static LocationXYZ getBlockToBreak();
+	static RayHit getBlockToPlace();
+	static RayHit getBlockToBreak();
 	static glm::vec3 getDirectBlock();
 
 private:
