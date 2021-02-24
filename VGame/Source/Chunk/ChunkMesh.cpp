@@ -90,8 +90,8 @@ void ChunkMesh::clear() {
 	glDeleteBuffers(1, &_IBO);
 }
 
-void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block) {
-	static const std::vector<LocationXYZ> adjacents = {
+void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block, const BlockRotation& rotation) {
+	const std::vector<LocationXYZ> ADJACENTS = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
 		{  0,  1,  0 },
@@ -101,18 +101,36 @@ void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block) 
 	};
 
 	for(int i = 0; i < TOTAL_BLOCK_FACES; i++) {
-		const Block* relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + adjacents[i]);
+		const Block* relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + ADJACENTS[i]);
 
-		if(!relativeBlock->hasHitbox 
+		if(!relativeBlock->hasHitbox
 		   || relativeBlock->isFloraBlock
 		   || (!block->isTransparent && (relativeBlock->isTransparent || relativeBlock->isFloraBlock))) {
 		
-			addBlockFace(chunk, x, y, z, static_cast<BlockFace>(i), block);
+			addBlockFace(chunk, x, y, z, static_cast<BlockFace>(i), block, rotation);
 		}
 	}
 }
 
-void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block) {
+void ChunkMesh::addFluidBlock(const Chunk* chunk, int x, int y, int z, Block* block, const BlockRotation& rotation) {
+	const std::vector<LocationXYZ> ADJACENTS = {
+		{  1,  0,  0 },
+		{ -1,  0,  0 },
+		{  0,  1,  0 },
+		{  0, -1,  0 },
+		{  0,  0,  1 },
+		{  0,  0, -1 }
+	};
+
+	for(int i = 0; i < TOTAL_BLOCK_FACES; i++) {
+		const Block* relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + ADJACENTS[i]);
+
+		if(block->meshType == MeshType::FLUID && relativeBlock->meshType != MeshType::FLUID)
+			addBlockFace(chunk, x, y, z, static_cast<BlockFace>(i), block, rotation);
+	}
+}
+
+void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block, const BlockRotation& rotation) {
 	int x = xi + chunk->coord.x * CHUNK_SIZE;
 	int z = zi + chunk->coord.z * CHUNK_SIZE;
 
@@ -125,7 +143,7 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 	Vertex v1, v2, v3, v4;
 	switch(face) {
 		case FACE_RIGHT: 
-			textureID = block->textures[FACE_RIGHT];
+			textureID = block->textures[rotation][FACE_RIGHT];
 			offset = block->texturePixelOffset[FACE_RIGHT] / 16.f;
 
 			v1 = Vertex(
@@ -171,7 +189,7 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 			break;
 
 		case FACE_LEFT: 
-			textureID = block->textures[FACE_LEFT];
+			textureID = block->textures[rotation][FACE_LEFT];
 			offset = block->texturePixelOffset[FACE_LEFT] / 16.f;
 			
 			v1 = Vertex(
@@ -217,7 +235,7 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 			break;
 
 		case FACE_TOP: 
-			textureID = block->textures[FACE_TOP];
+			textureID = block->textures[rotation][FACE_TOP];
 			offset = block->texturePixelOffset[FACE_TOP] / 16.f;
 			
 			v1 = Vertex(
@@ -263,7 +281,7 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 			break;
 
 		case FACE_BOTTOM: 
-			textureID = block->textures[FACE_BOTTOM];
+			textureID = block->textures[rotation][FACE_BOTTOM];
 			offset = block->texturePixelOffset[FACE_BOTTOM] / 16.f;
 
 			v1 = Vertex(
@@ -309,7 +327,7 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 			break;
 
 		case FACE_FRONT: 
-			textureID = block->textures[FACE_FRONT];
+			textureID = block->textures[rotation][FACE_FRONT];
 			offset = block->texturePixelOffset[FACE_FRONT] / 16.f;
 			
 			v1 = Vertex(
@@ -355,7 +373,7 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 			break;
 
 		case FACE_BACK: 
-			textureID = block->textures[FACE_BACK];
+			textureID = block->textures[rotation][FACE_BACK];
 			offset = block->texturePixelOffset[FACE_BACK] / 16.f;
 			
 			v1 = Vertex(
@@ -419,11 +437,11 @@ void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const Bl
 	});
 }
 
-void ChunkMesh::addFloraBlock(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block) {
+void ChunkMesh::addFloraBlock(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block, const BlockRotation& rotation) {
 	float x = xi + chunk->coord.x * CHUNK_SIZE;
 	float z = zi + chunk->coord.z * CHUNK_SIZE;
 
-	int textureID = block->textures[face];
+	int textureID = block->textures[rotation][face];
 	Vertex v1(
 		glm::vec3(x, y, z),
 		glm::vec3(0.f, 0.f, 0.f),

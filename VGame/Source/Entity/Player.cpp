@@ -20,7 +20,7 @@ Player::Player()
 	velocity = glm::vec3(0.f);
 
 	_mouseTimer = new Timer();
-	_selectedBlock = BlockID::SMIRK;
+	_selectedBlock = BlockID::CRAVED_PUMPKIN;
 	_jump = 0;
 }
 
@@ -31,9 +31,9 @@ Player::~Player() {
 
 
 void Player::update() {
-	isSwimming = (World::getChunkManager().getBlockID({ int(position.x), int(position.y - 1), int(position.z) }) == WATER);
-	isUnderwater = (World::getChunkManager().getBlockID({ int(position.x), int(position.y), int(position.z) }) == WATER);
-	isOnGround = BlockManager::blocks[World::getChunkManager().getBlockID({ int(position.x), int(position.y - 1.8f), int(position.z) })]->hasHitbox;
+	isSwimming = (World::getChunkManager().getChunkBlock({ int(position.x), int(position.y - 1), int(position.z) }).blockID == WATER);
+	isUnderwater = (World::getChunkManager().getChunkBlock({ int(position.x), int(position.y), int(position.z) }).blockID == WATER);
+	isOnGround = BlockManager::blocks[World::getChunkManager().getChunkBlock({ int(position.x), int(position.y - 1.8f), int(position.z) }).blockID]->hasHitbox;
 
 	_input();
 	camera->update();

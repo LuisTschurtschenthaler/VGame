@@ -141,7 +141,7 @@ void Player::_handleMouseInputs() {
 	// Select block
 	if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
 		LocationXYZ blockLocation = Raycast::getBlockToBreak().blockToBreak;
-		_selectedBlock = World::getChunkManager().getBlockID(blockLocation);
+		_selectedBlock = World::getChunkManager().getChunkBlock(blockLocation).blockID;
 	}
 
 
@@ -157,8 +157,20 @@ void Player::_handleMouseInputs() {
 	else if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_RIGHT)
 			|| (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
 
-		LocationXYZ blockPlaceLocation = Raycast::getBlockToPlace().blockToPlace;
-		Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, blockPlaceLocation, static_cast<BlockID>(_selectedBlock));
+		RayHit rayHit = Raycast::getBlockToPlace();
+		
+		Block* block = BlockManager::blocks[_selectedBlock];
+		BlockID selectedBlockID = static_cast<BlockID>(_selectedBlock);
+		BlockRotation rotation = BlockRotation::ROTATION_TB;
+
+		if(block->isRotateable) {
+			if(rayHit.normal.x == 1.f || rayHit.normal.x == -1.f)
+				rotation = BlockRotation::ROTATION_FB;
+			else if(rayHit.normal.z == 1.f || rayHit.normal.z == -1.f)
+				rotation = BlockRotation::ROTATION_RL;
+		}
+
+		Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, rayHit.blockToPlace, selectedBlockID, rotation);
 		_mouseTimer->update();
 	}
 }

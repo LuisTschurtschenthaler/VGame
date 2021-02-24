@@ -13,7 +13,6 @@
 #include "Array3D.h"
 
 class ChunkManager;
-class ChunkMap;
 class AABB;
 class WorldGeneration;
 
@@ -25,13 +24,15 @@ public:
 	Chunk* nearbyChunks[TOTAL_NEARBY_CHUNKS];
 	const ChunkXZ coord, worldCoord;
 
-	Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
+	//Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
+	Array3D<ChunkBlock, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
 	bool chunkDataGenerated, meshesGenerated, nearbyChunksDetected, isDirty;
 	int highestPoint, minimumPoint;
 
 private:
 	ChunkMesh* _solid, *_fluid, *_transparent;
 	AABB* _aabb;
+
 
 public:
 	Chunk(ChunkManager* chunkManager, const ChunkXZ& coord);

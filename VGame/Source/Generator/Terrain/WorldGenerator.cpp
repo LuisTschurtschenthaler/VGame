@@ -7,7 +7,7 @@
 #include "Biome.h"
 #include "Structure.h"
 #include "Util.h"
-#include "BlockID.h"
+#include "Block.h"
 #include "Vein.h"
 
 
@@ -95,18 +95,18 @@ void WorldGenerator::_setBlocks() {
 		for(int y = 0; y < CHUNK_HEIGHT; y++) {
 			if(y > height) {
 				if(y <= WATER_LEVEL)
-					_chunk->chunkData.set(x, y, z, BlockID::WATER);
+					_chunk->chunkData.set(x, y, z, { BlockID::WATER });
 			}
 
 			else if(y == height) {
 				if(y >= WATER_LEVEL) {
 					if(y < BEACH_LEVEL) {
 						if(y == BEACH_LEVEL - 3)
-							_chunk->chunkData.set(x, y, z, BlockID::SAND);
+							_chunk->chunkData.set(x, y, z, { BlockID::SAND });
 						else if(y == BEACH_LEVEL - 2)
-							_chunk->chunkData.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockID::SAND : biome->getTopBlock());
+							_chunk->chunkData.set(x, y, z, { (Random::get(0, 10) <= 8) ? BlockID::SAND : biome->getTopBlock() });
 						else if(y == BEACH_LEVEL - 1)
-							_chunk->chunkData.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock());
+							_chunk->chunkData.set(x, y, z, { (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock() });
 						continue;
 					}
 
@@ -115,25 +115,25 @@ void WorldGenerator::_setBlocks() {
 					else if(Random::getIntInRange(0, biome->getTreeFrequency()) == 5)
 						trees.push_back(std::make_pair(biome, LocationXYZ(x, y + 1, z)));
 
-					_chunk->chunkData.set(x, y, z, biome->getTopBlock());
+					_chunk->chunkData.set(x, y, z, { biome->getTopBlock() });
 				}
-				else _chunk->chunkData.set(x, y, z, biome->getUnderwaterBlock());
+				else _chunk->chunkData.set(x, y, z, { biome->getUnderwaterBlock() });
 			}
 
 			else if(y > height - 3)
-				_chunk->chunkData.set(x, y, z, biome->getBelowTopBlock());
+				_chunk->chunkData.set(x, y, z, { biome->getBelowTopBlock() });
 			
 			else if(y == 0)
-				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
 			else if(y == 1 && Random::getIntInRange(0, 10) <= 9)
-				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
 			else if(y == 2 && Random::getIntInRange(0, 10) <= 6)
-				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
 			else if(y == 3 && Random::getIntInRange(0, 10) <= 3)
-				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
 			else if(y == 4 && Random::getIntInRange(0, 10) <= 1)
-				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
-			else _chunk->chunkData.set(x, y, z, biome->getUnderEarth());
+				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
+			else _chunk->chunkData.set(x, y, z, { biome->getUnderEarth() });
 		}
 	}
 

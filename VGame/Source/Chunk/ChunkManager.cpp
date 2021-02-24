@@ -107,7 +107,7 @@ void ChunkManager::removeBlock(const LocationXYZ& loc) {
 	placeBlock(loc, BlockID::AIR);
 }
 
-void ChunkManager::placeBlock(const LocationXYZ& loc, BlockID blockID) {
+void ChunkManager::placeBlock(const LocationXYZ& loc, const BlockID& blockID, const BlockRotation& rotation) {
 	Chunk* chunk = getChunkFromLocation(loc);
 	LocationXYZ blockLoc = getBlockLocation(loc);
 
@@ -116,15 +116,15 @@ void ChunkManager::placeBlock(const LocationXYZ& loc, BlockID blockID) {
 
 	_setNearbyChunksDirty(chunk, blockLoc);
 	_setNearbyChunksMinMax(chunk, loc.y - 1, loc.y + 1);
-	chunk->chunkData.set(blockLoc, blockID);
+	chunk->chunkData.set(blockLoc, { blockID, rotation });
 }
 
 void ChunkManager::replaceBlock(const LocationXYZ& location, const BlockID& blockToReplace, const BlockID& block) {
-	if(getBlockID(location) == blockToReplace) {
+	if(getChunkBlock(location).blockID == blockToReplace) {
 		Chunk* chunk = getChunkFromLocation(location);
 		LocationXYZ blockLoc = getBlockLocation(location);
 
-		chunk->chunkData.set(blockLoc, block);
+		chunk->chunkData.set(blockLoc, { block });
 	}
 }
 
@@ -150,7 +150,7 @@ LocationXYZ ChunkManager::getBlockLocation(const LocationXYZ& location) {
 	return loc;
 }
 
-BlockID ChunkManager::getBlockID(const LocationXYZ& location) {
+const ChunkBlock& ChunkManager::getChunkBlock(const LocationXYZ& location) {
 	Chunk* chunk = getChunkFromLocation(location);
 	LocationXYZ blockLoc = getBlockLocation(location);
 

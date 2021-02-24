@@ -33,9 +33,10 @@ public:
 	void draw();
 	void clear();
 
-	void addBlock(const Chunk* chunk, int x, int y, int z, Block* block);
-	void addBlockFace(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block);
-	void addFloraBlock(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block);
+	void addBlock(const Chunk* chunk, int x, int y, int z, Block* block, const BlockRotation& rotation);
+	void addBlockFace(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block, const BlockRotation& rotation);
+	void addFluidBlock(const Chunk* chunk, int x, int y, int z, Block* block, const BlockRotation& rotation);
+	void addFloraBlock(const Chunk* chunk, int x, int y, int z, const BlockFace face, Block* block, const BlockRotation& rotation);
 
 private:
 	float _vertexAO(bool corner, bool side1, bool side2);

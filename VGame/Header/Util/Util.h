@@ -7,6 +7,8 @@
 #include <GLM/gtc/type_ptr.hpp>
 #include <GLEW/GL/glew.h>
 #include "Constants.h"
+#include "Coordinates.h"
+
 
 template<typename Base, typename T>
 inline bool instanceof(const T* ptr) {

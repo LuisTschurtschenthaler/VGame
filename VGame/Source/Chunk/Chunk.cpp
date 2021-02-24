@@ -15,7 +15,7 @@ Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 	_aabb = new AABB();
 	_aabb->update(worldCoord);
 
-	chunkData.fill(BlockID::AIR);
+	chunkData.fill({ BlockID::AIR });
 	chunkDataGenerated = false;
 	meshesGenerated = false;
 	nearbyChunksDetected = false;
@@ -63,15 +63,15 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++)
 	for(int y = minimumPoint; y < highestPoint; y++) {
-		BlockID blockID = chunkData.get(x, y, z);
-		if(blockID == BlockID::AIR)
+		const ChunkBlock& chunkBlock = chunkData.get(x, y, z);
+		if(chunkBlock.blockID == BlockID::AIR)
 			continue;
 
-		Block* block = BlockManager::blocks[blockID];
+		Block* block = BlockManager::blocks[chunkBlock.blockID];
 		switch(block->meshType) {
 			case MeshType::SOLID:
 				if(block->isTransparent)
-					transparentMesh->addBlock(this, x, y, z, block);
+					transparentMesh->addBlock(this, x, y, z, block, chunkBlock.rotation);
 
 				else if(block->isFloraBlock
 						&& block->name != "Oak leave"
@@ -80,17 +80,16 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 						&& block->name != "Cactus") {
 
 					if(block->name == "Tall grass") {
-						solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block);
-						solidMesh->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block);
+						solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block, chunkBlock.rotation);
+						solidMesh->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block, chunkBlock.rotation);
 					}
-					else solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block);
+					else solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block, chunkBlock.rotation);
 				}
-				else solidMesh->addBlock(this, x, y, z, block);
+				else solidMesh->addBlock(this, x, y, z, block, chunkBlock.rotation);
 				break;
 
 			case MeshType::FLUID:
-				if(y == WATER_LEVEL)
-					fluidMesh->addBlockFace(this, x, y, z, BlockFace::FACE_TOP, block);
+				fluidMesh->addFluidBlock(this, x, y, z, block, chunkBlock.rotation);
 				break;
 		}
 	}
@@ -193,7 +192,7 @@ const Block* Chunk::_getBlock(const LocationXYZ& location) const {
 	if(ChunkManager::isLocationOutOfChunkRange(location))
 		return BlockManager::blocks[AIR];
 
- 	return BlockManager::blocks[chunkData.get(location)];
+ 	return BlockManager::blocks[chunkData.get(location).blockID];
 }
 
 const Block* Chunk::_getBlock(const int& x, const int& y, const int& z) const {

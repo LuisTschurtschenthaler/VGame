@@ -7,7 +7,7 @@
 #include "Coordinates.h"
 
 
-template<class T, size_t WIDTH, size_t HEIGHT, size_t DEPTH>
+template<typename T, size_t WIDTH, size_t HEIGHT, size_t DEPTH>
 class Array3D {
 
 private:

@@ -5,7 +5,7 @@
 #include <mutex>
 #include <vector>
 #include <thread>
-#include "BlockID.h"
+#include "Block.h"
 #include "Chunk.h"
 #include "Coordinates.h"
 
@@ -36,14 +36,14 @@ public:
 	void getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks);
 
 	void removeBlock(const LocationXYZ& location);
-	void placeBlock(const LocationXYZ& location, BlockID blockID);
+	void placeBlock(const LocationXYZ& location, const BlockID& blockID, const BlockRotation& rotation = BlockRotation::ROTATION_TB);
 	void replaceBlock(const LocationXYZ& location, const BlockID& blockToReplace, const BlockID& block);
 
 	Chunk* getChunk(const ChunkXZ& coord);
 	Chunk* getChunkFromLocation(const LocationXYZ& location);
 
 	LocationXYZ getBlockLocation(const LocationXYZ& location);
-	BlockID getBlockID(const LocationXYZ& location);
+	const ChunkBlock& getChunkBlock(const LocationXYZ& location);
 
 	const int getTextureAtlasID() const { return _textureAtlas->getTextureID(); }
 	const int getAmountOfLoadedChunks() const { return _chunks.size(); }
