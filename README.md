@@ -57,4 +57,4 @@ F11 | Toggle fullscreen
 ## Helpful links
 * [Basic OpenGL](https://learnopengl.com/)
 * [Raycasting](https://antongerdelan.net/opengl/raycasting.html)
-* [Ores](https://minecraft.gamepedia.com/Mineral_vein)
+* [Per-Voxel-AO](https://0fps.net/2013/07/03/ambient-occlusion-for-minecraft-like-worlds/)
