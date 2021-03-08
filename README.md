@@ -10,6 +10,7 @@
 Button | Action
 -------|--------
 Mouse move | Look around
+Mouse wheel | Select block
 Left mouse button | Break block
 Right mouse button | Place block
 W, A, S, D | Move around
