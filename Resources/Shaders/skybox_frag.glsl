@@ -1,8 +1,7 @@
-#version 330 core
+#version 440 core
+out vec4 color;
 
 in vec3 vs_position;
-
-out vec4 color;
 
 
 uniform float dayTime;

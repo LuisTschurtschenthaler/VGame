@@ -52,6 +52,9 @@ F11 | Toggle fullscreen
 - [ ] Crafting system
 - [ ] ??Multiplayer??
 
+## Milestones
+* March 10th, 2021 - Released Version 1.0
+
 ## Dependencies
 * [GLEW](http://glew.sourceforge.net/): Managing OpenGL extensions
 * [GLFW](https://www.glfw.org/download): Used for creating a window

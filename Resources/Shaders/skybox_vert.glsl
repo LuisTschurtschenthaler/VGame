@@ -1,5 +1,4 @@
-#version 330 core
-
+#version 440 core
 layout(location = 0) in vec3 vertex_position;
 
 out vec3 vs_position;
