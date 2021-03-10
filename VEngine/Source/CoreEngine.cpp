@@ -6,11 +6,10 @@
 #include "Log.h"
 #include "Random.h"
 #include "TextRenderer.h"
-#include "FramerateCounter.h"
-#include "Timer.h"
+#include "Constants.h"
 #include "Screenshot.h"
-#include "LoadingScreen.h"
-
+#include "Timer.h"
+#include "FramerateCounter.h"
 
 Timer* CoreEngine::gameTimer = new Timer();
 
@@ -44,7 +43,6 @@ void CoreEngine::_run() {
 	Input::init();
 	Random::init();
 	FramerateCounter::init();
-	LoadingScreen::init();
 
 	while(_isRunning) {
 		if(Window::shouldClose())

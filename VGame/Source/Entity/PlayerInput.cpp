@@ -28,8 +28,8 @@ void Player::_handleKeyboardInputs() {
 		if(!isFlying) velocity.y = 0;
 	}
 
-	float gravity = GRAVITY * (CoreEngine::gameTimer->getDeltaTime() / 20);
-	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * (CoreEngine::gameTimer->getDeltaTime());
+	float gravity = 0.5f * CoreEngine::gameTimer->getDeltaTime();
+	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * CoreEngine::gameTimer->getDeltaTime();
 
 	if(Input::isKeyPressed(GLFW_KEY_LEFT_CONTROL)) movementSpeed *= 1.25f;
 	if(isSwimming) movementSpeed /= 1.25f;
@@ -77,7 +77,7 @@ void Player::_handleKeyboardInputs() {
 			change.y -= gravity;
 
 			_jump += 0.125;
-			change.y += std::sqrt((1 - _jump / JUMP_DURATION) * gravity * 0.175f);
+			change.y += std::sqrt((1 - _jump) * gravity * 0.175f);
 
 			if(_jump >= JUMP_DURATION)
 				isJumping = false;
@@ -141,7 +141,7 @@ void Player::_handleMouseInputs() {
 	// Select block
 	if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
 		LocationXYZ blockLocation = Raycast::getBlockToBreak().blockToBreak;
-		_selectedBlock = World::getChunkManager().getChunkBlock(blockLocation).blockID;
+		_selectedBlock = World::getChunkManager().getBlockID(blockLocation);
 	}
 
 
@@ -155,22 +155,14 @@ void Player::_handleMouseInputs() {
 	}
 	// Place block
 	else if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_RIGHT)
-			|| (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
+		|| (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
 
 		RayHit rayHit = Raycast::getBlockToPlace();
 		
 		Block* block = BlockManager::blocks[_selectedBlock];
 		BlockID selectedBlockID = static_cast<BlockID>(_selectedBlock);
-		BlockRotation rotation = BlockRotation::ROTATION_TB;
 
-		if(block->isRotateable) {
-			if(rayHit.normal.x == 1.f || rayHit.normal.x == -1.f)
-				rotation = BlockRotation::ROTATION_FB;
-			else if(rayHit.normal.z == 1.f || rayHit.normal.z == -1.f)
-				rotation = BlockRotation::ROTATION_RL;
-		}
-
-		Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, rayHit.blockToPlace, selectedBlockID, rotation);
+		Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, rayHit.blockToPlace, selectedBlockID);
 		_mouseTimer->update();
 	}
 }

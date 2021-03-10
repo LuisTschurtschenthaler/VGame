@@ -13,8 +13,8 @@ const int Structure::BUSH_RADIUS = 2;
 
 void Structure::build() {
 	for(auto& structureBlock : _structureBlocks) {
-		//if(World::getChunkManager().getChunkBlock(structureBlock.position) == BlockID::AIR)
-		World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
+		if(World::getChunkManager().getBlockID(structureBlock.position) == BlockID::AIR)
+			World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
 	}
 }
 
@@ -22,6 +22,8 @@ void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, co
 	int height = Random::get(4, 6);
 
 	int y = pos.y + height;
+	fillY(pos, logBlock, height - 1);
+
 	fillXZ({ pos.x - CROWN_RADIUS, y - 1, pos.z - CROWN_RADIUS },
 		   { pos.x + CROWN_RADIUS, y - 1, pos.z + CROWN_RADIUS },
 		   leaveBlock);
@@ -34,18 +36,23 @@ void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, co
 		   { pos.x + BUSH_RADIUS, y - 3, pos.z + BUSH_RADIUS },
 		   leaveBlock);
 
-	fillY(pos, logBlock, height - 1);
 	clearEdges({ pos.x, y - 2, pos.z }, BUSH_RADIUS);
 	clearEdges({ pos.x, y - 1, pos.z }, CROWN_RADIUS);
 	_structureBlocks.emplace_back(pos.x, y, pos.z, leaveBlock);
 }
 
-void Structure::generateJungleTree(const LocationXYZ& pos) {
-	int height = Random::get(15, 30);
-	int y = pos.y + height;
-}
-
 void Structure::generateCactus(const LocationXYZ& pos) {
+	const std::vector<LocationXYZ> nearbyBlocks = {
+		{ -1, 0, 0 },
+		{  1, 0, 0 },
+		{ 0, 0, -1 },
+		{ 0, 0,  1 }
+	};
+
+	for(auto& nearbyLocation : nearbyBlocks) {
+		if(World::getChunkManager().getBlockID(pos + nearbyLocation) != BlockID::AIR)
+			return;
+	}
 	fillY({ pos.x, pos.y, pos.z }, BlockID::CACTUS, Random::get(2, 3));
 }
 
@@ -69,8 +76,8 @@ void Structure::clearEdges(const LocationXYZ& pos, int distance) {
 		));
 	};
 
-	removeBlock({ pos.x + distance, pos.y, pos.z + distance });
-	removeBlock({ pos.x + distance, pos.y, pos.z - distance });
-	removeBlock({ pos.x - distance, pos.y, pos.z + distance });
-	removeBlock({ pos.x - distance, pos.y, pos.z - distance });
+	if(Random::getIntInRange(0, 10) <= 4) removeBlock({ pos.x + distance, pos.y, pos.z + distance });
+	if(Random::getIntInRange(0, 10) <= 4) removeBlock({ pos.x + distance, pos.y, pos.z - distance });
+	if(Random::getIntInRange(0, 10) <= 4) removeBlock({ pos.x - distance, pos.y, pos.z + distance });
+	if(Random::getIntInRange(0, 10) <= 4) removeBlock({ pos.x - distance, pos.y, pos.z - distance });
 }

@@ -3,8 +3,8 @@
 
 #include <string>
 
-class Timer;
 class Game;
+class Timer;
 
 
 class CoreEngine {

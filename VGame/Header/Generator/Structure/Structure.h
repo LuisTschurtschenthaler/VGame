@@ -30,7 +30,6 @@ public:
 public:
 	void build();
 	void generateTree(const LocationXYZ& pos, const BlockID& logBlock, const BlockID& leaveBlock);
-	void generateJungleTree(const LocationXYZ& pos);
 	void generateCactus(const LocationXYZ& pos);
 
 	void fillXZ(const LocationXYZ& start, const LocationXYZ& end, BlockID block);

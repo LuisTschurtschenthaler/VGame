@@ -7,6 +7,7 @@ class Timer {
 private:
 	double _time, _lastDeltaTime, _deltaTime;
 
+
 public:
 	Timer();
 	~Timer();

@@ -25,6 +25,10 @@ struct ChunkXZ {
 		return { x * val, z * val };
 	}
 
+	ChunkXZ operator+(const ChunkXZ& coord) const {
+		return { x + coord.x, z + coord.z };
+	}
+
 	friend std::ostream& operator<<(std::ostream& output, const ChunkXZ& chunk) {
 		return output << "ChunkXZ(" << chunk.x << ", " << chunk.z << ")";
 	}

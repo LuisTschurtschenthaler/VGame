@@ -21,11 +21,10 @@ WorldGenerator::WorldGenerator() {
 	_birchForest = new BirchForest(seed);
 	_jungleForest = new JungleForest(seed);
 
-	_biomeNoise = new NoiseGenerator(Random::get());
+	_biomeNoise = new NoiseGenerator(Random::get(100, 9999));
 
 	_heightMap = Array2D<float, CHUNK_SIZE, CHUNK_SIZE>();
 	_biomeMap = Array2D<Biome*, CHUNK_SIZE + 1, CHUNK_SIZE + 1>();
-	//_heightMap3D = Array3D<float, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE>();
 }
 
 WorldGenerator::~WorldGenerator() {
@@ -62,8 +61,6 @@ Biome* WorldGenerator::getBiomeType(const float& value) {
 	if(value > 150) return _grassland;
 	else if(value > 130) return _forest;
 	else if(value > 120) return _birchForest;
-	else if(value > 110) return _grassland;
-	else if(value > 100) return _desert;
 	else return _desert;
 }
 
@@ -95,18 +92,18 @@ void WorldGenerator::_setBlocks() {
 		for(int y = 0; y < CHUNK_HEIGHT; y++) {
 			if(y > height) {
 				if(y <= WATER_LEVEL)
-					_chunk->chunkData.set(x, y, z, { BlockID::WATER });
+					_chunk->chunkData.set(x, y, z, BlockID::WATER);
 			}
 
 			else if(y == height) {
 				if(y >= WATER_LEVEL) {
 					if(y < BEACH_LEVEL) {
 						if(y == BEACH_LEVEL - 3)
-							_chunk->chunkData.set(x, y, z, { BlockID::SAND });
+							_chunk->chunkData.set(x, y, z, BlockID::SAND);
 						else if(y == BEACH_LEVEL - 2)
-							_chunk->chunkData.set(x, y, z, { (Random::get(0, 10) <= 8) ? BlockID::SAND : biome->getTopBlock() });
+							_chunk->chunkData.set(x, y, z, (Random::get(0, 10) <= 8) ? BlockID::SAND : biome->getTopBlock());
 						else if(y == BEACH_LEVEL - 1)
-							_chunk->chunkData.set(x, y, z, { (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock() });
+							_chunk->chunkData.set(x, y, z, (Random::get(0, 10) <= 4) ? BlockID::SAND : biome->getTopBlock());
 						continue;
 					}
 
@@ -115,25 +112,25 @@ void WorldGenerator::_setBlocks() {
 					else if(Random::getIntInRange(0, biome->getTreeFrequency()) == 5)
 						trees.push_back(std::make_pair(biome, LocationXYZ(x, y + 1, z)));
 
-					_chunk->chunkData.set(x, y, z, { biome->getTopBlock() });
+					_chunk->chunkData.set(x, y, z, biome->getTopBlock());
 				}
-				else _chunk->chunkData.set(x, y, z, { biome->getUnderwaterBlock() });
+				else _chunk->chunkData.set(x, y, z, biome->getUnderwaterBlock());
 			}
 
 			else if(y > height - 3)
-				_chunk->chunkData.set(x, y, z, { biome->getBelowTopBlock() });
+				_chunk->chunkData.set(x, y, z, biome->getBelowTopBlock());
 			
 			else if(y == 0)
-				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else if(y == 1 && Random::getIntInRange(0, 10) <= 9)
-				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else if(y == 2 && Random::getIntInRange(0, 10) <= 6)
-				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else if(y == 3 && Random::getIntInRange(0, 10) <= 3)
-				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else if(y == 4 && Random::getIntInRange(0, 10) <= 1)
-				_chunk->chunkData.set(x, y, z, { BlockID::BEDROCK });
-			else _chunk->chunkData.set(x, y, z, { biome->getUnderEarth() });
+				_chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
+			else _chunk->chunkData.set(x, y, z, biome->getUnderEarth());
 		}
 	}
 

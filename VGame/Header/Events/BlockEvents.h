@@ -12,15 +12,15 @@
 class BlockEvents {
 
 public:
-	static void onBlockPlace(LocationXYZ blockLocation, BlockID blockID, BlockRotation rotation) {
+	static void onBlockPlace(LocationXYZ blockLocation, BlockID blockID) {
 		if(blockLocation.x == -1.f) return;
-		World::getChunkManager().placeBlock(blockLocation, blockID, rotation);
+		World::getChunkManager().placeBlock(blockLocation, blockID);
 	}
 
 	static void onBlockBreak(LocationXYZ blockLocation) {
 		if(blockLocation.x == -1.f) return;
 
-		BlockID blockID = World::getChunkManager().getChunkBlock(blockLocation).blockID;
+		BlockID blockID = World::getChunkManager().getBlockID(blockLocation);
 		World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, blockLocation, MAX_BLOCK_BREAK_PARTICLES));
 		World::getChunkManager().removeBlock(blockLocation);
 	}

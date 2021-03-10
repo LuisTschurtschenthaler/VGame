@@ -4,7 +4,7 @@
 #include "Chunk.h"
 
 
-NoiseGenerator::NoiseGenerator(int seed) 
+NoiseGenerator::NoiseGenerator(const int& seed)
 	: _seed(seed) {
 
 	_settings.octaves = 5;

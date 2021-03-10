@@ -1,4 +1,4 @@
-#version 440 core
+#version 330 core
 
 #extension GL_NV_gpu_shader5			: enable
 #extension GL_EXT_shader_16bit_storage	: enable

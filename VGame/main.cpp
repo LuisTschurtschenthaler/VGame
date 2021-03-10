@@ -4,7 +4,7 @@
 
 
 int main() {
-	Window::create("VGame", false, true);
+	Window::create("VGame - V1.0", false, true);
 
 	Game game;
 	CoreEngine coreEngine(&game);

@@ -90,7 +90,7 @@ void ChunkMesh::clear() {
 	glDeleteBuffers(1, &_IBO);
 }
 
-void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block, const BlockRotation& rotation) {
+void ChunkMesh::addBlock(const Chunk* chunk, const Block* block, const int& x, const int& y, const int& z) {
 	const std::vector<LocationXYZ> ADJACENTS = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
@@ -106,13 +106,320 @@ void ChunkMesh::addBlock(const Chunk* chunk, int x, int y, int z, Block* block, 
 		if(!relativeBlock->hasHitbox
 		   || relativeBlock->isFloraBlock
 		   || (!block->isTransparent && (relativeBlock->isTransparent || relativeBlock->isFloraBlock))) {
-		
-			addBlockFace(chunk, x, y, z, static_cast<BlockFace>(i), block, rotation);
+
+			addBlockFace(chunk, block, x, y, z, static_cast<BlockFace>(i));
 		}
 	}
 }
 
-void ChunkMesh::addFluidBlock(const Chunk* chunk, int x, int y, int z, Block* block, const BlockRotation& rotation) {
+void ChunkMesh::addBlockFace(const Chunk* chunk, const Block* block, const int& xi, const int& y, const int& zi, const BlockFace& face) {
+	int x = xi + chunk->coord.x * CHUNK_SIZE;
+	int z = zi + chunk->coord.z * CHUNK_SIZE;
+
+	amountOfVertices += 4;
+	amountOfIndices += 6;
+
+	int textureID = 0;
+	float offset = 0;
+
+	Vertex v1, v2, v3, v4;
+	switch(face) {
+		case FACE_RIGHT:
+			textureID = block->textures[FACE_RIGHT];
+			offset = block->texturePixelOffset[FACE_RIGHT] / 16.f;
+
+			v1 = Vertex(
+				glm::vec3(x + BLOCK_SIZE - offset, y, z + BLOCK_SIZE),
+				glm::vec3(1.f, 0.f, 0.f),
+				glm::vec2(0.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y - 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v2 = Vertex(
+				glm::vec3(x + BLOCK_SIZE - offset, y + BLOCK_SIZE, z + BLOCK_SIZE),
+				glm::vec3(1.f, 0.f, 0.f),
+				glm::vec2(0.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y + 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v3 = Vertex(
+				glm::vec3(x + BLOCK_SIZE - offset, y, z),
+				glm::vec3(1.f, 0.f, 0.f),
+				glm::vec2(1.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y - 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			v4 = Vertex(
+				glm::vec3(x + BLOCK_SIZE - offset, y + BLOCK_SIZE, z),
+				glm::vec3(1.f, 0.f, 0.f),
+				glm::vec2(1.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y + 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			break;
+
+		case FACE_LEFT:
+			textureID = block->textures[FACE_LEFT];
+			offset = block->texturePixelOffset[FACE_LEFT] / 16.f;
+
+			v1 = Vertex(
+				glm::vec3(x + offset, y, z + BLOCK_SIZE),
+				glm::vec3(-1.f, 0.f, 0.f),
+				glm::vec2(1.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y - 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v2 = Vertex(
+				glm::vec3(x + offset, y, z),
+				glm::vec3(-1.f, 0.f, 0.f),
+				glm::vec2(0.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y - 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			v3 = Vertex(
+				glm::vec3(x + offset, y + BLOCK_SIZE, z + BLOCK_SIZE),
+				glm::vec3(-1.f, 0.f, 0.f),
+				glm::vec2(1.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y + 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v4 = Vertex(
+				glm::vec3(x + offset, y + BLOCK_SIZE, z),
+				glm::vec3(-1.f, 0.f, 0.f),
+				glm::vec2(0.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y + 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			break;
+
+		case FACE_TOP:
+			textureID = block->textures[FACE_TOP];
+			offset = block->texturePixelOffset[FACE_TOP] / 16.f;
+
+			v1 = Vertex(
+				glm::vec3(x, y + BLOCK_SIZE - offset, z + BLOCK_SIZE),
+				glm::vec3(0.f, 1.f, 0.f),
+				glm::vec2(0.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y + 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v2 = Vertex(
+				glm::vec3(x, y + BLOCK_SIZE - offset, z),
+				glm::vec3(0.f, 1.f, 0.f),
+				glm::vec2(1.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y + 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			v3 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE - offset, z + BLOCK_SIZE),
+				glm::vec3(0.f, 1.f, 0.f),
+				glm::vec2(0.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y + 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v4 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE - offset, z),
+				glm::vec3(0.f, 1.f, 0.f),
+				glm::vec2(1.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y + 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient
+			) : 0.f
+			);
+			break;
+
+		case FACE_BOTTOM:
+			textureID = block->textures[FACE_BOTTOM];
+			offset = block->texturePixelOffset[FACE_BOTTOM] / 16.f;
+
+			v1 = Vertex(
+				glm::vec3(x, y + offset, z + BLOCK_SIZE),
+				glm::vec3(0.f, -1.f, 0.f),
+				glm::vec2(0.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y - 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v2 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y + offset, z + BLOCK_SIZE),
+				glm::vec3(0.f, -1.f, 0.f),
+				glm::vec2(0.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y - 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v3 = Vertex(
+				glm::vec3(x, y + offset, z),
+				glm::vec3(0.f, -1.f, 0.f),
+				glm::vec2(1.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y - 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			v4 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y + offset, z),
+				glm::vec3(0.f, -1.f, 0.f),
+				glm::vec2(1.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y - 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			break;
+
+		case FACE_FRONT:
+			textureID = block->textures[FACE_FRONT];
+			offset = block->texturePixelOffset[FACE_FRONT] / 16.f;
+
+			v1 = Vertex(
+				glm::vec3(x, y, z + BLOCK_SIZE - offset),
+				glm::vec3(0.f, 0.f, 1.f),
+				glm::vec2(0.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y - 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v2 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y, z + BLOCK_SIZE - offset),
+				glm::vec3(0.f, 0.f, 1.f),
+				glm::vec2(1.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y - 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v3 = Vertex(
+				glm::vec3(x, y + BLOCK_SIZE, z + BLOCK_SIZE - offset),
+				glm::vec3(0.f, 0.f, 1.f),
+				glm::vec2(0.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y + 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			v4 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + BLOCK_SIZE - offset),
+				glm::vec3(0.f, 0.f, 1.f),
+				glm::vec2(1.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y + 1, zi + 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
+			) : 0.f
+			);
+			break;
+
+		case FACE_BACK:
+			textureID = block->textures[FACE_BACK];
+			offset = block->texturePixelOffset[FACE_BACK] / 16.f;
+
+			v1 = Vertex(
+				glm::vec3(x, y, z + offset),
+				glm::vec3(0.f, 0.f, -1.f),
+				glm::vec2(1.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y - 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			v2 = Vertex(
+				glm::vec3(x, y + BLOCK_SIZE, z + offset),
+				glm::vec3(0.f, 0.f, -1.f),
+				glm::vec2(1.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi - 1, y + 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			v3 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y, z + offset),
+				glm::vec3(0.f, 0.f, -1.f),
+				glm::vec2(0.f, 1.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y - 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			v4 = Vertex(
+				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + offset),
+				glm::vec3(0.f, 0.f, -1.f),
+				glm::vec2(0.f, 0.f), textureID,
+				block->useAmbient ? _vertexAO(
+				chunk->getBlockRelative(xi + 1, y + 1, zi - 1)->useAmbient,
+				chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
+				chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
+			) : 0.f
+			);
+			break;
+	}
+
+	size_t index = vertices.size();
+	indices.insert(indices.end(), {
+		/* Triangle 1 */
+		index,
+		index + 1,
+		index + 2,
+
+		/* Triangle 2 */
+		index + 3,
+		index + 2,
+		index + 1
+				   });
+
+	vertices.insert(vertices.end(), {
+		v1, v2, v3, v4
+					});
+}
+
+void ChunkMesh::addFluidBlock(const Chunk* chunk, const Block* block, const int& x, const int& y, const int& z) {
 	const std::vector<LocationXYZ> ADJACENTS = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
@@ -126,322 +433,15 @@ void ChunkMesh::addFluidBlock(const Chunk* chunk, int x, int y, int z, Block* bl
 		const Block* relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + ADJACENTS[i]);
 
 		if(block->meshType == MeshType::FLUID && relativeBlock->meshType != MeshType::FLUID)
-			addBlockFace(chunk, x, y, z, static_cast<BlockFace>(i), block, rotation);
+			addBlockFace(chunk, block, x, y, z, static_cast<BlockFace>(i));
 	}
 }
 
-void ChunkMesh::addBlockFace(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block, const BlockRotation& rotation) {
-	int x = xi + chunk->coord.x * CHUNK_SIZE;
-	int z = zi + chunk->coord.z * CHUNK_SIZE;
-
-	amountOfVertices += 4;
-	amountOfIndices += 6;
-	
-	int textureID = 0;
-	float offset = 0;
-	
-	Vertex v1, v2, v3, v4;
-	switch(face) {
-		case FACE_RIGHT: 
-			textureID = block->textures[rotation][FACE_RIGHT];
-			offset = block->texturePixelOffset[FACE_RIGHT] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y, z + BLOCK_SIZE),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y + BLOCK_SIZE, z + BLOCK_SIZE),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y, z),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y + BLOCK_SIZE, z),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_LEFT: 
-			textureID = block->textures[rotation][FACE_LEFT];
-			offset = block->texturePixelOffset[FACE_LEFT] / 16.f;
-			
-			v1 = Vertex(
-				glm::vec3(x + offset, y, z + BLOCK_SIZE),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x + offset, y, z),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x + offset, y + BLOCK_SIZE, z + BLOCK_SIZE),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + offset, y + BLOCK_SIZE, z),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_TOP: 
-			textureID = block->textures[rotation][FACE_TOP];
-			offset = block->texturePixelOffset[FACE_TOP] / 16.f;
-			
-			v1 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE - offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE - offset, z),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE - offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE - offset, z),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_BOTTOM: 
-			textureID = block->textures[rotation][FACE_BOTTOM];
-			offset = block->texturePixelOffset[FACE_BOTTOM] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x, y + offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x, y + offset, z),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + offset, z),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_FRONT: 
-			textureID = block->textures[rotation][FACE_FRONT];
-			offset = block->texturePixelOffset[FACE_FRONT] / 16.f;
-			
-			v1 = Vertex(
-				glm::vec3(x, y, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi + 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1)->useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_BACK: 
-			textureID = block->textures[rotation][FACE_BACK];
-			offset = block->texturePixelOffset[FACE_BACK] / 16.f;
-			
-			v1 = Vertex(
-				glm::vec3(x, y, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block->useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi - 1)->useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi)->useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1)->useAmbient
-				) : 0.f
-			);
-			break;
-	}
-	
-	size_t index = vertices.size();
-	indices.insert(indices.end(), {
-		/* Triangle 1 */
-		index,
-		index + 1,
-		index + 2,
-
-		/* Triangle 2 */
-		index + 3,
-		index + 2,
-		index + 1
-	});
-
-	vertices.insert(vertices.end(), {
-		v1, v2, v3, v4
-	});
-}
-
-void ChunkMesh::addFloraBlock(const Chunk* chunk, int xi, int y, int zi, const BlockFace face, Block* block, const BlockRotation& rotation) {
+void ChunkMesh::addFloraBlock(const Chunk* chunk, const Block* block, const int& xi, const int& y, const int& zi, const BlockFace& face) {
 	float x = xi + chunk->coord.x * CHUNK_SIZE;
 	float z = zi + chunk->coord.z * CHUNK_SIZE;
 
-	int textureID = block->textures[rotation][face];
+	int textureID = block->textures[face];
 	Vertex v1(
 		glm::vec3(x, y, z),
 		glm::vec3(0.f, 0.f, 0.f),
@@ -497,12 +497,12 @@ void ChunkMesh::addFloraBlock(const Chunk* chunk, int xi, int y, int zi, const B
 		index + 7,
 		index + 6,
 		index + 5
-	});
+				   });
 
 	vertices.insert(vertices.end(), {
 		v1, v2, v3, v4,
 		v5, v6, v7, v8
-	});
+					});
 }
 
 float ChunkMesh::_vertexAO(bool corner, bool side1, bool side2) {

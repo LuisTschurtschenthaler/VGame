@@ -8,7 +8,7 @@
 Player::Player()
 	: Entity() {
 	
-	World::getChunkManager().findSpawnPoint(position);
+	World::getChunkManager().findSpawnPoint(*this);
 	box = AABB({ 0.3f, 1.75f, 0.3f });
 	camera = new Camera(this);
 
@@ -20,29 +20,28 @@ Player::Player()
 	velocity = glm::vec3(0.f);
 
 	_mouseTimer = new Timer();
-	_selectedBlock = BlockID::CRAVED_PUMPKIN;
+	_selectedBlock = BlockID::TNT;
 	_jump = 0;
 }
 
 Player::~Player() {
 	delete camera;
-	delete _mouseTimer;
 }
 
 
 void Player::update() {
-	isSwimming = (World::getChunkManager().getChunkBlock({ int(position.x), int(position.y - 1), int(position.z) }).blockID == WATER);
-	isUnderwater = (World::getChunkManager().getChunkBlock({ int(position.x), int(position.y), int(position.z) }).blockID == WATER);
-	isOnGround = BlockManager::blocks[World::getChunkManager().getChunkBlock({ int(position.x), int(position.y - 1.8f), int(position.z) }).blockID]->hasHitbox;
+	isSwimming = (World::getChunkManager().getBlockID({ int(position.x), int(position.y - 1), int(position.z) }) == WATER);
+	isUnderwater = (World::getChunkManager().getBlockID({ int(position.x), int(position.y), int(position.z) }) == WATER);
+	isOnGround = BlockManager::blocks[World::getChunkManager().getBlockID({ int(position.x), int(position.y - 1.8f), int(position.z) })]->hasHitbox;
 
-	_input();
+ 	_input();
 	camera->update();
 	box.update(position);
 
-	float drag = isFlying ? 0.95f : 0.85f;
+	float drag = isFlying ? 0.925f : 0.85f;
 	velocity.x *= drag;
 	velocity.z *= drag;
-	if(isFlying) velocity.y *= 0.9;
+	if(isFlying) velocity.y *= 0.925f;
 
 
 	auto doCollision = [&](const glm::vec3& velocity) {

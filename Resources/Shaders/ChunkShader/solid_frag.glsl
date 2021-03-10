@@ -1,4 +1,4 @@
-#version 440 core
+#version 330 core
 out vec4 color;
 
 in vec3 vs_position;
@@ -12,8 +12,8 @@ uniform int renderDistance;
 
 
 float getFogFactor() {
-	const float FOG_MAX = renderDistance;
-	const float FOG_MIN = FOG_MAX - 25.f;
+	float FOG_MAX = renderDistance - 15.f;
+	float FOG_MIN = FOG_MAX - 20.f;
 
 	float dist = distance(playerPosition, vs_position);
 	return ((dist - FOG_MIN) / (FOG_MAX - FOG_MIN));
@@ -29,6 +29,6 @@ void main() {
 	if(textureColor.a == 0.f || fogFactor >= 1.f) discard;
 
 	vec3 result = textureColor.rgb;
-	result = mix(result, vec3(0.05f), vs_ambientOcclusion * 0.3f * distance(vs_texCoord, vec2(0.5f)));
+	result = mix(result, vec3(0.025f), vs_ambientOcclusion * 0.3f * distance(vs_texCoord, vec2(0.5f)));
 	color = (vec4(result, (textureColor.a - fogFactor)));
 }

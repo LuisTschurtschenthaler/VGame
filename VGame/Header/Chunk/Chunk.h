@@ -12,7 +12,6 @@
 #include "Constants.h"
 #include "Array3D.h"
 
-class ChunkManager;
 class AABB;
 class WorldGeneration;
 
@@ -20,12 +19,10 @@ class WorldGeneration;
 class Chunk {
 
 public:
-	ChunkManager* chunkManager;
-	Chunk* nearbyChunks[TOTAL_NEARBY_CHUNKS];
 	const ChunkXZ coord, worldCoord;
+	Chunk* nearbyChunks[TOTAL_NEARBY_CHUNKS];
 
-	//Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
-	Array3D<ChunkBlock, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
+	Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
 	bool chunkDataGenerated, meshesGenerated, nearbyChunksDetected, isDirty;
 	int highestPoint, minimumPoint;
 
@@ -35,7 +32,7 @@ private:
 
 
 public:
-	Chunk(ChunkManager* chunkManager, const ChunkXZ& coord);
+	Chunk(const ChunkXZ& coord);
 	~Chunk();
 
 	void drawSolid();

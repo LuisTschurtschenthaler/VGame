@@ -27,7 +27,7 @@ public:
 
 
 	static void registerEvents(EventDispatcher& dispatcher) {
-		dispatcher.registerEvent(new Event<LocationXYZ, BlockID, BlockRotation>(EventType::BLOCK_PLACE_EVENT, &BlockEvents::onBlockPlace));
+		dispatcher.registerEvent(new Event<LocationXYZ, BlockID>(EventType::BLOCK_PLACE_EVENT, &BlockEvents::onBlockPlace));
 		dispatcher.registerEvent(new Event<LocationXYZ>(EventType::BLOCK_BREAK_EVENT, &BlockEvents::onBlockBreak));
 		dispatcher.registerEvent(new Event<Player*>(EventType::PLAYER_MOVE_EVENT, &PlayerEvents::onPlayerMoveEvent));
 	}

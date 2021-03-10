@@ -25,11 +25,11 @@ RayHit Raycast::getBlockToPlace() {
 
 		position += direction * (t + 0.001f);
 
-		BlockID blockID = World::getChunkManager().getChunkBlock({
+		BlockID blockID = World::getChunkManager().getBlockID({
 			int(position.x),
 			int(position.y),
 			int(position.z)
-		}).blockID;
+		});
 
 		if(BlockManager::blocks[blockID]->hasHitbox) {
 			glm::vec3 normal;
@@ -64,11 +64,11 @@ glm::vec3 Raycast::getDirectBlock() {
 
 	for(float i = 0; i < MAX_BLOCK_REACH_DISTANCE; i += 0.1f) {
 		targetBlockPos = World::getPlayer().position + i * mouseRay;
-		BlockID BlockID = World::getChunkManager().getChunkBlock({
+		BlockID BlockID = World::getChunkManager().getBlockID({
 			int(targetBlockPos.x),
 			int(targetBlockPos.y),
 			int(targetBlockPos.z)
-		}).blockID;
+		});
 
 		if(BlockID != BlockID::AIR &&
 		   BlockID != BlockID::WATER &&

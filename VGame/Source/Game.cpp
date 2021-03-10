@@ -14,11 +14,9 @@
 #include "Crosshair.h"
 #include "EventDispatcher.h"
 #include "BlockEvents.h"
-#include "LoadingScreen.h"
 
 
 EventDispatcher Game::eventDispatcher = EventDispatcher();
-GameState Game::gameState = GameState::GAME_ACTIVE;
 bool Game::debugMode = false;
 float Game::dayTime = 0;
 
@@ -55,27 +53,13 @@ void Game::update() {
 void Game::render() {
 	RenderUtil::clearScreen();
 
-	switch(gameState) {
-		case GAME_LOADING:
-			LoadingScreen::draw(0);
+	_world->draw();
 
-			if(_world->getChunkManager().getAmountOfLoadedChunks() >= SPAWN_CHUNKS)
-				gameState = GAME_ACTIVE;
-			break;
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F1))
+		_HUDvisible = !_HUDvisible;
 
-		case GAME_ACTIVE:
-			_world->draw();
-
-			if(Input::isKeyPressedAndReleased(GLFW_KEY_F1))
-				_HUDvisible = !_HUDvisible;
-
-			if(_HUDvisible) {
-				_textRenderer->draw();
-				Crosshair::draw();
-			}
-			break;
-
-		case GAME_MENU:
-			break;
+	if(_HUDvisible) {
+		_textRenderer->draw();
+		Crosshair::draw();
 	}
 }

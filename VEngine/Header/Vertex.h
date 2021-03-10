@@ -6,12 +6,12 @@
 
 
 struct Vertex {
-	glm::vec3 position;
-	glm::vec3 normal;
+	glm::vec3 position, normal;
 	glm::vec2 texCoords;
 	float ambientOcclusion;
 
-	Vertex() : position(glm::vec3(0.f)), normal(glm::vec3(0.f)), ambientOcclusion(0.f) {
+	Vertex() 
+		: position(glm::vec3(0.f)), normal(glm::vec3(0.f)), ambientOcclusion(0.f) {
 	}
 
 	Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 uv, int textureID, float ao = 0.f)

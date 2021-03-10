@@ -1,5 +1,6 @@
 #include <GLFW/glfw3.h>
 #include "Timer.h"
+#include "Constants.h"
 
 
 Timer::Timer() {
@@ -13,7 +14,7 @@ Timer::~Timer() {
 
 void Timer::update() {
 	double currentTime = glfwGetTime();
-	_deltaTime = currentTime - _time;
+	_deltaTime = (currentTime - _time);
 	_time = currentTime;
 }
 

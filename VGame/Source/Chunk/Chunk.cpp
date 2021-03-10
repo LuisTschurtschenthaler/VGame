@@ -6,8 +6,8 @@
 #include "AABB.h"
 
 
-Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
-	: chunkManager(chunkManager), coord(coord), worldCoord(coord * CHUNK_SIZE) {
+Chunk::Chunk(const ChunkXZ& coord)
+	: coord(coord), worldCoord(coord * CHUNK_SIZE) {
 
 	_solid = new ChunkMesh(this);
 	_fluid = new ChunkMesh(this);
@@ -15,7 +15,7 @@ Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 	_aabb = new AABB();
 	_aabb->update(worldCoord);
 
-	chunkData.fill({ BlockID::AIR });
+	chunkData.fill(BlockID::AIR);
 	chunkDataGenerated = false;
 	meshesGenerated = false;
 	nearbyChunksDetected = false;
@@ -26,7 +26,11 @@ Chunk::Chunk(ChunkManager* chunkManager, const ChunkXZ& coord)
 }
 
 Chunk::~Chunk() {
+	for(int i = 0; i < TOTAL_NEARBY_CHUNKS; i++)
+		nearbyChunks[i] = nullptr;
+
 	delete _aabb;
+	delete _transparent;
 	delete _fluid;
 	delete _solid;
 }
@@ -50,7 +54,7 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 	ChunkMesh* transparentMesh = (transparent == nullptr) ? this->_transparent : transparent;
 
 	if(!nearbyChunksDetected) {
-		chunkManager->getNearbyChunks(coord, nearbyChunks);
+		World::getChunkManager().getNearbyChunks(coord, nearbyChunks);
 		nearbyChunksDetected = true;
 	}
 
@@ -63,15 +67,15 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++)
 	for(int y = minimumPoint; y < highestPoint; y++) {
-		const ChunkBlock& chunkBlock = chunkData.get(x, y, z);
-		if(chunkBlock.blockID == BlockID::AIR)
+		const BlockID& chunkBlock = chunkData.get(x, y, z);
+		if(chunkBlock == BlockID::AIR)
 			continue;
 
-		Block* block = BlockManager::blocks[chunkBlock.blockID];
+		const Block* block = BlockManager::blocks[chunkBlock];
 		switch(block->meshType) {
 			case MeshType::SOLID:
 				if(block->isTransparent)
-					transparentMesh->addBlock(this, x, y, z, block, chunkBlock.rotation);
+					transparentMesh->addBlock(this, block, x, y, z);
 
 				else if(block->isFloraBlock
 						&& block->name != "Oak leave"
@@ -80,16 +84,16 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 						&& block->name != "Cactus") {
 
 					if(block->name == "Tall grass") {
-						solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_BOTTOM, block, chunkBlock.rotation);
-						solidMesh->addFloraBlock(this, x, y + 1, z, BlockFace::FACE_TOP, block, chunkBlock.rotation);
+						solidMesh->addFloraBlock(this, block, x, y, z, BlockFace::FACE_BOTTOM);
+						solidMesh->addFloraBlock(this, block, x, y + 1, z, BlockFace::FACE_TOP);
 					}
-					else solidMesh->addFloraBlock(this, x, y, z, BlockFace::FACE_FRONT, block, chunkBlock.rotation);
+					else solidMesh->addFloraBlock(this, block, x, y, z, BlockFace::FACE_FRONT);
 				}
-				else solidMesh->addBlock(this, x, y, z, block, chunkBlock.rotation);
+				else solidMesh->addBlock(this, block, x, y, z);
 				break;
 
 			case MeshType::FLUID:
-				fluidMesh->addFluidBlock(this, x, y, z, block, chunkBlock.rotation);
+				fluidMesh->addFluidBlock(this, block, x, y, z);
 				break;
 		}
 	}
@@ -176,8 +180,8 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	}
 
 	else if(ChunkManager::isLocationOutOfChunkRange(loc)) {
-		Chunk* chunk = chunkManager->getChunk({ loc.x / CHUNK_SIZE, loc.z / CHUNK_SIZE });
-		return chunk->_getBlock(chunkManager->getBlockLocation(loc));
+		Chunk* chunk = World::getChunkManager().getChunk({ loc.x / CHUNK_SIZE, loc.z / CHUNK_SIZE });
+		return chunk->_getBlock(World::getChunkManager().getBlockLocation(loc));
 	}
 
 	// This chunk
@@ -192,7 +196,7 @@ const Block* Chunk::_getBlock(const LocationXYZ& location) const {
 	if(ChunkManager::isLocationOutOfChunkRange(location))
 		return BlockManager::blocks[AIR];
 
- 	return BlockManager::blocks[chunkData.get(location).blockID];
+ 	return BlockManager::blocks[chunkData.get(location)];
 }
 
 const Block* Chunk::_getBlock(const int& x, const int& y, const int& z) const {

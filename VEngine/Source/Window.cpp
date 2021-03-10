@@ -19,9 +19,10 @@ void Window::create(const std::string& title, bool fullscreen, bool vSync) {
 	_fullscreen = fullscreen;
 	_vSync = vSync;
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	if(!glfwInit())
 		fprintf(stderr, "Error: Couldn't initialize GLFW\n");
@@ -34,13 +35,12 @@ void Window::create(const std::string& title, bool fullscreen, bool vSync) {
 	glfwWindowHint(GLFW_RED_BITS, _mode->redBits);
 	glfwWindowHint(GLFW_GREEN_BITS, _mode->greenBits);
 	glfwWindowHint(GLFW_BLUE_BITS, _mode->blueBits);
-	glfwWindowHint(GLFW_REFRESH_RATE, _mode->refreshRate);
 	glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 
 	_window = glfwCreateWindow(_width, _height, _title.c_str(), fullscreen ? _monitor : nullptr, nullptr);
 	if(!_window) glfwTerminate();
 
-	glfwSetWindowAttrib(_window, GLFW_FOCUSED, GLFW_TRUE);
+	glfwSetWindowAttrib(_window, GLFW_FOCUSED, GLFW_FALSE);
 	glfwMakeContextCurrent(_window);
 
 	GLenum res = glewInit();
@@ -78,13 +78,11 @@ bool Window::shouldClose() {
 
 
 void Window::_setWindowIcon() {
-	GLFWimage images[2];
-	images[0].pixels = stbi_load("./Resources/Textures/Window/Icon.png", &images[0].width, &images[0].height, 0, 4);
-	images[1].pixels = stbi_load("./Resources/Textures/Window/Icon_low.png", &images[1].width, &images[1].height, 0, 4);
-	glfwSetWindowIcon(_window, 1, images);
-
-	stbi_image_free(images[0].pixels);
-	stbi_image_free(images[1].pixels);
+	GLFWimage image;
+	image.pixels = stbi_load("./Resources/Textures/Window/Icon.png", &image.width, &image.height, 0, 4);
+	
+	glfwSetWindowIcon(_window, 1, &image);
+	stbi_image_free(image.pixels);
 }
 
 void Window::_windowResizeCallback(GLFWwindow* window, int width, int height) {

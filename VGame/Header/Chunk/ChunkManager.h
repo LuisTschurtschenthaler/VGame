@@ -7,6 +7,7 @@
 #include <thread>
 #include "Block.h"
 #include "Chunk.h"
+#include "Entity.h"
 #include "Coordinates.h"
 
 class TextureAtlas;
@@ -32,18 +33,18 @@ public:
 	void update();
 	void draw();
 
-	void findSpawnPoint(glm::vec3& position);
+	void findSpawnPoint(Entity& entity);
 	void getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks);
 
 	void removeBlock(const LocationXYZ& location);
-	void placeBlock(const LocationXYZ& location, const BlockID& blockID, const BlockRotation& rotation = BlockRotation::ROTATION_TB);
+	void placeBlock(const LocationXYZ& location, const BlockID& blockID);
 	void replaceBlock(const LocationXYZ& location, const BlockID& blockToReplace, const BlockID& block);
 
 	Chunk* getChunk(const ChunkXZ& coord);
 	Chunk* getChunkFromLocation(const LocationXYZ& location);
 
 	LocationXYZ getBlockLocation(const LocationXYZ& location);
-	const ChunkBlock& getChunkBlock(const LocationXYZ& location);
+	const BlockID& getBlockID(const LocationXYZ& location);
 
 	const int getTextureAtlasID() const { return _textureAtlas->getTextureID(); }
 	const int getAmountOfLoadedChunks() const { return _chunks.size(); }
@@ -51,7 +52,8 @@ public:
 	static bool isLocationOutOfChunkRange(const LocationXYZ& location);
 
 private:
-	std::map<float, Chunk*> _getSortedCunks(const int& playerX, const int& playerZ);
+	//std::map<float, Chunk*> _getSortedCunks(const int& playerX, const int& playerZ);
+	std::vector<Chunk*> _getSortedCunks(const int& playerX, const int& playerZ);
 	void _setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location);
 	void _setNearbyChunksMinMax(Chunk* chunk, const int& min, const int& max);
 	bool _chunkExists(const ChunkXZ& coord);

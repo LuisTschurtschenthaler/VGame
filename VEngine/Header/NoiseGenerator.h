@@ -21,7 +21,7 @@ private:
 
 
 public:
-	NoiseGenerator(int seed);
+	NoiseGenerator(const int& seed);
 	~NoiseGenerator();
 
 	float getNoise(int x, int z, int chunkX, int chunkZ) const;

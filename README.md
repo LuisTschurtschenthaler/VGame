@@ -18,6 +18,8 @@ Space/Double space | Jump/Fly up
 Left Control | Sprint
 Left shift | Sneak (coming soon)/Fly down
 Escape | Lose window focus
+Q | Rewind time
+E | Fast forward time
 F1 | Show/Hide HUD
 F2 | Show/Hide game infos
 F3 | Take screenshot
@@ -33,6 +35,7 @@ F11 | Toggle fullscreen
 - [x] Transparent water
 - [x] Multithreading
 - [x] Distance fog
+- [x] Realtime chunk generation
 - [ ] Sounds/Background music
 - [ ] Saving/loading system
 - [ ] Frustum culling

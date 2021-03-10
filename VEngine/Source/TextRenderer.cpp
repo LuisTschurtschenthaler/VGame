@@ -9,8 +9,8 @@
 #include "Player.h"
 #include "ChunkMesh.h"
 #include "ChunkManager.h"
-#include "FramerateCounter.h"
 #include "Util.h"
+#include "FramerateCounter.h"
 
 
 bool TextRenderer::shouldShowText = false;

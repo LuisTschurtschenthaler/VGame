@@ -1,4 +1,4 @@
-#version 440 core
+#version 330 core
 out vec4 color;
 
 in vec3 vs_position;
@@ -12,8 +12,8 @@ uniform int renderDistance;
 
 
 float getFogFactor() {
-	const float FOG_MAX = renderDistance;
-	const float FOG_MIN = FOG_MAX - 25.f;
+	float FOG_MAX = renderDistance - 15.f;
+	float FOG_MIN = FOG_MAX - 20.f;
 
 	float dist = distance(playerPosition, vs_position);
 	return ((dist - FOG_MIN) / (FOG_MAX - FOG_MIN));

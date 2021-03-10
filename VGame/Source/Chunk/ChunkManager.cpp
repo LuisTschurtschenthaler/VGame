@@ -1,5 +1,6 @@
 #include <map>
 #include <vector>
+#include <stack>
 #include <algorithm>
 #include "ChunkManager.h"
 #include "Shader.h"
@@ -51,27 +52,27 @@ void ChunkManager::draw() {
 	int playerX = int(World::getPlayer().position.x / CHUNK_SIZE),
 		playerZ = int(World::getPlayer().position.z / CHUNK_SIZE);
 
-	std::map<float, Chunk*> sortedChunks = _getSortedCunks(playerX, playerZ);
+	std::vector<Chunk*> sortedChunks = _getSortedCunks(playerX, playerZ);
 
 	_solidShader->bind();
 	_textureAtlas->getTexture().bind();
 	
-	for(auto it = sortedChunks.rbegin(); it != sortedChunks.rend(); it++)
-		it->second->drawSolid();
-	for(auto it = sortedChunks.rbegin(); it != sortedChunks.rend(); it++)
-		it->second->drawTransparent();
+	for(auto& chunk : sortedChunks)
+		chunk->drawSolid();
+	for(auto& chunk : sortedChunks)
+		chunk->drawTransparent();
 	
 	_solidShader->unbind();
 
-	for(auto it = sortedChunks.rbegin(); it != sortedChunks.rend(); it++) {
+	for(auto& chunk : sortedChunks) {
 		_waterShader->bind();
 		_textureAtlas->getTexture().bind();
-		it->second->drawFluid();
+		chunk->drawFluid();
 		_waterShader->unbind();
 	}
 }
 
-void ChunkManager::findSpawnPoint(glm::vec3& position) {
+void ChunkManager::findSpawnPoint(Entity& entity) {
 	int attempts = 0;
 	int height = 0;
 
@@ -91,9 +92,9 @@ void ChunkManager::findSpawnPoint(glm::vec3& position) {
 	int worldPosX = chunkPosX + chunkX * CHUNK_SIZE,
 		worldPosZ = chunkPosZ + chunkZ * CHUNK_SIZE;
 
-	position = { worldPosX + 0.5f, height + 5.f, worldPosZ + 0.5f };
+	entity.position = { worldPosX + 0.5f, height + 5.f, worldPosZ + 0.5f };
 	std::cout << "Attempts for spawn finding: " << attempts << std::endl;
-	std::cout << "Spawnlocation fount at: " << position.x << " " << position.y << " " << position.z << std::endl;
+	std::cout << "Spawnlocation fount at: " << entity.position.x << " " << entity.position.y << " " << entity.position.z << std::endl;
 }
 
 void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
@@ -107,7 +108,7 @@ void ChunkManager::removeBlock(const LocationXYZ& loc) {
 	placeBlock(loc, BlockID::AIR);
 }
 
-void ChunkManager::placeBlock(const LocationXYZ& loc, const BlockID& blockID, const BlockRotation& rotation) {
+void ChunkManager::placeBlock(const LocationXYZ& loc, const BlockID& blockID) {
 	Chunk* chunk = getChunkFromLocation(loc);
 	LocationXYZ blockLoc = getBlockLocation(loc);
 
@@ -116,22 +117,22 @@ void ChunkManager::placeBlock(const LocationXYZ& loc, const BlockID& blockID, co
 
 	_setNearbyChunksDirty(chunk, blockLoc);
 	_setNearbyChunksMinMax(chunk, loc.y - 1, loc.y + 1);
-	chunk->chunkData.set(blockLoc, { blockID, rotation });
+	chunk->chunkData.set(blockLoc, blockID);
 }
 
 void ChunkManager::replaceBlock(const LocationXYZ& location, const BlockID& blockToReplace, const BlockID& block) {
-	if(getChunkBlock(location).blockID == blockToReplace) {
+	if(getBlockID(location) == blockToReplace) {
 		Chunk* chunk = getChunkFromLocation(location);
 		LocationXYZ blockLoc = getBlockLocation(location);
 
-		chunk->chunkData.set(blockLoc, { block });
+		chunk->chunkData.set(blockLoc, block);
 	}
 }
 
 Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {
 	if(!_chunkExists(coord)) {
 		std::lock_guard<std::mutex> lock(chunkMutex);
-		_chunks.emplace(coord, new Chunk(this, coord));
+		_chunks.emplace(coord, new Chunk(coord));
 	}
 
 	return _chunks[coord];
@@ -150,7 +151,7 @@ LocationXYZ ChunkManager::getBlockLocation(const LocationXYZ& location) {
 	return loc;
 }
 
-const ChunkBlock& ChunkManager::getChunkBlock(const LocationXYZ& location) {
+const BlockID& ChunkManager::getBlockID(const LocationXYZ& location) {
 	Chunk* chunk = getChunkFromLocation(location);
 	LocationXYZ blockLoc = getBlockLocation(location);
 
@@ -170,8 +171,9 @@ bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
 }
 
 
-std::map<float, Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int& playerZ) {
-	std::map<float, Chunk*> sortedChunks = std::map<float, Chunk*>();
+std::vector<Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int& playerZ) {
+	std::vector<Chunk*> sortedChunks;
+	std::stack<ChunkXZ> chunksToDelete;
 
 	std::unordered_map<ChunkXZ, Chunk*>::iterator it = _chunks.begin();
 	for(; it != _chunks.end(); ) {
@@ -186,35 +188,46 @@ std::map<float, Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const 
 		if(distanceX < RENDER_DISTANCE && distanceX > -RENDER_DISTANCE &&
 		   distanceZ < RENDER_DISTANCE && distanceZ > -RENDER_DISTANCE) {
 
-			glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
-			glm::vec2 worldCoord = { it->second->worldCoord.x, it->second->worldCoord.z };
-
-			float distance = glm::length(playerPos - worldCoord);
-
-			sortedChunks[distance] = it->second;
+			sortedChunks.push_back(it->second);
 		}
-		/*else if(distanceX >= DESTROY_DISTANCE || distanceX <= -DESTROY_DISTANCE ||
+		else if(distanceX >= DESTROY_DISTANCE || distanceX <= -DESTROY_DISTANCE ||
 				distanceZ >= DESTROY_DISTANCE || distanceZ <= -DESTROY_DISTANCE) {
-			std::cout << "Deleting: " << it->second->coord << std::endl;
-			
-			delete it->second;
-			it->second = nullptr;
-			
-			if(it == _chunks.end()) {
-				_chunks.erase(it);
-				break;
-			}
-			else it = _chunks.erase(it);
-		}*/
 
+			chunksToDelete.push(it->second->coord);
+		}
 		it++;
 	}
+
+	while(!chunksToDelete.empty()) {
+		ChunkXZ top = chunksToDelete.top();
+		
+		delete _chunks[top];
+		_chunks[top] = nullptr;
+		
+		_chunks.erase(top);
+		chunksToDelete.pop();
+	}
+
+
+	glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
+
+	auto distance = [&](ChunkXZ ch1) {
+		glm::vec2 worldCoord = { ch1.x, ch1.z };
+		return glm::length(playerPos - worldCoord);
+	};
+
+	std::sort(sortedChunks.begin(), sortedChunks.end(), 
+		[=](Chunk* ch1, Chunk* ch2) {
+			return (distance(ch1->worldCoord) < distance(ch2->worldCoord));
+	});
+
 	return sortedChunks;
 }
 
 void ChunkManager::_setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location) {
 	auto setNearbyChunkDirty = [](Chunk* nearbyChunk, bool locationCheck) {
-		if(nearbyChunk != nullptr && locationCheck) nearbyChunk->isDirty = true;
+		if(nearbyChunk != nullptr && locationCheck)
+			nearbyChunk->isDirty = true;
 	};
 
 	chunk->isDirty = true;
@@ -225,18 +238,18 @@ void ChunkManager::_setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& locati
 }
 
 void ChunkManager::_setNearbyChunksMinMax(Chunk* chunk, const int& min, const int& max) {
-	auto setMinMax = [](Chunk* nearbyChunk, const int& min, const int& max) {
+	auto setMinMax = [&](Chunk* nearbyChunk) {
 		if(nearbyChunk != nullptr) {
 			nearbyChunk->minimumPoint = std::min(nearbyChunk->minimumPoint, (min < 0) ? 0 : min);
 			nearbyChunk->highestPoint = std::max(nearbyChunk->highestPoint, (max > CHUNK_HEIGHT - 1) ? CHUNK_HEIGHT - 1 : max);
 		}
 	};
 
-	setMinMax(chunk, min, max);
-	setMinMax(chunk->nearbyChunks[CHUNK_LEFT], min, max);
-	setMinMax(chunk->nearbyChunks[CHUNK_BACK], min, max);
-	setMinMax(chunk->nearbyChunks[CHUNK_RIGHT], min, max);
-	setMinMax(chunk->nearbyChunks[CHUNK_FRONT], min, max);
+	setMinMax(chunk);
+	setMinMax(chunk->nearbyChunks[CHUNK_LEFT]);
+	setMinMax(chunk->nearbyChunks[CHUNK_BACK]);
+	setMinMax(chunk->nearbyChunks[CHUNK_RIGHT]);
+	setMinMax(chunk->nearbyChunks[CHUNK_FRONT]);
 }
 
 bool ChunkManager::_chunkExists(const ChunkXZ& coord) {

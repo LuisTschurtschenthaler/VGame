@@ -23,7 +23,7 @@ public:
 
 		if(player->isOnGround || player->isJumping) {
 			LocationXYZ standingBlock = { int(player->position.x), int(player->position.y - 2.f), int(player->position.z) };
-			BlockID blockID = World::getChunkManager().getChunkBlock(standingBlock).blockID;
+			BlockID blockID = World::getChunkManager().getBlockID(standingBlock);
 
 			if(blockID != BlockID::AIR) {
 				LocationXYZ particlePosition = { int(player->position.x), int(player->position.y - 1.5f), int(player->position.z) };
