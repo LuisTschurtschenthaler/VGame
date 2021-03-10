@@ -1,5 +1,7 @@
-![Logo](https://raw.githubusercontent.com/LuisTschurtschenthaler/VGame/master/Media/Logo.png)
 # VGame
+[Download VGame - Version 1.0](https://github.com/LuisTschurtschenthaler/VGame/releases/download/1.0/VGame.zip)
+![Logo](https://raw.githubusercontent.com/LuisTschurtschenthaler/VGame/master/Media/Logo.png)
+
 ## Screenshots
 ### First house
 ![First house](https://raw.githubusercontent.com/LuisTschurtschenthaler/VGame/master/Media/First_house.jpg)
