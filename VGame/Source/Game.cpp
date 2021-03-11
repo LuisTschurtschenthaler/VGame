@@ -17,13 +17,15 @@
 
 
 EventDispatcher Game::eventDispatcher = EventDispatcher();
+Shader* Game::basicShader = nullptr;
 bool Game::debugMode = false;
 float Game::dayTime = 0;
 
 
 Game::Game()
-	: _HUDvisible(true) {
+	: _HUDvisible(true), _wireframeActive(false) {
 
+	basicShader = new Shader("basic_vert.glsl", "basic_frag.glsl");
 	_world = new World();
 
 	_textRenderer = new TextRenderer();
@@ -32,6 +34,7 @@ Game::Game()
 }
 
 Game::~Game() {
+	delete basicShader;
 	delete _textRenderer;
 	delete _world;
 }
@@ -46,6 +49,13 @@ void Game::update() {
 	/* ------------ TEMP ------------ */
 	dayTime += CoreEngine::gameTimer->getDeltaTime();
 
+
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F1))
+		_HUDvisible = !_HUDvisible;
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_F4))
+		_wireframeActive = !_wireframeActive;
+
+
 	_world->update();
 	_textRenderer->update(&_world->getPlayer());
 }
@@ -53,11 +63,13 @@ void Game::update() {
 void Game::render() {
 	RenderUtil::clearScreen();
 
+	if(_wireframeActive)
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	_world->draw();
-
-	if(Input::isKeyPressedAndReleased(GLFW_KEY_F1))
-		_HUDvisible = !_HUDvisible;
-
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if(_HUDvisible) {
 		_textRenderer->draw();
 		Crosshair::draw();

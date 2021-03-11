@@ -4,7 +4,6 @@ out vec4 color;
 in vec3 vs_position;
 in vec3 vs_normal;
 in vec2 vs_texCoord;
-in float vs_ambientOcclusion;
 
 uniform sampler2D textureAtlas;
 uniform vec3 playerPosition;
@@ -29,7 +28,5 @@ void main() {
 	if(textureColor.a == 0.f || fogFactor >= 1.f) discard;
 
 	vec3 result = textureColor.rgb;
-	result = mix(result, vec3(0.05f), vs_ambientOcclusion * 0.3f * distance(vs_texCoord, vec2(0.5f)));
-	//result = mix(result, FOG_COLOR, fogFactor);
 	color = (vec4(result, (textureColor.a - fogFactor)));
 }

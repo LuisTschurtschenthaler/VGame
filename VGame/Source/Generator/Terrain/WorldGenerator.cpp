@@ -55,10 +55,9 @@ Biome* WorldGenerator::getBiomeAt(const int& x, const int& z, const ChunkXZ& coo
 }
 
 Biome* WorldGenerator::getBiomeType(const float& value) {
-	//return _forest;
 
 	//if(value > 160) return _ocean;
-	if(value > 150) return _grassland;
+	if(value > 140) return _grassland;
 	else if(value > 130) return _forest;
 	else if(value > 120) return _birchForest;
 	else return _desert;
@@ -165,13 +164,13 @@ void WorldGenerator::_setBlocks() {
 }
 
 void WorldGenerator::_generateVeins() {
-	Vein::generate(_chunk->worldCoord, { BlockID::COAL_ORE, 25, 2, 12, 1, 128 });
-	Vein::generate(_chunk->worldCoord, { BlockID::IRON_ORE, 18, 1, 7, 1, 64 });
-	Vein::generate(_chunk->worldCoord, { BlockID::LAPIS_ORE, 6, 1, 6, 1, 30 });
-	Vein::generate(_chunk->worldCoord, { BlockID::GOLD_ORE, 9, 1, 6, 1, 32 });
-	Vein::generate(_chunk->worldCoord, { BlockID::DIAMOND_ORE, 9, 1, 7, 1, 16 });
-	Vein::generate(_chunk->worldCoord, { BlockID::EMERALD_ORE, 2, 1, 2, 4, 32 });
+	Vein::generate(_chunk->worldCoord, { BlockID::COAL_ORE,	   20, 4, 12, 1, 128 });
+	Vein::generate(_chunk->worldCoord, { BlockID::IRON_ORE,	   15, 1,  8, 1, 64 });
+	Vein::generate(_chunk->worldCoord, { BlockID::LAPIS_ORE,   6,  1,  6, 1, 32 });
+	Vein::generate(_chunk->worldCoord, { BlockID::GOLD_ORE,	   9,  1,  6, 1, 32 });
+	Vein::generate(_chunk->worldCoord, { BlockID::DIAMOND_ORE, 9,  1,  7, 1, 16 });
+	Vein::generate(_chunk->worldCoord, { BlockID::EMERALD_ORE, 2,  1,  1, 4, 32 });
 
-	Vein::generate(_chunk->worldCoord, { BlockID::DIRT, 5, 1, 33, 0, 255 });
-	Vein::generate(_chunk->worldCoord, { BlockID::GRAVEL, 3, 1, 33, 0, 255 });
+	Vein::generate(_chunk->worldCoord, { BlockID::DIRT,	  5, 10, 32, 0, 255 });
+	Vein::generate(_chunk->worldCoord, { BlockID::GRAVEL, 3, 10, 32, 0, 255 });
 }

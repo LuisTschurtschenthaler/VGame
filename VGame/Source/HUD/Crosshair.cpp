@@ -1,4 +1,6 @@
 #include <GLEW/GL/glew.h>
+#include <GLM/glm.hpp>
+#include <GLM/gtc/matrix_transform.hpp>
 #include "Crosshair.h"
 #include "Window.h"
 #include "World.h"
@@ -6,6 +8,7 @@
 #include "Camera.h"
 #include "Constants.h"
 #include "Game.h"
+
 
 
 void Crosshair::draw() {
@@ -30,15 +33,14 @@ void Crosshair::draw() {
 
 
 void Crosshair::_drawLines(const float& halfWindowWidth, const float& halfWindowHeight) {
-	glOrtho(0, Window::getWidth(), Window::getHeight(), 0.f, NEAR_PLANE, FAR_PLANE);
-
 	/* Horizontal line */
+	glOrtho(0, Window::getWidth(), Window::getHeight(), 0.f, NEAR_PLANE, FAR_PLANE);
 	glBegin(GL_LINES);
 		glColor3f(1.f, 1.f, 1.f);
 		glVertex2i(halfWindowWidth - 15, halfWindowHeight);
 		glVertex2i(halfWindowWidth + 15, halfWindowHeight);
 	glEnd();
-
+	
 	/* Vertical line */
 	glBegin(GL_LINES);
 		glColor3f(1.f, 1.f, 1.f);

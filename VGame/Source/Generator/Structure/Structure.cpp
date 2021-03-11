@@ -57,18 +57,18 @@ void Structure::generateCactus(const LocationXYZ& pos) {
 }
 
 
-void Structure::fillXZ(const LocationXYZ& start, const LocationXYZ& end, BlockID block) {
+void Structure::fillXZ(const LocationXYZ& start, const LocationXYZ& end, const BlockID& blockID) {
 	for(int x = start.x; x <= end.x; x++)
 	for(int z = start.z; z <= end.z; z++)
-		_structureBlocks.emplace_back(x, start.y, z, block);
+		_structureBlocks.emplace_back(x, start.y, z, blockID);
 }
 
-void Structure::fillY(const LocationXYZ& start, BlockID block, int height) {
+void Structure::fillY(const LocationXYZ& start, const BlockID& blockID, const int& height) {
 	for(int y = start.y; y <= start.y + height; y++)
-		_structureBlocks.emplace_back(start.x, y, start.z, block);
+		_structureBlocks.emplace_back(start.x, y, start.z, blockID);
 }
 
-void Structure::clearEdges(const LocationXYZ& pos, int distance) {
+void Structure::clearEdges(const LocationXYZ& pos, const int& distance) {
 	auto removeBlock = [&](const LocationXYZ& location) {
 		_structureBlocks.erase(
 		std::remove_if(_structureBlocks.begin(), _structureBlocks.end(),

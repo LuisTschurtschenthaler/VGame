@@ -3,14 +3,12 @@
 
 #include <vector>
 
-class Shader;
 class ParticleEmitter;
 
 
 class ParticleSystem {
 
 private:
-	Shader* _shader;
 	std::vector<ParticleEmitter*> _particleEmitters;
 
 

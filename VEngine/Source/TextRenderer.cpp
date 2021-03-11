@@ -9,8 +9,8 @@
 #include "Player.h"
 #include "ChunkMesh.h"
 #include "ChunkManager.h"
-#include "Util.h"
 #include "FramerateCounter.h"
+#include "Util.h"
 
 
 bool TextRenderer::shouldShowText = false;
@@ -119,8 +119,7 @@ void TextRenderer::update(Player* player) {
 				+ std::to_string(static_cast<int>(std::floor(playerPos.x / CHUNK_SIZE))) 
 		+ " / " + std::to_string(static_cast<int>(std::floor(playerPos.z / CHUNK_SIZE)));
 
-	//std::string biome = "Biome: " + World::terrainGenerator->getBiomeAt()
-
+	std::string chunksLoaded = "Chunks loaded: " + std::to_string(World::getChunkManager().getAmountOfLoadedChunks());
 	std::string vertices = "Vertices: " + std::to_string(ChunkMesh::amountOfVertices);
 	std::string indices = "Indices: " + std::to_string(ChunkMesh::amountOfIndices);
 
@@ -133,8 +132,9 @@ void TextRenderer::update(Player* player) {
 		Text(blockPositionXYZ,  15.f, Window::getHeight() - 180.f),
 		Text(chunkPositionXYZ,	15.f, Window::getHeight() - 210.f),
 		Text("",				15.f, Window::getHeight() - 240.f),
-		Text(vertices,			15.f, Window::getHeight() - 270.f),
-		Text(indices,			15.f, Window::getHeight() - 300.f)
+		Text(chunksLoaded,		15.f, Window::getHeight() - 270.f),
+		Text(vertices,			15.f, Window::getHeight() - 300.f),
+		Text(indices,			15.f, Window::getHeight() - 330.f)
 	};
 }
 

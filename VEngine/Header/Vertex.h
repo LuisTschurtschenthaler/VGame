@@ -25,12 +25,16 @@ struct Vertex {
 	}
 };
 
-struct ParticleVertex {
+struct BasicVertex {
 	glm::vec3 position;
 	glm::vec2 texCoords;
 
-	ParticleVertex()
+	BasicVertex()
 		: position(glm::vec3(0.f)), texCoords(glm::vec2(0.f)) {
+	}
+
+	BasicVertex(glm::vec3 position, glm::vec2 texCoords)
+		: position(position), texCoords(texCoords) {
 	}
 };
 

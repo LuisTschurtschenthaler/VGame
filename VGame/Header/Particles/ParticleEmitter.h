@@ -23,7 +23,7 @@ class ParticleEmitter {
 private:
 	std::vector<Particle> _particles;
 
-	std::vector<ParticleVertex> _vertices;
+	std::vector<BasicVertex> _vertices;
 	std::vector<unsigned int> _indices;
 	unsigned int _VBO, _IBO;
 

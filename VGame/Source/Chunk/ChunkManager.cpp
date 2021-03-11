@@ -13,6 +13,7 @@
 #include "Random.h"
 #include "World.h"
 #include "Biome.h"
+#include "Util.h"
 #include "WorldGenerator.h"
 
 
@@ -28,9 +29,12 @@ ChunkManager::~ChunkManager() {
 	for(auto& thread : _threads)
 		thread.join();
 
-	delete _solidShader;
-	delete _waterShader;
+	for(auto& chunk : _chunks)
+		delete chunk.second;
+
 	delete _textureAtlas;
+	delete _waterShader;
+	delete _solidShader;
 }
 
 
@@ -57,6 +61,8 @@ void ChunkManager::draw() {
 	_solidShader->bind();
 	_textureAtlas->getTexture().bind();
 	
+
+	glEnable(GL_CULL_FACE);
 	for(auto& chunk : sortedChunks)
 		chunk->drawSolid();
 	for(auto& chunk : sortedChunks)
@@ -64,6 +70,8 @@ void ChunkManager::draw() {
 	
 	_solidShader->unbind();
 
+
+	glDisable(GL_CULL_FACE);
 	for(auto& chunk : sortedChunks) {
 		_waterShader->bind();
 		_textureAtlas->getTexture().bind();
@@ -143,7 +151,7 @@ Chunk* ChunkManager::getChunkFromLocation(const LocationXYZ& location) {
 	return getChunk(coord);
 }
 
-LocationXYZ ChunkManager::getBlockLocation(const LocationXYZ& location) {
+const LocationXYZ ChunkManager::getBlockLocation(const LocationXYZ& location) const {
 	LocationXYZ loc = { location.x % CHUNK_SIZE, location.y, location.z % CHUNK_SIZE };
 	if(loc.x < 0) loc.x += CHUNK_SIZE;
 	if(loc.z < 0) loc.z += CHUNK_SIZE;
@@ -151,7 +159,7 @@ LocationXYZ ChunkManager::getBlockLocation(const LocationXYZ& location) {
 	return loc;
 }
 
-const BlockID& ChunkManager::getBlockID(const LocationXYZ& location) {
+BlockID ChunkManager::getBlockID(const LocationXYZ& location) {
 	Chunk* chunk = getChunkFromLocation(location);
 	LocationXYZ blockLoc = getBlockLocation(location);
 
@@ -161,13 +169,11 @@ const BlockID& ChunkManager::getBlockID(const LocationXYZ& location) {
 	return chunk->chunkData.get(blockLoc);
 }
 
-bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
-	return(!(location.x >= 0
-		   && location.x < CHUNK_SIZE
-		   && location.y >= 0
-		   && location.y < CHUNK_HEIGHT - 1
-		   && location.z >= 0
-		   && location.z < CHUNK_SIZE));
+const bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
+	return !(location.x >= 0 && location.y >= 0 && location.z >= 0 
+		   && location.x <= CHUNK_SIZE - 1
+		   && location.y <= CHUNK_HEIGHT - 2
+		   && location.z <= CHUNK_SIZE - 1);
 }
 
 
@@ -208,19 +214,16 @@ std::vector<Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int&
 		chunksToDelete.pop();
 	}
 
-
 	glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
 
-	auto distance = [&](ChunkXZ ch1) {
-		glm::vec2 worldCoord = { ch1.x, ch1.z };
-		return glm::length(playerPos - worldCoord);
-	};
-
 	std::sort(sortedChunks.begin(), sortedChunks.end(), 
-		[=](Chunk* ch1, Chunk* ch2) {
-			return (distance(ch1->worldCoord) < distance(ch2->worldCoord));
-	});
-
+		[=](const Chunk* ch1, const Chunk* ch2) {
+			glm::vec2 d1 = { ch1->worldCoord.x, ch1->worldCoord.z },
+					  d2 = { ch2->worldCoord.x, ch2->worldCoord.z };
+			
+			return (Util::getDistance(playerPos, d1) < Util::getDistance(playerPos, d2));
+		}
+	);
 	return sortedChunks;
 }
 
@@ -272,7 +275,7 @@ void ChunkManager::_generateChunks() {
 			if(!chunk->chunkDataGenerated)
 				World::worldGenerator->generateChunk(*chunk);
 
-			if(chunk->chunkDataGenerated && !chunk->meshesGenerated)
+			if(!chunk->meshesGenerated)
 				chunk->generateChunkMesh();
 			else if(chunk->isDirty)
 				chunk->recreateChunkMesh();

@@ -19,7 +19,7 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 	_vertices.resize(amountOfParticles * 4);
 	_indices.resize(amountOfParticles * 6);
 
-	auto getRand = [] {
+	auto getRand = []() {
 		float r1 = ((rand() % 100) / 100.f - 0.5f),
 			  r2 = ((rand() % 100) / 100.f - 0.5f),
 			  r3 = ((rand() % 100) / 100.f - 0.5f);
@@ -29,13 +29,13 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 	glm::vec3 position = { blockLocation.x + 0.5f, blockLocation.y + 0.5f, blockLocation.z + 0.5f };
 	
 	Block* block = BlockManager::blocks[blockID];
-	float texOffset = (BLOCK_SIZE / 16.f) / Random::getIntInRange(6, 12);
-
 	glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0, 1), block->blockBreakTexture);
-	texCoordsTopLeft.x += texOffset;
-	texCoordsTopLeft.y -= texOffset;
 
 	for(int i = 0; i < _particles.size(); i++) {
+		float texOffset = (16.f / 255.f) / Random::getIntInRange(14, 24);
+		texCoordsTopLeft.x += texOffset;
+		texCoordsTopLeft.y -= texOffset;
+
 		_particles[i].position = position + getRand();
 		_particles[i].velocity = (getRand() / glm::vec3(6.5f));
 		_particles[i].lifeTime = Random::getFloatInRange(1.f, 1.25f);
@@ -56,7 +56,7 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 
 	glGenBuffers(1, &_VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(ParticleVertex) * _vertices.size(), &_vertices[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(BasicVertex) * _vertices.size(), &_vertices[0], GL_DYNAMIC_DRAW);
 
 	glGenBuffers(1, &_IBO);
 	glBindBuffer(GL_ARRAY_BUFFER, _IBO);
@@ -82,21 +82,19 @@ void ParticleEmitter::update() {
 
 void ParticleEmitter::draw() {
 	glm::mat3 billboard = World::getPlayer().camera->getBillboard();
-	float gravity = GRAVITY * (CoreEngine::gameTimer->getDeltaTime() / 20);
-	float size = 0.1f;
+	float size = 0.075f;
 
 	for(int i = 0; i < _particles.size(); i++) {
 		Particle* particle = &_particles[i];
+		particle->velocity.y -= (0.5f * CoreEngine::gameTimer->getDeltaTime());
 
-		particle->velocity.y -= gravity;
-
-		AABB::collision(*particle);
+		AABB::collision(*particle, size);
 		particle->position += particle->velocity;
 
 		_vertices[(i * 4) + 0].position = billboard * glm::vec3(-size, -size, 0) + particle->position;
-		_vertices[(i * 4) + 1].position = billboard * glm::vec3(-size, size, 0) + particle->position;
-		_vertices[(i * 4) + 2].position = billboard * glm::vec3(size, size, 0) + particle->position;
-		_vertices[(i * 4) + 3].position = billboard * glm::vec3(size, -size, 0) + particle->position;
+		_vertices[(i * 4) + 1].position = billboard * glm::vec3(-size,  size, 0) + particle->position;
+		_vertices[(i * 4) + 2].position = billboard * glm::vec3( size,  size, 0) + particle->position;
+		_vertices[(i * 4) + 3].position = billboard * glm::vec3( size, -size, 0) + particle->position;
 
 		_indices[(i * 6) + 0] = (i * 4) + 0;
 		_indices[(i * 6) + 1] = (i * 4) + 1;
@@ -108,12 +106,12 @@ void ParticleEmitter::draw() {
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(ParticleVertex) * _vertices.size(), &_vertices[0]);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(BasicVertex) * _vertices.size(), &_vertices[0]);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (GLvoid*) offsetof(ParticleVertex, position));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(BasicVertex), (GLvoid*) offsetof(BasicVertex, position));
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ParticleVertex), (GLvoid*) offsetof(ParticleVertex, texCoords));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(BasicVertex), (GLvoid*) offsetof(BasicVertex, texCoords));
 	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);

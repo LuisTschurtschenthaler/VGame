@@ -72,24 +72,32 @@ void AABB::collision(Player& player, const glm::vec3& velocity) {
 	}
 }
 
-void AABB::collision(Particle& particle) {
-	glm::vec3 pos = particle.position;
-	glm::vec3 vel = particle.velocity;
+void AABB::collision(Particle& particle, const float& size) {
+	const glm::vec3 pos = particle.position,
+					vel = particle.velocity;
 
-	if(BlockManager::blocks[World::getChunkManager().getBlockID({ int(pos.x + vel.x), int(pos.y), int(pos.z) })]->hasHitbox) {
-		particle.position.x = int(pos.x);
-		particle.velocity.x = 0;
-	}
+	const Block* block = BlockManager::blocks[World::getChunkManager().getBlockID({ 
+		int(pos.x + vel.x), 
+		int(pos.y + vel.y),
+		int(pos.z + vel.z) 
+	})];
 
-	if(BlockManager::blocks[World::getChunkManager().getBlockID({ int(pos.x), int(pos.y + vel.y), int(pos.z) })]->hasHitbox) {
-		particle.position.y = int(pos.y);
-		particle.velocity.y = 0;
-		particle.velocity.x *= 0.85f;
-		particle.velocity.z *= 0.85f;
-	}
+	if(block->hasHitbox) {
+		if(vel.x < 0) {
+			particle.position.x = int(pos.x);
+			particle.velocity.x = 0;
+		}
 
-	if(BlockManager::blocks[World::getChunkManager().getBlockID({ int(pos.x), int(pos.y), int(pos.z + vel.z) })]->hasHitbox) {
-		particle.position.z = int(pos.z);
-		particle.velocity.z = 0;
+		if(vel.z < 0) {
+			particle.position.z = int(pos.z);
+			particle.velocity.z = 0;
+		}
+
+		 if(vel.y < 0) {
+			 particle.position.y = int(pos.y);
+			 particle.velocity.y = 0;
+			 particle.velocity.x *= 0.85f;
+			 particle.velocity.z *= 0.85f;
+		}
 	}
 }

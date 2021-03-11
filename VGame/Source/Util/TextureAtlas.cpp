@@ -8,7 +8,6 @@ int TextureAtlas::_tileSize = 16;
 
 
 TextureAtlas::TextureAtlas(const char* texturePath, int textureUnit) {
-
 	_textureAtlas = new Texture(texturePath, textureUnit);
 }
 

@@ -14,7 +14,7 @@ struct Block {
 	int texturePixelOffset[6];
 	MeshType meshType;
 	float lightLevel; //float walkDrag, hardness (-1 = unbreakable);
-	bool isFloraBlock, hasHitbox, isTransparent, useAmbient, isRotateable;
+	bool isFloraBlock, hasHitbox, isTransparent, useAmbient;
 };
 
 

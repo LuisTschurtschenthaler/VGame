@@ -43,16 +43,15 @@ public:
 	Chunk* getChunk(const ChunkXZ& coord);
 	Chunk* getChunkFromLocation(const LocationXYZ& location);
 
-	LocationXYZ getBlockLocation(const LocationXYZ& location);
-	const BlockID& getBlockID(const LocationXYZ& location);
+	const LocationXYZ getBlockLocation(const LocationXYZ& location) const;
+	BlockID getBlockID(const LocationXYZ& location);
 
 	const int getTextureAtlasID() const { return _textureAtlas->getTextureID(); }
 	const int getAmountOfLoadedChunks() const { return _chunks.size(); }
 
-	static bool isLocationOutOfChunkRange(const LocationXYZ& location);
+	static const bool isLocationOutOfChunkRange(const LocationXYZ& location);
 
 private:
-	//std::map<float, Chunk*> _getSortedCunks(const int& playerX, const int& playerZ);
 	std::vector<Chunk*> _getSortedCunks(const int& playerX, const int& playerZ);
 	void _setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location);
 	void _setNearbyChunksMinMax(Chunk* chunk, const int& min, const int& max);

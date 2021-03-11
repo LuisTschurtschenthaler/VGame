@@ -19,6 +19,10 @@ inline bool instanceof(const T* ptr) {
 class Util {
 
 public:
+	static const float getDistance(glm::vec2 d1, glm::vec2 d2) {
+		return glm::length(d1 - d2);
+	}
+
 	static const glm::mat4& getModel(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale) {
 		glm::mat4 model(1.f);
 		model = glm::translate(model, position);

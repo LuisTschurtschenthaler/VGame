@@ -180,6 +180,15 @@ void Player::_handleFOV() {
 			camera->fov -= FOV_SPRINT_STEPS;
 		isSprinting = false;
 	}
-
 	else camera->fov = FOV;
+
+	static bool keyC = false;
+	if(keyC && !Input::isKeyPressed(GLFW_KEY_C)) {
+		camera->fov = FOV;
+		keyC = false;
+	}
+	else if(Input::isKeyPressed(GLFW_KEY_C)) {
+		camera->fov = 40.f;
+		keyC = true;
+	}
 }

@@ -25,7 +25,7 @@ public:
 	void update(ChunkXZ pos);
 	void collision(Player& player, const glm::vec3& velocity);
 	
-	static void collision(Particle& particle);
+	static void collision(Particle& particle, const float& size);
 
 };
 
