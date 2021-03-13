@@ -67,7 +67,7 @@ Biome* WorldGenerator::getBiomeType(const float& value) {
 void WorldGenerator::_generateHeightMap() {
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++) {
-		int heightValue = _biomeMap.get(x, z)->getHeight(x, z, _chunk->coord.x, _chunk->coord.z);
+		const int heightValue = (int) _biomeMap.get(x, z)->getHeight(x, z, _chunk->coord.x, _chunk->coord.z);
 		_chunk->minimumPoint = std::min(_chunk->minimumPoint, heightValue);
 		_chunk->highestPoint = std::max(_chunk->highestPoint, heightValue + 10);
 		_heightMap.set(x, z, heightValue);
@@ -145,10 +145,6 @@ void WorldGenerator::_setBlocks() {
 			if(instanceof<BirchForest>(tree.first)) {
 				logBlock = BlockID::BIRCH_LOG;
 				leaveBlock = BlockID::BIRCH_LEAVE;
-			}
-			else if(instanceof<JungleForest>(tree.first)) {
-				logBlock = BlockID::JUNGLE_LOG;
-				leaveBlock = BlockID::JUNGLE_LEAVE;
 			}
 			else {
 				logBlock = BlockID::OAK_LOG;

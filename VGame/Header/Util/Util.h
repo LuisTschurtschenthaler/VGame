@@ -64,11 +64,11 @@ public:
 
 
 private:
-	static bool _isInRange(float yaw, int numberToCheckPos, int numberToCheckNeg) {
-		int minPos = numberToCheckPos - CARDIAL_POINT_RANGE,
-			maxPos = numberToCheckPos + CARDIAL_POINT_RANGE;
-		int minNeg = numberToCheckNeg - CARDIAL_POINT_RANGE,
-			maxNeg = numberToCheckNeg + CARDIAL_POINT_RANGE;
+	static bool _isInRange(const float& yaw, const int& numberToCheckPos, const int& numberToCheckNeg) {
+		float minPos = numberToCheckPos - CARDIAL_POINT_RANGE,
+			  maxPos = numberToCheckPos + CARDIAL_POINT_RANGE;
+		float minNeg = numberToCheckNeg - CARDIAL_POINT_RANGE,
+			  maxNeg = numberToCheckNeg + CARDIAL_POINT_RANGE;
 
 		return ((yaw >= minPos) && (yaw <= maxPos) || (yaw >= minNeg) && (yaw <= maxNeg));
 	}

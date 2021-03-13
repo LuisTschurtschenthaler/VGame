@@ -14,7 +14,7 @@ const vec3 nightColorBottom = vec3(19, 21, 22) / 255;
 
 void main() {
 	float point = (vs_position.y + 1.f) / 2.f;
-	float actualDayTime = (sin(dayTime * 0.03f) + 1.f) / 2.f;
+	float actualDayTime = (sin(dayTime * 0.01f) + 1.f) / 2.f;
 	
 	vec3 dayColor = mix(dayColorBottom, dayColorTop, point),
 		 nightColor = mix(nightColorBottom, nightColorTop, point);

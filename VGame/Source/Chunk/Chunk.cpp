@@ -29,10 +29,6 @@ Chunk::~Chunk() {
 	for(int i = 0; i < TOTAL_NEARBY_CHUNKS; i++)
 		nearbyChunks[i] = nullptr;
 
-	//_transparent->clear();
-	//_fluid->clear();
-	//_solid->clear();
-
 	delete _aabb;
 	delete _transparent;
 	delete _fluid;
@@ -67,28 +63,27 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 			World::worldGenerator->generateChunk(*chunk);
 	}
 	
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	//std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++)
 	for(int y = minimumPoint; y < highestPoint; y++) {
-		
 		const BlockID& chunkBlock = chunkData.get(x, y, z);
 		if(chunkBlock == BlockID::AIR)
 			continue;
 
-		const Block* block = BlockManager::blocks[chunkBlock];
-		switch(block->meshType) {
+		const Block& block = BlockManager::getBlock(chunkBlock);
+		switch(block.meshType) {
 			case MeshType::SOLID:
-				if(block->isTransparent)
+				if(block.isTransparent)
 					transparentMesh->addBlock(this, block, x, y, z);
 
-				else if(block->isFloraBlock
-						&& block->name != "Oak leave"
-						&& block->name != "Birch leave"
-						&& block->name != "Jungle leave"
-						&& block->name != "Cactus") {
+				else if(block.isFloraBlock
+						&& block.name != "Oak leave"
+						&& block.name != "Birch leave"
+						&& block.name != "Jungle leave"
+						&& block.name != "Cactus") {
 
-					if(block->name == "Tall grass") {
+					if(block.name == "Tall grass") {
 						solidMesh->addFloraBlock(this, block, BlockFace::FACE_BOTTOM, x, y, z);
 						solidMesh->addFloraBlock(this, block, BlockFace::FACE_TOP, x, y + 1, z);
 					}
@@ -103,9 +98,9 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		}
 	}
 	meshesGenerated = true;
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	long long us = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-	std::cout << "Time needed: " << us << " us (" << (us / 1000.f) << " ms)" << std::endl;
+	//std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	//long long us = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+	//std::cout << "Time needed: " << us << " us (" << (us / 1000.f) << " ms)" << std::endl;
 }
 
 void Chunk::recreateChunkMesh() {
@@ -125,7 +120,7 @@ void Chunk::recreateChunkMesh() {
 	isDirty = false;
 }
 
-const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
+const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	// Right -> X+
 	if(loc.x >= CHUNK_SIZE
 	   && loc.y < CHUNK_HEIGHT
@@ -153,7 +148,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 		
-		return BlockManager::blocks[ERROR];
+		return BlockManager::getBlock(BlockID::ERROR);
 	}
 
 	// Bottom -> Y- 
@@ -163,7 +158,7 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 
-		return BlockManager::blocks[ERROR];
+		return BlockManager::getBlock(BlockID::ERROR);
 	}
 
 	// Front -> Z+
@@ -195,17 +190,17 @@ const Block* Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	else return _getBlock(loc);
 }
 
-const Block* Chunk::getBlockRelative(const int& x, const int& y, const int& z) const {
+const Block& Chunk::getBlockRelative(const int& x, const int& y, const int& z) const {
 	return getBlockRelative({ x, y, z });
 }
 
-const Block* Chunk::_getBlock(const LocationXYZ& location) const {
+const Block& Chunk::_getBlock(const LocationXYZ& location) const {
 	if(ChunkManager::isLocationOutOfChunkRange(location))
-		return BlockManager::blocks[AIR];
+		return BlockManager::getBlock(BlockID::AIR);
 
- 	return BlockManager::blocks[chunkData.get(location)];
+ 	return BlockManager::getBlock(chunkData.get(location));
 }
 
-const Block* Chunk::_getBlock(const int& x, const int& y, const int& z) const {
+const Block& Chunk::_getBlock(const int& x, const int& y, const int& z) const {
 	return _getBlock({ x, y, z });
 }

@@ -36,9 +36,9 @@ public:
 	void findSpawnPoint(Entity& entity);
 	void getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks);
 
-	void removeBlock(const LocationXYZ& location);
 	void placeBlock(const LocationXYZ& location, const BlockID& blockID);
 	void replaceBlock(const LocationXYZ& location, const BlockID& blockToReplace, const BlockID& block);
+	void removeBlock(const LocationXYZ& location);
 
 	Chunk* getChunk(const ChunkXZ& coord);
 	Chunk* getChunkFromLocation(const LocationXYZ& location);

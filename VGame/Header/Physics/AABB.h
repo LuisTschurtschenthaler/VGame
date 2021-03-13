@@ -5,6 +5,7 @@
 #include "Coordinates.h"
 #include "ParticleEmitter.h"
 
+class Entity;
 class Player;
 class ChunkManager;
 
@@ -21,10 +22,11 @@ public:
 	AABB();
 	~AABB();
 
-	void update(glm::vec3 pos);
-	void update(ChunkXZ pos);
-	void collision(Player& player, const glm::vec3& velocity);
-	
+	void update(const glm::vec3& pos);
+	void update(const ChunkXZ& pos);
+
+	static void handleCollision(Entity& entity, const glm::vec3& velocity);
+	static bool isColliding(const Entity& entity);
 	static void collision(Particle& particle, const float& size);
 
 };

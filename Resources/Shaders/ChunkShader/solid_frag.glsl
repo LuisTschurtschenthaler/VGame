@@ -19,6 +19,13 @@ float getFogFactor() {
 	return ((dist - FOG_MIN) / (FOG_MAX - FOG_MIN));
 }
 
+float getFaceLight() {
+	if(vs_normal.y < 0.f) return 0.5f;	// Bottom
+	if(vs_normal.y > 0.f) return 1.f;	// Top
+	if(vs_normal.x != 0.f) return 0.8f; // Right/Left 
+	if(vs_normal.z != 0.f) return 0.6f; // Front/Back
+	return 1.f;
+}
 
 void main() {
 	vec4 textureColor = texture(textureAtlas, vs_texCoord.xy);
@@ -27,8 +34,9 @@ void main() {
 	fogFactor = clamp(fogFactor, 0.f, 1.f);
 
 	if(textureColor.a == 0.f || fogFactor >= 1.f) discard;
-
-	vec3 result = textureColor.rgb;
+	
+	vec3 result = textureColor.rgb * getFaceLight();
+	
 	result = mix(result, vec3(0.05f), vs_ambientOcclusion * 0.3f * distance(vs_texCoord, vec2(0.5f)));
 	color = (vec4(result, (textureColor.a - fogFactor)));
 }

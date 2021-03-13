@@ -40,25 +40,25 @@ void Player::_handleKeyboardInputs() {
 		change += camera->movingFront * movementSpeed;
 
 	if(Input::isKeyPressed(GLFW_KEY_A))
-		change -= camera->right * movementSpeed;
+		change -= camera->right * movementSpeed * 0.8f;
 
 	if(Input::isKeyPressed(GLFW_KEY_S))
 		change -= camera->movingFront * movementSpeed;
 
 	if(Input::isKeyPressed(GLFW_KEY_D))
-		change += camera->right * movementSpeed;
+		change += camera->right * movementSpeed * 0.8f;
 
 
 	if(Input::isKeyPressed(GLFW_KEY_LEFT_SHIFT))
-		if(isFlying) change.y += -movementSpeed - 0.02;
+		if(isFlying) change.y += -movementSpeed - 0.02f;
 
 
 	if(Input::isKeyPressed(GLFW_KEY_SPACE)) {
 		if(isFlying)
-			change.y += movementSpeed + 0.02;
+			change.y += movementSpeed + 0.02f;
 		
 		else if(isSwimming)
-			change.y += movementSpeed + 0.01;
+			change.y += movementSpeed + 0.01f;
 		
 		if(!isJumping && isOnGround) {
 			isJumping = true;
@@ -77,7 +77,7 @@ void Player::_handleKeyboardInputs() {
 			change.y -= gravity;
 
 			_jump += 0.125;
-			change.y += std::sqrt((1 - _jump) * gravity * 0.175f);
+			change.y += std::sqrt((1 - _jump) * gravity * 0.175f); // 0.145f
 
 			if(_jump >= JUMP_DURATION)
 				isJumping = false;
@@ -135,7 +135,7 @@ void Player::_handleMouseInputs() {
 		if(_selectedBlock < 1)
 			_selectedBlock = (mouseWheelScroll < 1) ? (TOTAL_BLOCKS - 1) : 1;
 
-		std::cout << BlockManager::blocks[_selectedBlock]->name << std::endl;
+		std::cout << BlockManager::getBlock(_selectedBlock).name << std::endl;
 	}
 
 	// Select block
@@ -159,7 +159,7 @@ void Player::_handleMouseInputs() {
 
 		RayHit rayHit = Raycast::getBlockToPlace();
 		
-		Block* block = BlockManager::blocks[_selectedBlock];
+		const Block& block = BlockManager::getBlock(_selectedBlock);
 		BlockID selectedBlockID = static_cast<BlockID>(_selectedBlock);
 
 		Game::eventDispatcher.dispatchEvent(BLOCK_PLACE_EVENT, rayHit.blockToPlace, selectedBlockID);
@@ -181,6 +181,7 @@ void Player::_handleFOV() {
 		isSprinting = false;
 	}
 	else camera->fov = FOV;
+
 
 	static bool keyC = false;
 	if(keyC && !Input::isKeyPressed(GLFW_KEY_C)) {

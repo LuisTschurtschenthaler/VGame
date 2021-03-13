@@ -58,16 +58,12 @@ void ChunkManager::draw() {
 
 	std::vector<Chunk*> sortedChunks = _getSortedCunks(playerX, playerZ);
 
+	glEnable(GL_CULL_FACE);
 	_solidShader->bind();
 	_textureAtlas->getTexture().bind();
-	
 
-	glEnable(GL_CULL_FACE);
 	for(auto& chunk : sortedChunks)
 		chunk->drawSolid();
-	for(auto& chunk : sortedChunks)
-		chunk->drawTransparent();
-	
 	_solidShader->unbind();
 
 
@@ -78,6 +74,15 @@ void ChunkManager::draw() {
 		chunk->drawFluid();
 		_waterShader->unbind();
 	}
+
+	glEnable(GL_CULL_FACE);
+	_solidShader->bind();
+	_textureAtlas->getTexture().bind();
+
+	for(auto& chunk : sortedChunks)
+		chunk->drawTransparent();
+	_solidShader->unbind();
+	glDisable(GL_CULL_FACE);
 }
 
 void ChunkManager::findSpawnPoint(Entity& entity) {
@@ -112,10 +117,6 @@ void ChunkManager::getNearbyChunks(const ChunkXZ& coord, Chunk** nearbyChunks) {
 	nearbyChunks[CHUNK_BACK]  = getChunk({ coord.x, coord.z - 1 });
 }
 
-void ChunkManager::removeBlock(const LocationXYZ& loc) {
-	placeBlock(loc, BlockID::AIR);
-}
-
 void ChunkManager::placeBlock(const LocationXYZ& loc, const BlockID& blockID) {
 	Chunk* chunk = getChunkFromLocation(loc);
 	LocationXYZ blockLoc = getBlockLocation(loc);
@@ -135,6 +136,10 @@ void ChunkManager::replaceBlock(const LocationXYZ& location, const BlockID& bloc
 
 		chunk->chunkData.set(blockLoc, block);
 	}
+}
+
+void ChunkManager::removeBlock(const LocationXYZ& loc) {
+	placeBlock(loc, BlockID::AIR);
 }
 
 Chunk* ChunkManager::getChunk(const ChunkXZ& coord) {

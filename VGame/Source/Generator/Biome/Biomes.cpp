@@ -33,7 +33,7 @@ BlockID Desert::getUnderwaterBlock() const {
 
 
 Grassland::Grassland(int seed)
-	: Biome(1000, 15, seed) {
+	: Biome(1000, 10, seed) {
 }
 
 std::string Grassland::getName() const {
@@ -44,16 +44,13 @@ std::string Grassland::getName() const {
 BlockID Grassland::getPlant() const {
 	int random = Random::get(0, 10);
 
-	if(random <= 2)
-		return BlockID::TALL_GRASS;
-	if(random <= 4)
-		return BlockID::GRASS2;
-	if(random <= 6)
+	if(random >= 5 && random <= 10)
+		return ((Random::get(0, 10) <= 2) ? BlockID::TALL_GRASS : BlockID::GRASS2);
+	else if(random >= 3)
 		return BlockID::DANDELION;
-	if(random <= 8)
+	else if(random >= 2)
 		return BlockID::POPPY;
-	else
-		return BlockID::BLUE_ORCHID;
+	else return BlockID::BLUE_ORCHID;
 }
 
 BlockID Grassland::getTopBlock() const {

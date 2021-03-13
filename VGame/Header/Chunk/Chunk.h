@@ -42,12 +42,12 @@ public:
 	void generateChunkMesh(ChunkMesh* solid = nullptr, ChunkMesh* fluid = nullptr, ChunkMesh* transparent = nullptr);
 	void recreateChunkMesh();
 
-	const Block* getBlockRelative(const LocationXYZ& location) const;
-	const Block* getBlockRelative(const int& x, const int& y, const int& z) const;
+	const Block& getBlockRelative(const LocationXYZ& location) const;
+	const Block& getBlockRelative(const int& x, const int& y, const int& z) const;
 
 private:
-	const Block* _getBlock(const LocationXYZ& location) const;
-	const Block* _getBlock(const int& x, const int& y, const int& z) const;
+	const Block& _getBlock(const LocationXYZ& location) const;
+	const Block& _getBlock(const int& x, const int& y, const int& z) const;
 
 };
 

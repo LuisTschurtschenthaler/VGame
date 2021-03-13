@@ -20,8 +20,11 @@ struct Block {
 
 class BlockManager {
 
+private:
+	static Block _blocks[BlockID::TOTAL_BLOCKS];
+
 public:
-	static Block* blocks[BlockID::TOTAL_BLOCKS];
+	static const Block& getBlock(const uint8_t& blockID);
 
 };
 

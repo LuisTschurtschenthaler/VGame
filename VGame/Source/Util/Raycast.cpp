@@ -31,7 +31,7 @@ RayHit Raycast::getBlockToPlace() {
 			int(position.z)
 		});
 
-		if(BlockManager::blocks[blockID]->hasHitbox) {
+		if(BlockManager::getBlock(blockID).hasHitbox) {
 			glm::vec3 normal;
 			for(int j = 0; j < 3; j++) {
 				normal[j] = (t == tvec[j]);

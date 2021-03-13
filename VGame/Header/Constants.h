@@ -2,12 +2,12 @@
 #define WORLD_CONSTANTS_H
 
 /* Maths */
-constexpr auto PI = 3.14159265359;
-constexpr auto PI2 = (PI * 2);
+constexpr auto PI = 3.14159265359f;
+constexpr auto PI2 = (PI * 2.f);
 
 
 /* General */
-constexpr auto CARDIAL_POINT_RANGE = 22.5;
+constexpr auto CARDIAL_POINT_RANGE = 22.5f;
 constexpr auto MAX_BLOCK_BREAK_PARTICLES = 15;
 
 
@@ -18,7 +18,7 @@ constexpr auto PATH_SCREENSHOTS = "./Screenshots/";
 
 
 /* Player */
-constexpr auto RENDER_DISTANCE = 15;
+constexpr auto RENDER_DISTANCE = 22;
 constexpr auto DESTROY_DISTANCE = (RENDER_DISTANCE + 3);
 constexpr auto SPAWN_CHUNKS = (4 * RENDER_DISTANCE * RENDER_DISTANCE);
 

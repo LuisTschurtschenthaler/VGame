@@ -11,7 +11,7 @@ NoiseGenerator::NoiseGenerator(const int& seed)
 	_settings.amplitude = 160;
 	_settings.smoothness = 1050;
 	_settings.offset = 0;
-	_settings.roughness = 0.45;
+	_settings.roughness = 0.45f;
 }
 
 NoiseGenerator::~NoiseGenerator() {
@@ -19,8 +19,8 @@ NoiseGenerator::~NoiseGenerator() {
 
 
 float NoiseGenerator::getNoise(int x, int z, int chunkX, int chunkZ) const {
-	float newX = x + chunkX * CHUNK_SIZE,
-		  newZ = z + chunkZ * CHUNK_SIZE;
+	int	newX = x + chunkX * CHUNK_SIZE,
+		newZ = z + chunkZ * CHUNK_SIZE;
 
 	float value = 0.f;
 	for(int i = 0; i < _settings.octaves; i++) {

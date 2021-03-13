@@ -27,7 +27,7 @@ public:
 
 			if(blockID != BlockID::AIR) {
 				LocationXYZ particlePosition = { int(player->position.x), int(player->position.y - 1.5f), int(player->position.z) };
-				World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, particlePosition, 15));
+				World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, particlePosition, 10));
 			}
 		}
 	}

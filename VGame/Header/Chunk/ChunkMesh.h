@@ -28,16 +28,16 @@ public:
 	ChunkMesh(Chunk* chunk);
 	~ChunkMesh();
 
-	void draw();
 	void clear();
+	void draw();
 
-	void addBlock(const Chunk* chunk, const Block* block, const int& x, const int& y, const int& z);
-	void addBlockFace(const Chunk* chunk, const Block* block, const BlockFace& face, const int& x, const int& y, const int& z);
-	void addFluidBlock(const Chunk* chunk, const Block* block, const int& x, const int& y, const int& z);
-	void addFloraBlock(const Chunk* chunk, const Block* block, const BlockFace& face, const int& x, const int& y, const int& z);
+	void addBlock(const Chunk* chunk, const Block& block, const int& x, const int& y, const int& z);
+	void addBlockFace(const Chunk* chunk, const Block& block, const BlockFace& face, const int& x, const int& y, const int& z);
+	void addFluidBlock(const Chunk* chunk, const Block& block, const int& x, const int& y, const int& z);
+	void addFloraBlock(const Chunk* chunk, const Block& block, const BlockFace& face, const int& x, const int& y, const int& z);
 
 private:
-	float _vertexAO(bool corner, bool side1, bool side2);
+	float _vertexAO(const bool& corner, const bool& side1, const bool& side2);
 
 };
 

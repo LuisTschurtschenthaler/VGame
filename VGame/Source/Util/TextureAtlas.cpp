@@ -21,7 +21,7 @@ void TextureAtlas::updateUniforms(Shader* shader) {
 	shader->setInt("textureAtlas", _textureAtlas->getID());
 }
 
-glm::vec2 TextureAtlas::getTextureCoords(glm::vec2 uv, const int textureID) {
+glm::vec2 TextureAtlas::getTextureCoords(const glm::vec2& uv, const int& textureID) {
 	float x = textureID % _tileSize;
 	float y = std::floor(textureID / _tileSize);
 	glm::vec2 result(0.f);

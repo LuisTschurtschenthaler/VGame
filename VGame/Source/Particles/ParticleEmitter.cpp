@@ -28,8 +28,8 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 
 	glm::vec3 position = { blockLocation.x + 0.5f, blockLocation.y + 0.5f, blockLocation.z + 0.5f };
 	
-	Block* block = BlockManager::blocks[blockID];
-	glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0, 1), block->blockBreakTexture);
+	const Block& block = BlockManager::getBlock(blockID);
+	glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0, 1), block.blockBreakTexture);
 
 	for(int i = 0; i < _particles.size(); i++) {
 		float texOffset = (16.f / 255.f) / Random::getIntInRange(14, 24);

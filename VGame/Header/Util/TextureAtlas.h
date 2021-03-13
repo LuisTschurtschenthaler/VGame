@@ -22,7 +22,7 @@ public:
 	
 	void updateUniforms(Shader* shader);
 
-	static glm::vec2 getTextureCoords(glm::vec2 uv, const int textureID);
+	static glm::vec2 getTextureCoords(const glm::vec2& uv, const int& textureID);
 
 
 	Texture& getTexture() const { return *_textureAtlas; }

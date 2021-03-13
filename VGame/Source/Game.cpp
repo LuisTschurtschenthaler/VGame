@@ -48,8 +48,7 @@ void Game::update() {
 		dayTime += 1;
 	/* ------------ TEMP ------------ */
 	dayTime += CoreEngine::gameTimer->getDeltaTime();
-
-
+	
 	if(Input::isKeyPressedAndReleased(GLFW_KEY_F1))
 		_HUDvisible = !_HUDvisible;
 	if(Input::isKeyPressedAndReleased(GLFW_KEY_F4))

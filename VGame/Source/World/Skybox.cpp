@@ -5,17 +5,19 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Game.h"
+#include "CoreEngine.h"
+#include "Timer.h"
 
 
 std::vector<float> Skybox::_vertices = std::vector<float>({
-	 1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	 1.0f, -1.0f,  1.0f,
-	 1.0f,  1.0f, -1.0f,
-	-1.0f, -1.0f,  1.0f,
-	 1.0f, -1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-	-1.0f, -1.0f, -1.0f
+	 1.f,  1.f,  1.f,
+	-1.f,  1.f,  1.f,
+	 1.f, -1.f,  1.f,
+	 1.f,  1.f, -1.f,
+	-1.f, -1.f,  1.f,
+	 1.f, -1.f, -1.f,
+	-1.f,  1.f, -1.f,
+	-1.f, -1.f, -1.f
 });
 
 std::vector<unsigned int> Skybox::_indices = std::vector<unsigned int>({
