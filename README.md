@@ -40,6 +40,7 @@ F11 | Toggle fullscreen
 - [x] Realtime chunk generation
 - [ ] Sounds/Background music
 - [ ] Saving/loading system
+- [x] Face culling
 - [ ] Frustum culling
 - [ ] World generation
   - [x] Ore veins
