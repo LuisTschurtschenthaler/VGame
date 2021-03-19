@@ -1,6 +1,7 @@
 #ifndef CHUNK_H
 #define CHUNK_H
 
+#include <GLM/glm.hpp>
 #include <GLEW/GL/glew.h>
 #include <vector>
 #include "Block.h"
@@ -19,7 +20,8 @@ class WorldGeneration;
 class Chunk {
 
 public:
-	const ChunkXZ coord, worldCoord;
+	const ChunkXZ coord;
+	glm::vec3 worldCoord;
 	Chunk* nearbyChunks[TOTAL_NEARBY_CHUNKS];
 
 	Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;

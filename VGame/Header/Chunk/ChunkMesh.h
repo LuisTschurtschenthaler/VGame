@@ -3,6 +3,7 @@
 
 #include <map>
 #include <vector>
+#include <array>
 #include "Vertex.h"
 #include "Block.h"
 #include "Orientation.h"
@@ -11,11 +12,25 @@
 class Chunk;
 
 
+struct MeshFace {
+	std::array<uint8_t, 12> vertices;
+	std::array<uint8_t, 4> textureCoords;
+	uint8_t lightLevel;
+};
+
+
+
+
 class ChunkMesh {
 
 public:
 	static int amountOfVertices, amountOfIndices;
-	std::vector<Vertex> vertices;
+
+private:
+	static const MeshFace _faces[8];
+
+public:
+	std::vector<ChunkVertex> vertices;
 	std::vector<unsigned int> indices;
 
 private:
@@ -31,13 +46,13 @@ public:
 	void clear();
 	void draw();
 
-	void addBlock(const Chunk* chunk, const Block& block, const int& x, const int& y, const int& z);
-	void addBlockFace(const Chunk* chunk, const Block& block, const BlockFace& face, const int& x, const int& y, const int& z);
-	void addFluidBlock(const Chunk* chunk, const Block& block, const int& x, const int& y, const int& z);
-	void addFloraBlock(const Chunk* chunk, const Block& block, const BlockFace& face, const int& x, const int& y, const int& z);
+	void addBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z);
+	void addBlockFace(const Block& block, const BlockFace& face, const uint8_t& x, const uint8_t& y, const uint8_t& z);
+	void addFluidBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z);
+	void addFloraBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z);
 
 private:
-	float _vertexAO(const bool& corner, const bool& side1, const bool& side2);
+	uint8_t _vertexAO(const bool& corner, const bool& side1, const bool& side2);
 
 };
 

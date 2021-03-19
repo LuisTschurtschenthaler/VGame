@@ -10,6 +10,18 @@
 int ChunkMesh::amountOfVertices = 0;
 int ChunkMesh::amountOfIndices = 0;
 
+const MeshFace ChunkMesh::_faces[8] = {
+	{ { 1, 0, 0,  1, 0, 1,  1, 1, 1,  1, 1, 0 },  { 3, 2, 0, 1 },  3 },
+	{ { 0, 0, 1,  0, 0, 0,  0, 1, 0,  0, 1, 1 },  { 3, 2, 0, 1 },  3 },
+	{ { 1, 1, 0,  1, 1, 1,  0, 1, 1,  0, 1, 0 },  { 1, 0, 2, 3 },  5 },
+	{ { 0, 0, 0,  0, 0, 1,  1, 0, 1,  1, 0, 0 },  { 3, 2, 0, 1 },  2 },
+	{ { 1, 0, 1,  0, 0, 1,  0, 1, 1,  1, 1, 1 },  { 3, 2, 0, 1 },  4 },
+	{ { 1, 1, 0,  0, 1, 0,  0, 0, 0,  1, 0, 0 },  { 0, 1, 3, 2 },  4 },
+
+	{ { 1, 1, 1,  1, 0, 1,  0, 0, 0,  0, 1, 0 },  { 0, 2, 3, 1 },  5 },
+	{ { 1, 1, 0,  1, 0, 0,  0, 0, 1,  0, 1, 1 },  { 1, 3, 2, 0 },  5 }
+};
+
 
 ChunkMesh::ChunkMesh(Chunk* chunk)
 	: _chunk(chunk), _isBuffered(false) {
@@ -19,9 +31,9 @@ ChunkMesh::ChunkMesh(Chunk* chunk)
 }
 
 ChunkMesh::~ChunkMesh() {
+	_chunk = nullptr;
 	clear();
 }
-
 
 
 void ChunkMesh::clear() {
@@ -47,7 +59,7 @@ void ChunkMesh::draw() {
 	if(!_isBuffered) {
 		glGenBuffers(1, &_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, _VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(ChunkVertex) * vertices.size(), &vertices[0], GL_STATIC_DRAW);
 
 		glGenBuffers(1, &_IBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);
@@ -57,30 +69,18 @@ void ChunkMesh::draw() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, position));
+	glVertexAttribIPointer(0, 2, GL_UNSIGNED_INT, sizeof(ChunkVertex), (void*) 0);
 	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
-	glEnableVertexAttribArray(1);
-
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, texCoords));
-	glEnableVertexAttribArray(2);
-
-	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, ambientOcclusion));
-	glEnableVertexAttribArray(3);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IBO);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, (void*) 0);
 
 	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(3);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void ChunkMesh::addBlock(const Chunk* chunk, const Block& block, const int& x, const int& y, const int& z) {
+void ChunkMesh::addBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z) {
 	const std::vector<LocationXYZ> ADJACENTS = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
@@ -91,325 +91,52 @@ void ChunkMesh::addBlock(const Chunk* chunk, const Block& block, const int& x, c
 	};
 
 	for(int i = 0; i < TOTAL_BLOCK_FACES; i++) {
-		const Block& relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + ADJACENTS[i]);
+		const Block& relativeBlock = _chunk->getBlockRelative(LocationXYZ(x, y, z) + ADJACENTS[i]);
 
 		if(!relativeBlock.hasHitbox
 		   || relativeBlock.isFloraBlock
 		   || (!block.isTransparent && (relativeBlock.isTransparent || relativeBlock.isFloraBlock))) {
 
-			addBlockFace(chunk, block, static_cast<BlockFace>(i), x, y, z);
+			addBlockFace(block, static_cast<BlockFace>(i), x, y, z);
 		}
 	}
 }
 
-void ChunkMesh::addBlockFace(const Chunk* chunk, const Block& block, const BlockFace& face, const int& xi, const int& y, const int& zi) {
-	int x = xi + chunk->coord.x * CHUNK_SIZE;
-	int z = zi + chunk->coord.z * CHUNK_SIZE;
-
+void ChunkMesh::addBlockFace(const Block& block, const BlockFace& face, const uint8_t& x, const uint8_t& y, const uint8_t& z) {
 	amountOfVertices += 4;
 	amountOfIndices += 6;
 
-	int textureID = 0;
-	float offset = 0;
-
-	Vertex v1, v2, v3, v4;
-	switch(face) {
-		case FACE_RIGHT:
-			textureID = block.textures[FACE_RIGHT];
-			offset = block.texturePixelOffset[FACE_RIGHT] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y, z),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y, z + BLOCK_SIZE),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y + BLOCK_SIZE, z + BLOCK_SIZE),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE - offset, y + BLOCK_SIZE, z),
-				glm::vec3(1.f, 0.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_LEFT:
-			textureID = block.textures[FACE_LEFT];
-			offset = block.texturePixelOffset[FACE_LEFT] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x + offset, y, z + BLOCK_SIZE),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x + offset, y, z),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x + offset, y + BLOCK_SIZE, z),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + offset, y + BLOCK_SIZE, z + BLOCK_SIZE),
-				glm::vec3(-1.f, 0.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_TOP:
-			textureID = block.textures[FACE_TOP];
-			offset = block.texturePixelOffset[FACE_TOP] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE - offset, z),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi).useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE - offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE - offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE - offset, z),
-				glm::vec3(0.f, 1.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_BOTTOM:
-			textureID = block.textures[FACE_BOTTOM];
-			offset = block.texturePixelOffset[FACE_BOTTOM] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x, y + offset, z),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x, y + offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + offset, z + BLOCK_SIZE),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + offset, z),
-				glm::vec3(0.f, -1.f, 0.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_FRONT:
-			textureID = block.textures[FACE_FRONT];
-			offset = block.texturePixelOffset[FACE_FRONT] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x, y, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + BLOCK_SIZE - offset),
-				glm::vec3(0.f, 0.f, 1.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y + 1, zi + 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi + 1).useAmbient
-				) : 0.f
-			);
-			break;
-
-		case FACE_BACK:
-			textureID = block.textures[FACE_BACK];
-			offset = block.texturePixelOffset[FACE_BACK] / 16.f;
-
-			v1 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(0.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-				chunk->getBlockRelative(xi + 1, y + 1, zi - 1).useAmbient,
-				chunk->getBlockRelative(xi + 1, y + 1, zi).useAmbient,
-				chunk->getBlockRelative(xi, y + 1, zi - 1).useAmbient
-			) : 0.f
-			);
-			v2 = Vertex(
-				glm::vec3(x, y + BLOCK_SIZE, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(1.f, 0.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y + 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y + 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y + 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			v3 = Vertex(
-				glm::vec3(x, y, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(1.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi - 1, y - 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi - 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			v4 = Vertex(
-				glm::vec3(x + BLOCK_SIZE, y, z + offset),
-				glm::vec3(0.f, 0.f, -1.f),
-				glm::vec2(0.f, 1.f), textureID,
-				block.useAmbient ? _vertexAO(
-					chunk->getBlockRelative(xi + 1, y - 1, zi - 1).useAmbient,
-					chunk->getBlockRelative(xi + 1, y - 1, zi).useAmbient,
-					chunk->getBlockRelative(xi, y - 1, zi - 1).useAmbient
-				) : 0.f
-			);
-			break;
-	}
-
-	size_t index = vertices.size();
+	size_t indicesCount = vertices.size();
 	indices.insert(indices.end(), {
 		/* Triangle 1 */
-		index + 0,	/*    /|0 */
-		index + 1,	/*   / |  */
-		index + 2,	/* 2/__|1 */
+		indicesCount + 0,	/*    /|0 */
+		indicesCount + 1,	/*   / |  */
+		indicesCount + 2,	/* 2/__|1 */
 
-		/* Triangle 2  3____0 */
-		index + 0,  /*  |  /  */
-		index + 2,  /*  | /   */
-		index + 3   /* 2|/    */
+		/* Triangle 2          3____0 */
+		indicesCount + 0,  /*  |  /  */
+		indicesCount + 2,  /*  | /   */
+		indicesCount + 3   /* 2|/    */
 	});
 
-	vertices.insert(vertices.end(), {
-		v1, v2, v3, v4
-	});
+	const MeshFace& meshFace = _faces[(int) face];
+
+	int index = 0;
+	for(unsigned int i = 0; i < 4; i++) {
+		uint8_t xi = x + meshFace.vertices[index++],
+				yi = y + meshFace.vertices[index++],
+				zi = z + meshFace.vertices[index++];
+
+		ChunkVertex chunkVertex = {
+			(xi | yi << 8 | zi << 16 | meshFace.lightLevel << 24),
+			(block.textures[(int) face] | meshFace.textureCoords[i] << 8)
+		};
+
+		vertices.push_back(chunkVertex);
+	}
 }
 
-void ChunkMesh::addFluidBlock(const Chunk* chunk, const Block& block, const int& x, const int& y, const int& z) {
+void ChunkMesh::addFluidBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z) {
 	const std::vector<LocationXYZ> ADJACENTS = {
 		{  1,  0,  0 },
 		{ -1,  0,  0 },
@@ -420,20 +147,50 @@ void ChunkMesh::addFluidBlock(const Chunk* chunk, const Block& block, const int&
 	};
 
 	for(int i = 0; i < TOTAL_BLOCK_FACES; i++) {
-		const Block& relativeBlock = chunk->getBlockRelative(LocationXYZ(x, y, z) + ADJACENTS[i]);
+		const Block& relativeBlock = _chunk->getBlockRelative(LocationXYZ(x, y, z) + ADJACENTS[i]);
 
 		if(relativeBlock.meshType == NONE)
-			addBlockFace(chunk, block, static_cast<BlockFace>(i), x, y, z);
+			addBlockFace(block, static_cast<BlockFace>(i), x, y, z);
 	}
 }
 
-void ChunkMesh::addFloraBlock(const Chunk* chunk, const Block& block, const BlockFace& face, const int& xi, const int& y, const int& zi) {
-	float x = xi + chunk->coord.x * CHUNK_SIZE;
-	float z = zi + chunk->coord.z * CHUNK_SIZE;
+void ChunkMesh::addFloraBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z) {
+	//amountOfVertices += 8;
+	//amountOfIndices += 24;
 
-	amountOfVertices += 8;
+	for(int i = 6; i <= 7; i++) {
+		size_t indicesCount = vertices.size();
+		indices.insert(indices.end(), {
+			/* Triangle 1 */
+			indicesCount + 0,
+			indicesCount + 1,
+			indicesCount + 2,
+
+			/* Triangle 2 */
+			indicesCount + 0,
+			indicesCount + 2,
+			indicesCount + 3 
+		});
+
+		const MeshFace& meshFace = _faces[i];
+
+		int index = 0;
+		for(unsigned int j = 0; j < 4; j++) {
+			uint8_t xi = x + meshFace.vertices[index++],
+					yi = y + meshFace.vertices[index++],
+					zi = z + meshFace.vertices[index++];
+
+			ChunkVertex chunkVertex = {
+				(xi | yi << 8 | zi << 16 | meshFace.lightLevel << 24),
+				(block.textures[BlockFace::FACE_FRONT] | meshFace.textureCoords[j] << 8)
+			};
+
+			vertices.push_back(chunkVertex);
+		}
+	}
+	/**amountOfVertices += 8;
 	amountOfIndices += 24;
-
+	
 	int textureID = block.textures[face];
 	Vertex v1(
 		glm::vec3(x + BLOCK_SIZE, y + BLOCK_SIZE, z + BLOCK_SIZE),
@@ -471,7 +228,7 @@ void ChunkMesh::addFloraBlock(const Chunk* chunk, const Block& block, const Bloc
 
 	size_t index = vertices.size();
 	indices.insert(indices.end(), {
-		/* Face 1 clockwise */
+		/* Face 1 clockwise 
 		index + 0,
 		index + 1,
 		index + 2,
@@ -479,7 +236,7 @@ void ChunkMesh::addFloraBlock(const Chunk* chunk, const Block& block, const Bloc
 		index + 2,
 		index + 3,
 
-		/* Face 2 clockwise */
+		/* Face 2 clockwise
 		index + 6,
 		index + 5,
 		index + 4,
@@ -487,7 +244,7 @@ void ChunkMesh::addFloraBlock(const Chunk* chunk, const Block& block, const Bloc
 		index + 6,
 		index + 4,
 
-		/* Face 1 counterclockwise */
+		/* Face 1 counterclockwise 
 		index + 2,
 		index + 1,
 		index + 0,
@@ -495,7 +252,7 @@ void ChunkMesh::addFloraBlock(const Chunk* chunk, const Block& block, const Bloc
 		index + 2,
 		index + 0,
 
-		/* Face 2 counterclockwise */
+		/* Face 2 counterclockwise 
 		index + 4,
 		index + 5,
 		index + 6,
@@ -508,8 +265,9 @@ void ChunkMesh::addFloraBlock(const Chunk* chunk, const Block& block, const Bloc
 		v1, v2, v3, v4,
 		v5, v6, v7, v8
 	});
+	*/
 }
 
-float ChunkMesh::_vertexAO(const bool& corner, const bool& side1, const bool& side2) {
-	return (side1 && side2) ? 3.f : float(side1 + side2 + corner);
+uint8_t ChunkMesh::_vertexAO(const bool& corner, const bool& side1, const bool& side2) {
+	return (side1 && side2) ? 3 : (side1 + side2 + corner);
 }

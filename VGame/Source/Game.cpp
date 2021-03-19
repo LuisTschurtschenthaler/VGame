@@ -67,7 +67,7 @@ void Game::render() {
 	else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	_world->draw();
-	
+
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	if(_HUDvisible) {
 		_textRenderer->draw();

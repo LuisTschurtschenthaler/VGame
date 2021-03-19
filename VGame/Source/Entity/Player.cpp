@@ -1,8 +1,10 @@
+#include <GLEW/GL/glew.h>
 #include "Player.h"
 #include "Input.h"
 #include "ChunkManager.h"
 #include "World.h"
 #include "Timer.h"
+#include "Window.h"
 
 
 Player::Player()
@@ -20,7 +22,7 @@ Player::Player()
 	velocity = glm::vec3(0.f);
 
 	_mouseTimer = new Timer();
-	_selectedBlock = BlockID::PINK_GLASS;
+	_selectedBlock = BlockID::GRAVEL;
 	_jump = 0;
 }
 

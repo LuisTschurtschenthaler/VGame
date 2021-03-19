@@ -17,6 +17,12 @@ struct Particle {
 	}
 };
 
+enum ParticleSpreading {
+	SMALL	= 950,
+	NORMAL	= 650,
+	BIG		= 400
+};
+
 
 class ParticleEmitter {
 
@@ -29,7 +35,7 @@ private:
 
 
 public:
-	ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation, const int& amountOfParticles);
+	ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation, const ParticleSpreading& spreading, const int& amountOfParticles);
 	~ParticleEmitter();
 
 	void update();

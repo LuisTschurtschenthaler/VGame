@@ -4,10 +4,13 @@
 #include "ChunkManager.h"
 #include "WorldGenerator.h"
 #include "AABB.h"
+#include "Util.h"
 
 
 Chunk::Chunk(const ChunkXZ& coord)
-	: coord(coord), worldCoord(coord * CHUNK_SIZE) {
+	: coord(coord) {
+
+	worldCoord = glm::vec3(coord.x * CHUNK_SIZE, 0.f, coord.z * CHUNK_SIZE);
 
 	_solid = new ChunkMesh(this);
 	_fluid = new ChunkMesh(this);
@@ -57,7 +60,7 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		World::getChunkManager().getNearbyChunks(coord, nearbyChunks);
 		nearbyChunksDetected = true;
 	}
-
+	
 	for(auto& chunk : nearbyChunks) {
 		if(!chunk->chunkDataGenerated)
 			World::worldGenerator->generateChunk(*chunk);
@@ -75,7 +78,7 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 		switch(block.meshType) {
 			case MeshType::SOLID:
 				if(block.isTransparent)
-					transparentMesh->addBlock(this, block, x, y, z);
+					transparentMesh->addBlock(block, x, y, z);
 
 				else if(block.isFloraBlock
 						&& block.name != "Oak leave"
@@ -84,16 +87,16 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 						&& block.name != "Cactus") {
 
 					if(block.name == "Tall grass") {
-						solidMesh->addFloraBlock(this, block, BlockFace::FACE_BOTTOM, x, y, z);
-						solidMesh->addFloraBlock(this, block, BlockFace::FACE_TOP, x, y + 1, z);
+						solidMesh->addFloraBlock(block, x, y, z);
+						solidMesh->addFloraBlock(block, x, y + 1, z);
 					}
-					else solidMesh->addFloraBlock(this, block, BlockFace::FACE_FRONT, x, y, z);
+					else solidMesh->addFloraBlock(block, x, y, z);
 				}
-				else solidMesh->addBlock(this, block, x, y, z);
+				else solidMesh->addBlock(block, x, y, z);
 				break;
 
 			case MeshType::FLUID:
-				fluidMesh->addFluidBlock(this, block, x, y, z);
+				fluidMesh->addFluidBlock(block, x, y, z);
 				break;
 		}
 	}

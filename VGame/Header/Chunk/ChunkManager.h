@@ -22,7 +22,7 @@ public:
 
 private:
 	TextureAtlas* _textureAtlas;
-	Shader* _solidShader, *_waterShader;
+	Shader* _chunkShader;
 	std::vector<std::thread> _threads;
 
 

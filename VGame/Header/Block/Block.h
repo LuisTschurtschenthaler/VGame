@@ -10,8 +10,7 @@
 struct Block {
 	const char* name;
 	int blockBreakTexture;
-	int textures[6];
-	int texturePixelOffset[6];
+	uint8_t textures[6];
 	MeshType meshType;
 	float lightLevel; //float walkDrag, hardness (-1 = unbreakable);
 	bool isFloraBlock, hasHitbox, isTransparent, useAmbient;
@@ -22,6 +21,7 @@ class BlockManager {
 
 private:
 	static Block _blocks[BlockID::TOTAL_BLOCKS];
+
 
 public:
 	static const Block& getBlock(const uint8_t& blockID);

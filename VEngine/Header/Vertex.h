@@ -5,6 +5,11 @@
 #include "TextureAtlas.h"
 
 
+struct ChunkVertex {
+	unsigned int data[2];
+};
+
+
 struct Vertex {
 	glm::vec3 position, normal;
 	glm::vec2 texCoords;

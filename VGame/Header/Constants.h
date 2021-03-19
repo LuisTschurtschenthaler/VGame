@@ -8,19 +8,19 @@ constexpr auto PI2 = (PI * 2.f);
 
 /* General */
 constexpr auto CARDIAL_POINT_RANGE = 22.5f;
-constexpr auto MAX_BLOCK_BREAK_PARTICLES = 15;
+constexpr auto MAX_BLOCK_BREAK_PARTICLES = 25;
 
 
 /* File system */
-constexpr auto PATH_SHADERS = "./Resources/Shaders/";
-constexpr auto PATH_TEXTURES = "./Resources/Textures/";
+constexpr auto PATH_SHADERS		= "./Resources/Shaders/";
+constexpr auto PATH_TEXTURES	= "./Resources/Textures/";
 constexpr auto PATH_SCREENSHOTS = "./Screenshots/";
 
 
 /* Player */
-constexpr auto RENDER_DISTANCE = 22;
+constexpr auto RENDER_DISTANCE	= 25;
 constexpr auto DESTROY_DISTANCE = (RENDER_DISTANCE + 3);
-constexpr auto SPAWN_CHUNKS = (4 * RENDER_DISTANCE * RENDER_DISTANCE);
+constexpr auto SPAWN_CHUNKS		= (4 * RENDER_DISTANCE * RENDER_DISTANCE);
 
 constexpr auto MOUSE_SENSITIVITY = 0.075f;
 

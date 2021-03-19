@@ -18,8 +18,7 @@
 
 
 ChunkManager::ChunkManager() {
-	_solidShader = new Shader("ChunkShader/solid_vert.glsl", "ChunkShader/solid_frag.glsl");
-	_waterShader = new Shader("ChunkShader/fluid_vert.glsl", "ChunkShader/fluid_frag.glsl");
+	_chunkShader = new Shader("chunk_vert.glsl", "chunk_frag.glsl");
 	_textureAtlas = new TextureAtlas("Blocks/Atlas.png", 0);
 
 	_threads.emplace_back([&]() { _generateChunks(); });
@@ -33,23 +32,16 @@ ChunkManager::~ChunkManager() {
 		delete chunk.second;
 
 	delete _textureAtlas;
-	delete _waterShader;
-	delete _solidShader;
+	delete _chunkShader;
 }
 
 
 void ChunkManager::update() {
-	_solidShader->setInt("textureAtlas", _textureAtlas->getTextureID());
-	_solidShader->setMat4("projection", World::getPlayer().camera->getProjection());
-	_solidShader->setMat4("view", World::getPlayer().camera->getView());
-	_solidShader->setVec3("playerPosition", World::getPlayer().position);
-	_solidShader->setInt("renderDistance", (RENDER_DISTANCE * CHUNK_SIZE));
-
-	_waterShader->setInt("textureAtlas", _textureAtlas->getTextureID());
-	_waterShader->setMat4("projection", World::getPlayer().camera->getProjection());
-	_waterShader->setMat4("view", World::getPlayer().camera->getView());
-	_waterShader->setVec3("playerPosition", World::getPlayer().position);
-	_waterShader->setInt("renderDistance", (RENDER_DISTANCE * CHUNK_SIZE));
+	_chunkShader->setInt("textureAtlas", _textureAtlas->getTextureID());
+	_chunkShader->setMat4("projection", World::getPlayer().camera->getProjection());
+	_chunkShader->setMat4("view", World::getPlayer().camera->getView());
+	_chunkShader->setVec3("playerPosition", World::getPlayer().position);
+	_chunkShader->setInt("renderDistance", (RENDER_DISTANCE * CHUNK_SIZE));
 }
 
 void ChunkManager::draw() {
@@ -59,29 +51,21 @@ void ChunkManager::draw() {
 	std::vector<Chunk*> sortedChunks = _getSortedCunks(playerX, playerZ);
 
 	glEnable(GL_CULL_FACE);
-	_solidShader->bind();
+	_chunkShader->bind();
 	_textureAtlas->getTexture().bind();
 
-	for(auto& chunk : sortedChunks)
+	for(auto& chunk : sortedChunks) {
+		_chunkShader->setVec3("chunkWorldCoord", chunk->worldCoord);
 		chunk->drawSolid();
-	_solidShader->unbind();
-
+	}
 
 	glDisable(GL_CULL_FACE);
 	for(auto& chunk : sortedChunks) {
-		_waterShader->bind();
-		_textureAtlas->getTexture().bind();
+		_chunkShader->setVec3("chunkWorldCoord", chunk->worldCoord);
 		chunk->drawFluid();
-		_waterShader->unbind();
 	}
 
-	glEnable(GL_CULL_FACE);
-	_solidShader->bind();
-	_textureAtlas->getTexture().bind();
-
-	for(auto& chunk : sortedChunks)
-		chunk->drawTransparent();
-	_solidShader->unbind();
+	_chunkShader->unbind();
 	glDisable(GL_CULL_FACE);
 }
 
@@ -98,7 +82,7 @@ void ChunkManager::findSpawnPoint(Entity& entity) {
 
 		Biome* biome = World::worldGenerator->getBiomeAt(chunkPosX, chunkPosZ, { chunkX, chunkZ });
 		height = std::ceil(biome->getHeight(chunkPosX, chunkPosZ, chunkX, chunkZ));
-		
+
 		attempts++;
 	} while(height <= WATER_LEVEL);
 
@@ -175,10 +159,10 @@ BlockID ChunkManager::getBlockID(const LocationXYZ& location) {
 }
 
 const bool ChunkManager::isLocationOutOfChunkRange(const LocationXYZ& location) {
-	return !(location.x >= 0 && location.y >= 0 && location.z >= 0 
-		   && location.x <= CHUNK_SIZE - 1
-		   && location.y <= CHUNK_HEIGHT - 2
-		   && location.z <= CHUNK_SIZE - 1);
+	return !(location.x >= 0 && location.y >= 0 && location.z >= 0
+			 && location.x <= CHUNK_SIZE - 1
+			 && location.y <= CHUNK_HEIGHT - 2
+			 && location.z <= CHUNK_SIZE - 1);
 }
 
 
@@ -211,20 +195,20 @@ std::vector<Chunk*> ChunkManager::_getSortedCunks(const int& playerX, const int&
 
 	while(!chunksToDelete.empty()) {
 		ChunkXZ top = chunksToDelete.top();
-		
+
 		delete _chunks[top];
 		_chunks[top] = nullptr;
-		
+
 		_chunks.erase(top);
 		chunksToDelete.pop();
 	}
 
 	glm::vec2 playerPos = { World::getPlayer().position.x, World::getPlayer().position.z };
 
-	std::sort(sortedChunks.begin(), sortedChunks.end(), 
+	std::sort(sortedChunks.begin(), sortedChunks.end(),
 		[=](const Chunk* ch1, const Chunk* ch2) {
 			glm::vec2 d1 = { ch1->worldCoord.x, ch1->worldCoord.z },
-					  d2 = { ch2->worldCoord.x, ch2->worldCoord.z };
+			d2 = { ch2->worldCoord.x, ch2->worldCoord.z };
 			
 			return (Util::getDistance(playerPos, d1) < Util::getDistance(playerPos, d2));
 		}

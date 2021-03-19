@@ -28,7 +28,7 @@ public:
 		if(blockLocation.x == -1.f) return;
 
 		const BlockID& blockID = World::getChunkManager().getBlockID(blockLocation);
-		World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, blockLocation, MAX_BLOCK_BREAK_PARTICLES));
+		World::getParticleSystem().addParticleEmitter(new ParticleEmitter(blockID, blockLocation, NORMAL, MAX_BLOCK_BREAK_PARTICLES));
 		World::getChunkManager().removeBlock(blockLocation);
 	}
 

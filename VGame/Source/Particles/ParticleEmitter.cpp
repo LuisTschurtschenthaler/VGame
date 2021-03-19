@@ -14,7 +14,7 @@
 #include "AABB.h"
 
 
-ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation, const int& amountOfParticles) {
+ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& blockLocation, const ParticleSpreading& spreading, const int& amountOfParticles) {
 	_particles.resize(amountOfParticles);
 	_vertices.resize(amountOfParticles * 4);
 	_indices.resize(amountOfParticles * 6);
@@ -29,15 +29,15 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 	glm::vec3 position = { blockLocation.x + 0.5f, blockLocation.y + 0.5f, blockLocation.z + 0.5f };
 	
 	const Block& block = BlockManager::getBlock(blockID);
-	glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0, 1), block.blockBreakTexture);
+	glm::vec2 texCoordsTopLeft = TextureAtlas::getTextureCoords(glm::vec2(0.f, 1.f), block.blockBreakTexture);
 
 	for(int i = 0; i < _particles.size(); i++) {
-		float texOffset = (16.f / 255.f) / Random::getIntInRange(14, 24);
+		float texOffset = (16.f / 255.f) / Random::getIntInRange(24, 32);
 		texCoordsTopLeft.x += texOffset;
 		texCoordsTopLeft.y -= texOffset;
 
 		_particles[i].position = position + getRand();
-		_particles[i].velocity = (getRand() / glm::vec3(6.5f));
+		_particles[i].velocity = (getRand() / ((int) spreading / 100.f));
 		_particles[i].lifeTime = Random::getFloatInRange(1.f, 1.25f);
 
 		_vertices[(i * 4) + 0].texCoords = glm::vec2(texCoordsTopLeft.x, texCoordsTopLeft.y - texOffset);
@@ -64,7 +64,6 @@ ParticleEmitter::ParticleEmitter(const BlockID& blockID, const LocationXYZ& bloc
 }
 
 ParticleEmitter::~ParticleEmitter() {
-
 }
 
 
@@ -82,7 +81,7 @@ void ParticleEmitter::update() {
 
 void ParticleEmitter::draw() {
 	glm::mat3 billboard = World::getPlayer().camera->getBillboard();
-	float size = 0.075f;
+	float size = 0.1f;
 
 	for(int i = 0; i < _particles.size(); i++) {
 		Particle* particle = &_particles[i];

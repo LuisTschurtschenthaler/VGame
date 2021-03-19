@@ -5,6 +5,7 @@ enum MeshType {
 	NONE = -1,
 	SOLID,
 	FLUID,
+	FLORA,
 
 	AMOUNT_OF_MESH_TYPES
 };
