@@ -2,7 +2,7 @@
 #define BLOCK_TYPE_H
 
 enum BlockID
-	: uint8_t {
+	: unsigned char {
 
 	AIR = 0,
 	WATER,

@@ -70,34 +70,34 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid, ChunkMesh* tra
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int z = 0; z < CHUNK_SIZE; z++)
 	for(int y = minimumPoint; y < highestPoint; y++) {
+		
 		const BlockID& chunkBlock = chunkData.get(x, y, z);
 		if(chunkBlock == BlockID::AIR)
 			continue;
 
 		const Block& block = BlockManager::getBlock(chunkBlock);
+		
 		switch(block.meshType) {
 			case MeshType::SOLID:
-				if(block.isTransparent)
-					transparentMesh->addBlock(block, x, y, z);
-
-				else if(block.isFloraBlock
+				if(block.isFloraBlock
 						&& block.name != "Oak leave"
 						&& block.name != "Birch leave"
 						&& block.name != "Jungle leave"
 						&& block.name != "Cactus") {
 
-					if(block.name == "Tall grass") {
-						solidMesh->addFloraBlock(block, x, y, z);
-						solidMesh->addFloraBlock(block, x, y + 1, z);
-					}
+					if(block.name == "Tall grass")
+						solidMesh->addFloraBlock(block, x, y, z, true);
 					else solidMesh->addFloraBlock(block, x, y, z);
 				}
+
 				else solidMesh->addBlock(block, x, y, z);
 				break;
+
 
 			case MeshType::FLUID:
 				fluidMesh->addFluidBlock(block, x, y, z);
 				break;
+
 		}
 	}
 	meshesGenerated = true;

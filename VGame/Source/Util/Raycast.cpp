@@ -16,7 +16,7 @@ RayHit Raycast::getBlockToPlace() {
 
 	glm::vec3 blockPos, sign;
 
-	for(uint8_t i = 0; i < 3; i++)
+	for(unsigned char i = 0; i < 3; i++)
 		sign[i] = direction[i] > 0;
 
 	for(int i = 0; i < MAX_BLOCK_REACH_DISTANCE + 1; i++) {

@@ -18,14 +18,14 @@ constexpr auto PATH_SCREENSHOTS = "./Screenshots/";
 
 
 /* Player */
-constexpr auto RENDER_DISTANCE	= 25;
+constexpr auto RENDER_DISTANCE	= 20;
 constexpr auto DESTROY_DISTANCE = (RENDER_DISTANCE + 3);
 constexpr auto SPAWN_CHUNKS		= (4 * RENDER_DISTANCE * RENDER_DISTANCE);
 
 constexpr auto MOUSE_SENSITIVITY = 0.075f;
 
 constexpr auto WALK_SPEED = 0.8f;
-constexpr auto FLY_SPEED = 1.1f;
+constexpr auto FLY_SPEED = 0.9f;
 constexpr auto JUMP_DURATION = 1.f;
 constexpr auto BLOCK_BREAK_DURATION = 0.33f;
 constexpr auto MAX_BLOCK_REACH_DISTANCE = 5;

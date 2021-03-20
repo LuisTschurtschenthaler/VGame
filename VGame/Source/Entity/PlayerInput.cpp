@@ -50,12 +50,12 @@ void Player::_handleKeyboardInputs() {
 
 
 	if(Input::isKeyPressed(GLFW_KEY_LEFT_SHIFT))
-		if(isFlying) change.y += -movementSpeed - 0.02f;
+		if(isFlying) change.y += -(movementSpeed / 1.25f);
 
 
 	if(Input::isKeyPressed(GLFW_KEY_SPACE)) {
 		if(isFlying)
-			change.y += movementSpeed + 0.02f;
+			change.y += (movementSpeed / 1.25f);
 		
 		else if(isSwimming)
 			change.y += movementSpeed + 0.01f;

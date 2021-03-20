@@ -1,14 +1,9 @@
 #include "Block.h"
-#include "MeshTypes.h"
 #include "Constants.h"
-#include "AABB.h"
 
-/* Name, BlockBreakingTexture, TEXTURE{ RIGHT, LEFT, TOP, BOTTOM, FRONT, BACK }, 
-	TexturePixelOffset{ RIGHT, LEFT, TOP, BOTTOM, FRONT, BACK }, MeshType, LL, IsFloraBlock, HasHitbox, IsTransparent, useAmbient, IsRotateable
-};*/
 
-Block BlockManager::_blocks[TOTAL_BLOCKS] = {
-	Block { "Air",				   255, { 255, 255, 255, 255, 255, 255 }, NONE,   0.f, false, false, true, false },
+const Block BlockManager::_blocks[BlockID::TOTAL_BLOCKS] = {
+	Block { "Air",				  255,  { 255, 255, 255, 255, 255, 255 }, NONE,   0.f, false, false, true, false },
 	Block { "Water",				0,  {   0,   0,   0,   0,   0,   0 }, FLUID,  0.f, false, false, false, false },
 	Block { "Lava",					1,  {   1,   1,   1,   1,   1,   1 }, FLUID, 15.f, false, false, false, false },
 	Block { "Snow",					2,  {   2,   2,   2,   2,   2,   2 }, SOLID,  0.f, false, true, false, true },
@@ -27,13 +22,13 @@ Block BlockManager::_blocks[TOTAL_BLOCKS] = {
 	Block { "Gold ore",				19, {  19,  19,  19,  19,  19,  19 }, SOLID,  0.f, false, true, false, true },
 	Block { "Lapis ore",			20, {  20,  20,  20,  20,  20,  20 }, SOLID,  0.f, false, true, false, true },
 	Block { "Diamond ore",			21, {  21,  21,  21,  21,  21,  21 }, SOLID,  0.f, false, true, false, true },
-	Block { "Dead bush",			22, { 255, 255, 255, 255,  22,  22 }, FLORA,  0.f, true, false, false, false },
-	Block { "Grass",				23, { 255, 255, 255, 255,  23,  23 }, FLORA,  0.f, true, false, false, false },
-	Block { "Tall grass",			24, { 255, 255,  24,  25, 255, 255 }, FLORA,  0.f, true, false, false, false },
+	Block { "Dead bush",			22, { 255, 255, 255,  22, 255, 255 }, SOLID,  0.f, true, false, false, false },
+	Block { "Grass",				23, { 255, 255, 255,  23, 255, 255 }, SOLID,  0.f, true, false, false, false },
+	Block { "Tall grass",			24, { 255, 255,  24,  25, 255, 255 }, SOLID,  0.f, true, false, false, false },
 	Block { "TNT",					27, {  27,  27,  28,  26,  27,  27 }, SOLID,  0.f, false, true, false, true },
-	Block { "Dandelion",			29, { 255, 255, 255, 255,  29,  29 }, FLORA,  0.f, true, false, false, false },
-	Block { "Poppy",				30, { 255, 255, 255, 255,  30,  30 }, FLORA,  0.f, true, false, false, false },
-	Block { "Blue Orchid",			31, { 255, 255, 255, 255,  31,  31 }, SOLID,  0.f, true, false, false, false },
+	Block { "Dandelion",			29, { 255, 255, 255,  29, 255, 255 }, SOLID,  0.f, true, false, false, false },
+	Block { "Poppy",				30, { 255, 255, 255,  30, 255, 255 }, SOLID,  0.f, true, false, false, false },
+	Block { "Blue Orchid",			31, { 255, 255, 255,  31, 255, 255 }, SOLID,  0.f, true, false, false, false },
 	Block { "Birch log",			32, {  32,  32,  33,  33,  32,  32 }, SOLID,  0.f, false, true, false, true },
 	Block { "Birch leave",			34, {  34,  34,  34,  34,  34,  34 }, SOLID,  0.f, true, true, false, true },
 	Block { "Jungle log",			35, {  35,  35,  36,  36,  35,  35 }, SOLID,  0.f, false, true, false, true },
@@ -58,9 +53,9 @@ Block BlockManager::_blocks[TOTAL_BLOCKS] = {
 	Block { "Granite",				58, {  58,  58,  58,  58,  58,  58 }, SOLID,  0.f, false, true, false, true },
 	Block { "Pink glass",			59, {  59,  59,  59,  59,  59,  59 }, SOLID,  0.f, false, true, true, false },
 	
-	Block { "Error",				255, { 255, 255, 255, 255, 255, 255 }, SOLID,  0.f, false, true, false, true }
+	Block { "Error",			   255, { 255, 255, 255, 255, 255, 255 }, SOLID,  0.f, false, true, false, true }
 };
 
-const Block& BlockManager::getBlock(const uint8_t& blockID) {
+const Block& BlockManager::getBlock(const unsigned char& blockID) {
 	return _blocks[int(blockID)];
 }

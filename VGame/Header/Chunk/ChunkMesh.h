@@ -8,26 +8,26 @@
 #include "Block.h"
 #include "Orientation.h"
 #include "MeshTypes.h"
+#include "Coordinates.h"
 
 class Chunk;
 
 
 struct MeshFace {
-	std::array<uint8_t, 12> vertices;
-	std::array<uint8_t, 4> textureCoords;
-	uint8_t lightLevel;
+	std::array<unsigned char, 12> vertices;
+	std::array<unsigned char, 4> textureCoords;
+	unsigned char normal, lightLevel;
 };
-
-
 
 
 class ChunkMesh {
 
 public:
-	static int amountOfVertices, amountOfIndices;
+	static unsigned int amountOfVertices, amountOfIndices;
 
 private:
-	static const MeshFace _faces[8];
+	static const MeshFace _FACES[8];
+	static const LocationXYZ _ADJACENTS[6];
 
 public:
 	std::vector<ChunkVertex> vertices;
@@ -46,13 +46,13 @@ public:
 	void clear();
 	void draw();
 
-	void addBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z);
-	void addBlockFace(const Block& block, const BlockFace& face, const uint8_t& x, const uint8_t& y, const uint8_t& z);
-	void addFluidBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z);
-	void addFloraBlock(const Block& block, const uint8_t& x, const uint8_t& y, const uint8_t& z);
+	void addBlock(const Block& block, const unsigned char& x, const unsigned char& y, const unsigned char& z);
+	void addFluidBlock(const Block& block, const unsigned char& x, const unsigned char& y, const unsigned char& z);
+	void addFloraBlock(const Block& block, const unsigned char& x, const unsigned char& y, const unsigned char& z, const bool& isTall = false, const BlockFace& blockFace = BlockFace::FACE_BOTTOM);
 
 private:
-	uint8_t _vertexAO(const bool& corner, const bool& side1, const bool& side2);
+	void _addBlockFace(const Block& block, const int& face, const unsigned char& x, const unsigned char& y, const unsigned char& z);
+	unsigned char _getVertexAO(const bool& corner, const bool& side1, const bool& side2);
 
 };
 
