@@ -1,0 +1,291 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{C6E88EB0-88DA-4430-B324-5914F2972A99}</ProjectGuid>
+    <RootNamespace>VGame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MinSpace</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ExceptionHandling>false</ExceptionHandling>
+    </ClCompile>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;shell32.lib;glfw3.lib;freetype.lib;glew32s.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDIr)Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MinSpace</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <ExceptionHandling>false</ExceptionHandling>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;shell32.lib;glfw3.lib;freetype.lib;glew32s.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDIr)Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MinSpace</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <ExceptionHandling>false</ExceptionHandling>
+    </ClCompile>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;shell32.lib;glfw3.lib;freetype.lib;glew32s.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDIr)Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MinSpace</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <ExceptionHandling>false</ExceptionHandling>
+      <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>NotSet</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;shell32.lib;glfw3.lib;freetype.lib;glew32s.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDIr)Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="VEngine\Source\Camera.cpp" />
+    <ClCompile Include="VEngine\Source\CoreEngine.cpp" />
+    <ClCompile Include="VEngine\Source\FramerateCounter.cpp" />
+    <ClCompile Include="VEngine\Source\Input.cpp" />
+    <ClCompile Include="VEngine\Source\Log.cpp" />
+    <ClCompile Include="VEngine\Source\NoiseGenerator.cpp" />
+    <ClCompile Include="VEngine\Source\Random.cpp" />
+    <ClCompile Include="VEngine\Source\RenderUtil.cpp" />
+    <ClCompile Include="VEngine\Source\Screenshot.cpp" />
+    <ClCompile Include="VEngine\Source\Shader.cpp" />
+    <ClCompile Include="VEngine\Source\TextRenderer.cpp" />
+    <ClCompile Include="VEngine\Source\Texture.cpp" />
+    <ClCompile Include="VEngine\Source\Timer.cpp" />
+    <ClCompile Include="VGame\Header\Enums\MeshTypes.h" />
+    <ClCompile Include="VGame\Header\World\Skybox.h" />
+    <ClCompile Include="VGame\Source\Entity\PlayerInput.cpp" />
+    <ClCompile Include="VGame\Source\Generator\Biome\Biome.cpp" />
+    <ClCompile Include="VGame\Source\Block\Block.cpp" />
+    <ClCompile Include="VGame\Source\Chunk\Chunk.cpp" />
+    <ClCompile Include="VGame\Source\Chunk\ChunkManager.cpp" />
+    <ClCompile Include="VGame\Source\Chunk\ChunkMesh.cpp" />
+    <ClCompile Include="VGame\Source\Entity\Player.cpp" />
+    <ClCompile Include="VGame\Source\Generator\Biome\Biomes.cpp" />
+    <ClCompile Include="VGame\Source\Generator\Structure\Structure.cpp" />
+    <ClCompile Include="VGame\Source\Generator\Structure\Vein.cpp" />
+    <ClCompile Include="VGame\Source\Generator\Terrain\WorldGenerator.cpp" />
+    <ClCompile Include="VGame\Source\HUD\Crosshair.cpp" />
+    <ClCompile Include="VGame\Source\Particles\ParticleEmitter.cpp" />
+    <ClCompile Include="VGame\Source\Particles\ParticleSystem.cpp" />
+    <ClCompile Include="VGame\Source\Physics\AABB.cpp" />
+    <ClCompile Include="VGame\Source\Game.cpp" />
+    <ClCompile Include="VGame\main.cpp" />
+    <ClCompile Include="VEngine\Source\Window.cpp" />
+    <ClCompile Include="VGame\Source\Util\Raycast.cpp" />
+    <ClCompile Include="VGame\Source\Util\TextureAtlas.cpp" />
+    <ClCompile Include="VGame\Source\Util\Util.cpp" />
+    <ClCompile Include="VGame\Source\World\Skybox.cpp" />
+    <ClCompile Include="VGame\Source\World\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="VEngine\Header\Camera.h" />
+    <ClInclude Include="VEngine\Header\CoreEngine.h" />
+    <ClInclude Include="VEngine\Header\Event\Cancellable.h" />
+    <ClInclude Include="VEngine\Header\Event\Event.h" />
+    <ClInclude Include="VEngine\Header\Event\EventDispatcher.h" />
+    <ClInclude Include="VEngine\Header\FramerateCounter.h" />
+    <ClInclude Include="VEngine\Header\GeneralMath.h" />
+    <ClInclude Include="VEngine\Header\Input.h" />
+    <ClInclude Include="VEngine\Header\Log.h" />
+    <ClInclude Include="VEngine\Header\NoiseGenerator.h" />
+    <ClInclude Include="VEngine\Header\RenderUtil.h" />
+    <ClInclude Include="VEngine\Header\Screenshot.h" />
+    <ClInclude Include="VEngine\Header\Shader.h" />
+    <ClInclude Include="VEngine\Header\TextRenderer.h" />
+    <ClInclude Include="VEngine\Header\Texture.h" />
+    <ClInclude Include="VEngine\Header\Timer.h" />
+    <ClInclude Include="VEngine\Header\Vertex.h" />
+    <ClInclude Include="VGame\Header\Chunk\ChunkSlice.h" />
+    <ClInclude Include="VGame\Header\Entity\BlockID.h" />
+    <ClInclude Include="VGame\Header\Enums\EventTypes.h" />
+    <ClInclude Include="VGame\Header\Enums\Orientation.h" />
+    <ClInclude Include="VGame\Header\Events\BlockEvents.h" />
+    <ClInclude Include="VGame\Header\Events\PlayerEvents.h" />
+    <ClInclude Include="VGame\Header\Generator\Biome\Biome.h" />
+    <ClInclude Include="VGame\Header\Generator\Biome\Biomes.h" />
+    <ClInclude Include="VGame\Header\Block\Block.h" />
+    <ClInclude Include="VGame\Header\Chunk\Chunk.h" />
+    <ClInclude Include="VGame\Header\Chunk\ChunkManager.h" />
+    <ClInclude Include="VGame\Header\Chunk\ChunkMesh.h" />
+    <ClInclude Include="VGame\Header\Entity\Entity.h" />
+    <ClInclude Include="VGame\Header\Entity\Player.h" />
+    <ClInclude Include="VGame\Header\Generator\Structure\Structure.h" />
+    <ClInclude Include="VGame\Header\Generator\Terrain\Vein.h" />
+    <ClInclude Include="VGame\Header\Generator\Terrain\WorldGenerator.h" />
+    <ClInclude Include="VGame\Header\HUD\Crosshair.h" />
+    <ClInclude Include="VGame\Header\Physics\AABB.h" />
+    <ClInclude Include="VGame\Header\Util\Array2D.h" />
+    <ClInclude Include="VGame\Header\Util\Array3D.h" />
+    <ClInclude Include="VGame\Header\Util\Coordinates.h" />
+    <ClInclude Include="VGame\Header\Game.h" />
+    <ClInclude Include="VEngine\Header\Window.h" />
+    <ClInclude Include="VGame\Header\Util\Hasher.h" />
+    <ClInclude Include="VGame\Header\Util\Raycast.h" />
+    <ClInclude Include="VGame\Header\Util\TextureAtlas.h" />
+    <ClInclude Include="VGame\Header\Util\Util.h" />
+    <ClInclude Include="VGame\Header\World\World.h" />
+    <ClInclude Include="VGame\Header\Constants.h" />
+    <ClInclude Include="VEngine\Header\Random.h" />
+    <ClInclude Include="VGame\Header\Particles\ParticleEmitter.h" />
+    <ClInclude Include="VGame\Header\Particles\ParticleSystem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Media\Config\Settings.ini" />
+    <None Include="Resources\Shaders\chunk_frag.glsl" />
+    <None Include="Resources\Shaders\chunk_vert.glsl" />
+    <None Include="Resources\Shaders\basic_frag.glsl" />
+    <None Include="Resources\Shaders\basic_vert.glsl" />
+    <None Include="Resources\Shaders\skybox_frag.glsl" />
+    <None Include="Resources\Shaders\skybox_vert.glsl" />
+    <None Include="Resources\Shaders\text_frag.glsl" />
+    <None Include="Resources\Shaders\text_vert.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\luis\Downloads\Icon.ico" />
+    <Image Include="Resources\Textures\Skybox\sky_back.png" />
+    <Image Include="Resources\Textures\Skybox\sky_down.png" />
+    <Image Include="Resources\Textures\Skybox\sky_front.png" />
+    <Image Include="Resources\Textures\Skybox\sky_left.png" />
+    <Image Include="Resources\Textures\Skybox\sky_right.png" />
+    <Image Include="Resources\Textures\Skybox\sky_up.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="VGame.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

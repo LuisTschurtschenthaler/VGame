@@ -1,0 +1,156 @@
+[Tue Jun 23 21:30:40 2020 INFO ]: Successfully saved screenshot: 2020-06-23_21.30.40.bmp
+[Tue Jun 23 21:30:41 2020 INFO ]: Successfully saved screenshot: 2020-06-23_21.30.40.bmp
+[Tue Jun 23 21:30:45 2020 INFO ]: Successfully saved screenshot: 2020-06-23_21.30.45.bmp
+[Tue Jun 23 21:30:45 2020 INFO ]: Successfully saved screenshot: 2020-06-23_21.30.45.bmp
+[Fri Jun 26 19:07:03 2020 INFO ]: Successfully saved screenshot: 2020-06-26_19.07.03.bmp
+[Fri Jun 26 19:19:49 2020 INFO ]: Successfully saved screenshot: 2020-06-26_19.19.49.bmp
+[Fri Jun 26 19:19:50 2020 INFO ]: Successfully saved screenshot: 2020-06-26_19.19.49.bmp
+[Wed Jul  1 12:04:11 2020 INFO ]: 0(17) : error C5052: gl_Position is not accessible in this profile
+0(17) : error C5052: gl_Position is not accessible in this profile
+
+[Wed Jul  1 15:59:57 2020 INFO ]: Successfully saved screenshot: 2020-07-01_15.59.57.bmp
+[Wed Jul  1 15:59:57 2020 INFO ]: Successfully saved screenshot: 2020-07-01_15.59.57.bmp
+[Wed Jul  1 16:02:37 2020 INFO ]: Successfully saved screenshot: 2020-07-01_16.02.37.bmp
+[Wed Jul  1 16:02:37 2020 INFO ]: Successfully saved screenshot: 2020-07-01_16.02.37.bmp
+[Wed Jul  1 16:10:27 2020 INFO ]: Successfully saved screenshot: 2020-07-01_16.10.27.bmp
+[Wed Jul  1 16:25:15 2020 INFO ]: Successfully saved screenshot: 2020-07-01_16.25.15.bmp
+[Wed Jul  1 16:25:15 2020 INFO ]: Successfully saved screenshot: 2020-07-01_16.25.15.bmp
+[Thu Jul  2 18:18:30 2020 INFO ]: Successfully saved screenshot: 2020-07-02_18.18.30.bmp
+[Thu Jul  2 18:18:30 2020 INFO ]: Successfully saved screenshot: 2020-07-02_18.18.30.bmp
+[Thu Jul  2 19:00:01 2020 INFO ]: Successfully saved screenshot: 2020-07-02_19.00.01.bmp
+[Thu Jul  2 19:00:01 2020 INFO ]: Successfully saved screenshot: 2020-07-02_19.00.01.bmp
+[Wed Jul  8 22:53:47 2020 INFO ]: 0(19) : error C0000: syntax error, unexpected ';', expecting ',' or ')' at token ";"
+0(23) : error C1503: undefined variable "diffuse"
+0(25) : error C1503: undefined variable "diffuse"
+
+[Thu Jul  9 14:00:33 2020 INFO ]: Successfully saved screenshot: 2020-07-09_14.00.33.bmp
+[Thu Jul  9 14:00:33 2020 INFO ]: Successfully saved screenshot: 2020-07-09_14.00.33.bmp
+[Thu Jul 23 13:09:36 2020 >> ERROR]: Failed to load font: ./Resources/Fonts/Joystick-5KjV.ttf
+[Fri Jul 24 14:20:54 2020 >> INFO]: Successfully saved screenshot: 2020-07-24_14.20.54.bmp
+[Fri Jul 24 14:26:31 2020 >> INFO]: Successfully saved screenshot: 2020-07-24_14.26.31.bmp
+[Fri Jul 24 14:26:41 2020 >> INFO]: Successfully saved screenshot: 2020-07-24_14.26.41.bmp
+[Sat Jul 25 11:29:54 2020 >> INFO]: 0(39) : error C0000: syntax error, unexpected identifier, expecting ',' or ';' at token "tex"
+0(59) : error C1503: undefined variable "texColor"
+0(61) : error C1503: undefined variable "texColor"
+0(67) : error C0000: syntax error, unexpected "*=", expecting "::" at token "*="
+0(71) : error C1503: undefined variable "texColor"
+0(72) : error C0000: syntax error, unexpected '=', expecting "::" at token "="
+
+[Sat Jul 25 19:27:55 2020 >> INFO]: 0(31) : error C0000: syntax error, unexpected identifier, expecting "::" at token "vs_textureID"
+
+[Sat Jul 25 20:25:47 2020 >> INFO]: 0(38) : error C7011: implicit cast from "uint" to "int"
+
+[Mon Jul 27 22:52:22 2020 >> ERROR]: Failed to load texture
+[Mon Jul 27 22:52:41 2020 >> ERROR]: Failed to load texture
+[Sat Aug  8 19:01:29 2020 >> INFO]: Successfully saved screenshot: 2020-08-08_19.01.29.bmp
+[Sat Aug  8 19:01:31 2020 >> INFO]: Successfully saved screenshot: 2020-08-08_19.01.31.bmp
+[Sat Aug  8 19:04:00 2020 >> INFO]: 0(33) : error C1503: undefined variable "vertex_textureID"
+
+[Thu Aug 13 15:38:17 2020 >> ERROR]: Failed to load texture: 1
+[Thu Aug 13 15:40:23 2020 >> ERROR]: Failed to load texture: 1
+[Wed Aug 19 15:11:34 2020 >> INFO]: Successfully saved screenshot: 2020-08-19_15.11.34.jpg
+[Sun Aug 23 18:48:51 2020 >> INFO]: 0(56) : error C7531: global type int8_t requires "#extension GL_NV_gpu_shader5 : enable" before use
+0(56) : error C7011: implicit cast from "int" to "int8_t"
+
+[Sat Aug 29 20:57:17 2020 >> INFO]: Successfully saved screenshot: 2020-08-29_20.57.17.jpg
+[Sun Aug 30 23:08:24 2020 >> INFO]: Successfully saved screenshot: 2020-08-30_23.08.24.jpg
+[Sun Aug 30 23:08:39 2020 >> INFO]: Successfully saved screenshot: 2020-08-30_23.08.39.jpg
+[Sun Sep  6 10:49:06 2020 >> INFO]: Successfully saved screenshot: 2020-09-06_10.49.06.jpg
+[Sun Sep  6 18:54:50 2020 >> INFO]: Successfully saved screenshot: 2020-09-06_18.54.50.jpg
+[Sun Sep  6 19:40:25 2020 >> INFO]: Successfully saved screenshot: 2020-09-06_19.40.25.jpg
+[Mon Sep  7 21:18:06 2020 >> INFO]: Successfully saved screenshot: 2020-09-07_21.18.06.jpg
+[Wed Sep 16 18:47:54 2020 >> ERROR]: Failed to load texture: 1
+[Wed Sep 16 18:52:18 2020 >> ERROR]: Failed to load texture: 0
+[Thu Sep 17 09:13:39 2020 >> INFO]: (0) : error C0000: syntax error, unexpected $end at token "<EOF>"
+
+[Thu Sep 17 09:13:39 2020 >> INFO]: (0) : error C0000: syntax error, unexpected $end at token "<EOF>"
+
+[Thu Sep 17 09:13:39 2020 >> ERROR]: Failed to load texture: 1
+[Thu Sep 17 09:21:51 2020 >> INFO]: (0) : error C0000: syntax error, unexpected $end at token "<EOF>"
+
+[Thu Sep 17 09:21:51 2020 >> INFO]: (0) : error C0000: syntax error, unexpected $end at token "<EOF>"
+
+[Thu Sep 17 09:21:51 2020 >> ERROR]: Failed to load texture: 1
+[Thu Sep 17 16:26:26 2020 >> ERROR]: Failed to load texture: 1
+[Thu Sep 17 16:29:04 2020 >> INFO]: 0(55) : error C7011: implicit cast from "vec4" to "vec3"
+0(55) : error C1035: assignment of incompatible types
+
+[Thu Sep 17 16:29:04 2020 >> INFO]: 0(55) : error C7011: implicit cast from "vec4" to "vec3"
+0(55) : error C1035: assignment of incompatible types
+
+[Mon Sep 28 16:40:53 2020 >> INFO]: 0(82) : error C1115: unable to find compatible overloaded function "length(float, float)"
+
+[Mon Sep 28 16:40:53 2020 >> INFO]: 0(82) : error C1115: unable to find compatible overloaded function "length(float, float)"
+
+[Mon Oct 26 08:31:54 2020 >> INFO]: Successfully saved screenshot: 2020-10-26_08.31.54.jpg
+[Wed Oct 28 16:33:34 2020 >> ERROR]: Saving Chunk failed: WorldName/Chunks/-8 4 -9.chunk[Wed Nov  4 13:30:13 2020 >> INFO]: Successfully saved screenshot: 2020-11-04_13.30.13.jpg
+[Fri Nov  6 11:52:37 2020 >> INFO]: Successfully saved screenshot: 2020-11-06_11.52.37.jpg
+[Fri Nov  6 13:58:08 2020 >> INFO]: Successfully saved screenshot: 2020-11-06_13.58.08.jpg
+[Fri Nov  6 13:58:45 2020 >> INFO]: Successfully saved screenshot: 2020-11-06_13.58.45.jpg
+[Thu Nov 12 11:54:00 2020 >> INFO]: Successfully saved screenshot: 2020-11-12_11.54.00.jpg
+[Wed Nov 18 17:15:57 2020 >> INFO]: Successfully saved screenshot: 2020-11-18_17.15.57.jpg
+[Sun Nov 22 14:59:05 2020 >> INFO]: Successfully saved screenshot: 2020-11-22_14.59.05.jpg
+[Mon Nov 23 08:33:21 2020 >> INFO]: 0(42) : error C0000: syntax error, unexpected $undefined, expecting ')' at token "<undefined>"
+
+[Mon Nov 23 08:33:21 2020 >> INFO]: 0(42) : error C0000: syntax error, unexpected $undefined, expecting ')' at token "<undefined>"
+
+[Mon Nov 23 09:53:48 2020 >> INFO]: Successfully saved screenshot: 2020-11-23_09.53.48.jpg
+[Mon Nov 23 12:10:18 2020 >> INFO]: 0(49) : error C1503: undefined variable "lightDir"
+
+[Mon Nov 23 18:55:12 2020 >> INFO]: Successfully saved screenshot: 2020-11-23_18.55.12.jpg
+[Mon Nov 23 18:55:13 2020 >> INFO]: Successfully saved screenshot: 2020-11-23_18.55.13.jpg
+[Mon Nov 23 18:55:15 2020 >> INFO]: Successfully saved screenshot: 2020-11-23_18.55.15.jpg
+[Tue Nov 24 09:34:36 2020 >> INFO]: Successfully saved screenshot: 2020-11-24_09.34.36.jpg
+[Tue Nov 24 14:02:43 2020 >> INFO]: Successfully saved screenshot: 2020-11-24_14.02.43.jpg
+[Tue Nov 24 17:22:12 2020 >> INFO]: Successfully saved screenshot: 2020-11-24_17.22.12.jpg
+[Mon Nov 30 20:41:24 2020 >> INFO]: Successfully saved screenshot: 2020-11-30_20.41.24.jpg
+[Mon Nov 30 20:41:52 2020 >> INFO]: Successfully saved screenshot: 2020-11-30_20.41.52.jpg
+[Mon Nov 30 20:41:53 2020 >> INFO]: Successfully saved screenshot: 2020-11-30_20.41.53.jpg
+[Tue Dec  1 20:39:30 2020 >> INFO]: Successfully saved screenshot: 2020-12-01_20.39.30.jpg
+[Tue Dec  1 20:39:36 2020 >> INFO]: Successfully saved screenshot: 2020-12-01_20.39.36.jpg
+[Wed Dec  9 19:02:26 2020 >> INFO]: Successfully saved screenshot: 2020-12-09_19.02.26.jpg
+[Thu Dec 10 09:22:12 2020 >> INFO]: Successfully saved screenshot: 2020-12-10_09.22.12.jpg
+[Thu Dec 10 21:37:09 2020 >> INFO]: Successfully saved screenshot: 2020-12-10_21.37.09.jpg
+[Thu Dec 10 21:37:37 2020 >> INFO]: Successfully saved screenshot: 2020-12-10_21.37.37.jpg
+[Thu Dec 10 21:37:38 2020 >> INFO]: Successfully saved screenshot: 2020-12-10_21.37.38.jpg
+[Thu Dec 10 21:37:39 2020 >> INFO]: Successfully saved screenshot: 2020-12-10_21.37.39.jpg
+[Fri Dec 11 19:03:34 2020 >> INFO]: Successfully saved screenshot: 2020-12-11_19.03.34.jpg
+[Sat Dec 12 11:27:07 2020 >> INFO]: Successfully saved screenshot: 2020-12-12_11.27.07.jpg
+[Sat Dec 12 11:27:08 2020 >> INFO]: Successfully saved screenshot: 2020-12-12_11.27.08.jpg
+[Sun Dec 13 11:15:29 2020 >> INFO]: Successfully saved screenshot: 2020-12-13_11.15.29.jpg
+[Mon Dec 14 22:51:44 2020 >> INFO]: Successfully saved screenshot: 2020-12-14_22.51.44.jpg
+[Mon Dec 14 23:50:37 2020 >> INFO]: Successfully saved screenshot: 2020-12-14_23.50.37.jpg
+[Thu Dec 17 18:50:31 2020 >> INFO]: Successfully saved screenshot: 2020-12-17_18.50.31.jpg
+[Thu Dec 17 19:05:18 2020 >> INFO]: Successfully saved screenshot: 2020-12-17_19.05.18.jpg
+[Fri Dec 25 23:29:52 2020 >> INFO]: Successfully saved screenshot: 2020-12-25_23.29.52.jpg
+[Sun Jan 10 14:06:18 2021 >> INFO]: Successfully saved screenshot: 2021-01-10_14.06.18.jpg
+[Sun Jan 10 15:43:42 2021 >> INFO]: Successfully saved screenshot: 2021-01-10_15.43.42.jpg
+[Fri Jan 15 16:58:57 2021 >> INFO]: Successfully saved screenshot: 2021-01-15_16.58.57.jpg
+[Fri Jan 15 17:56:47 2021 >> INFO]: Successfully saved screenshot: 2021-01-15_17.56.47.jpg
+[Fri Jan 15 17:58:58 2021 >> INFO]: Successfully saved screenshot: 2021-01-15_17.58.58.jpg
+[Fri Jan 15 17:58:58 2021 >> INFO]: Successfully saved screenshot: 2021-01-15_17.58.58.jpg
+[Fri Jan 15 19:49:16 2021 >> INFO]: Successfully saved screenshot: 2021-01-15_19.49.16.jpg
+[Sat Jan 16 12:22:29 2021 >> INFO]: Successfully saved screenshot: 2021-01-16_12.22.29.jpg
+[Sat Jan 16 12:24:48 2021 >> INFO]: Successfully saved screenshot: 2021-01-16_12.24.48.jpg
+[Sat Jan 16 16:38:03 2021 >> INFO]: Successfully saved screenshot: 2021-01-16_16.38.03.jpg
+[Mon Jan 25 21:46:55 2021 >> INFO]: Successfully saved screenshot: 2021-01-25_21.46.55.jpg
+[Wed Jan 27 14:25:22 2021 >> INFO]: Successfully saved screenshot: 2021-01-27_14.25.22.jpg
+[Wed Jan 27 14:59:05 2021 >> INFO]: Successfully saved screenshot: 2021-01-27_14.59.05.jpg
+[Sat Feb  6 08:57:58 2021 >> INFO]: Successfully saved screenshot: 2021-02-06_08.57.58.jpg
+[Sat Feb  6 08:57:59 2021 >> INFO]: Successfully saved screenshot: 2021-02-06_08.57.59.jpg
+[Sat Feb  6 11:16:51 2021 >> INFO]: Successfully saved screenshot: 2021-02-06_11.16.51.jpg
+[Mon Feb  8 19:13:17 2021 >> INFO]: Successfully saved screenshot: 2021-02-08_19.13.17.jpg
+[Mon Feb  8 19:46:03 2021 >> INFO]: Successfully saved screenshot: 2021-02-08_19.46.03.jpg
+[Mon Feb  8 19:46:27 2021 >> INFO]: Successfully saved screenshot: 2021-02-08_19.46.27.jpg
+[Wed Feb 10 14:43:07 2021 >> ERROR]: Failed to load texture: 1
+[Wed Feb 10 15:23:33 2021 >> ERROR]: Failed to load texture: 1
+[Fri Feb 12 09:25:13 2021 >> INFO]: Successfully saved screenshot: 2021-02-12_09.25.13.jpg
+[Mon Feb 15 17:19:42 2021 >> INFO]: Successfully saved screenshot: 2021-02-15_17.19.42.jpg
+[Mon Feb 15 22:21:02 2021 >> INFO]: Successfully saved screenshot: 2021-02-15_22.21.02.jpg
+[Mon Feb 15 22:21:05 2021 >> INFO]: Successfully saved screenshot: 2021-02-15_22.21.05.jpg
+[Tue Feb 16 22:42:44 2021 >> INFO]: Successfully saved screenshot: 2021-02-16_22.42.44.jpg
+[Tue Feb 16 22:46:27 2021 >> INFO]: Successfully saved screenshot: 2021-02-16_22.46.27.jpg
+[Tue Feb 16 22:46:27 2021 >> INFO]: Successfully saved screenshot: 2021-02-16_22.46.27.jpg
+[Sat Feb 20 14:00:56 2021 >> ERROR]: EventType not found!
+[Thu Mar 11 14:46:15 2021 >> ERROR]: Failed to load texture: 3
+[Thu Mar 11 14:51:27 2021 >> ERROR]: Failed to load texture: 3
