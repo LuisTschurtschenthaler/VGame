@@ -28,6 +28,7 @@ void Crosshair::draw() {
 		_drawDebugLines(halfWindowWidth, halfWindowHeight);
 	else _drawLines(halfWindowWidth, halfWindowHeight);
 
+	glLineWidth(1.f);
 	glPopMatrix();
 }
 

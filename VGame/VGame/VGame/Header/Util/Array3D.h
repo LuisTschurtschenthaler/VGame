@@ -2,7 +2,6 @@
 #define ARRAY_3D_H
 
 #include <array>
-#include <vector>
 #include <algorithm>
 #include "Coordinates.h"
 

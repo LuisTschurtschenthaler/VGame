@@ -57,7 +57,6 @@ public:
 
 private:
 	void _addBlockFace(const Block& block, const int& face, const unsigned char& x, const unsigned char& y, const unsigned char& z);
-	unsigned char _getVertexAO(const bool& corner, const bool& side1, const bool& side2);
 	unsigned char _vertexAO(const LocationXYZ& location, const int& face, const int& vertex);
 
 };

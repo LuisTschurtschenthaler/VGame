@@ -1,11 +1,10 @@
 # Folders
-
 .vs/
 bin/
 bin-int/
 Include/
 Libraries/
-VGame/VGame/Screenshots/
+VGame/Screenshots/
 
 # Files
 .user

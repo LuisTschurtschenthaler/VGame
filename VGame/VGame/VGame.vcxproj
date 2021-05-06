@@ -117,7 +117,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <ExceptionHandling>false</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
@@ -159,7 +161,9 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <ExceptionHandling>false</ExceptionHandling>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>
+      </PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
