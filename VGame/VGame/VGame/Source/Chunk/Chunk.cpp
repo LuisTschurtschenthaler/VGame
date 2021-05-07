@@ -10,6 +10,7 @@
 Chunk::Chunk(const ChunkXZ& coord)
 	: coord(coord), worldCoord(coord.x * CHUNK_SIZE, coord.z * CHUNK_SIZE) {
 
+
 	_solid = new ChunkMesh(this);
 	_fluid = new ChunkMesh(this);
 

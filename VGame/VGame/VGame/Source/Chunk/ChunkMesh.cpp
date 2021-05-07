@@ -11,15 +11,15 @@ unsigned int ChunkMesh::amountOfVertices = 0;
 unsigned int ChunkMesh::amountOfIndices = 0;
 
 const MeshFace ChunkMesh::_FACES[8] = {
-	{{ 1, 0, 0,  1, 0, 1,  1, 1, 1,  1, 1, 0 },  { 3, 2, 0, 1 },  0, 3 }, // X+
-	{{ 0, 0, 1,  0, 0, 0,  0, 1, 0,  0, 1, 1 },  { 3, 2, 0, 1 },  1, 3 }, // X-
-	{{ 1, 1, 0,  1, 1, 1,  0, 1, 1,  0, 1, 0 },  { 1, 0, 2, 3 },  2, 5 }, // Y+
-	{{ 0, 0, 0,  0, 0, 1,  1, 0, 1,  1, 0, 0 },  { 3, 2, 0, 1 },  3, 2 }, // Y-
-	{{ 1, 0, 1,  0, 0, 1,  0, 1, 1,  1, 1, 1 },  { 3, 2, 0, 1 },  4, 4 }, // Z+
-	{{ 1, 1, 0,  0, 1, 0,  0, 0, 0,  1, 0, 0 },  { 0, 1, 3, 2 },  5, 4 }, // Z-
-																  
-	{{ 1, 1, 1,  1, 0, 1,  0, 0, 0,  0, 1, 0 },  { 0, 2, 3, 1 },  0, 5 },
-	{{ 1, 1, 0,  1, 0, 0,  0, 0, 1,  0, 1, 1 },  { 1, 3, 2, 0 },  0, 5 }
+	{{ 1, 0, 0,  1, 0, 1,  1, 1, 1,  1, 1, 0 },  { 3, 2, 0, 1 }, 0, 3 }, // X+
+	{{ 0, 0, 1,  0, 0, 0,  0, 1, 0,  0, 1, 1 },  { 3, 2, 0, 1 }, 1, 3 }, // X-
+	{{ 1, 1, 0,  1, 1, 1,  0, 1, 1,  0, 1, 0 },  { 1, 0, 2, 3 }, 2, 5 }, // Y+
+	{{ 0, 0, 0,  0, 0, 1,  1, 0, 1,  1, 0, 0 },  { 3, 2, 0, 1 }, 3, 2 }, // Y-
+	{{ 1, 0, 1,  0, 0, 1,  0, 1, 1,  1, 1, 1 },  { 3, 2, 0, 1 }, 4, 4 }, // Z+
+	{{ 1, 1, 0,  0, 1, 0,  0, 0, 0,  1, 0, 0 },  { 0, 1, 3, 2 }, 5, 4 }, // Z-
+
+	{{ 1, 1, 1,  1, 0, 1,  0, 0, 0,  0, 1, 0 },  { 0, 2, 3, 1 }, 0, 5 },
+	{{ 1, 1, 0,  1, 0, 0,  0, 0, 1,  0, 1, 1 },  { 1, 3, 2, 0 }, 0, 5 }
 };
 
 const LocationXYZ ChunkMesh::_ADJACENTS[6] = {
@@ -53,20 +53,20 @@ const LocationXYZ ChunkMesh::_AO_ADJACENTS[16] = {
 
 const VertexAO ChunkMesh::_AO[6][4*2] = {
 	// S1  S2  Corner
-	{{  3,  0,  6 },  {  0,  2,  4 },  {  8, 10, 12 },  {  8, 11, 14 }},  // FACE_RIGHT  -> X+
-	{{  2,  1,  7 },  {  1,  3,  5 },  { 11,  9, 13 },  {  9, 10, 15 }},  // FACE_LEFT 	 -> X-
-	{{ 11,  8, 14 },  {  8, 10, 12 },  { 10,  9, 15 },  {  9, 11, 13 }},  // FACE_TOP 	 -> Y+
-	{{  3,  1,  5 },  {  1,  2,  7 },  {  2,  0,  4 },  {  0,  3,  6 }},  // FACE_BOTTOM -> Y-
-	{{  0,  2,  4 },  {  2,  1,  7 },  {  9, 10, 15 },  { 10,  8, 12 }},  // FACE_FRONT  -> Z+
-	{{  8, 11, 14 },  { 11,  9, 13 },  {  1,  3,  5 },  {  3,  2,  6 }}	  // FACE_BACK 	 -> Z-
+	{{  3,  0,  6 },  {  2,  0,  4 },  {  8, 10, 11 },  {  8, 11, 13 }},  // FACE_RIGHT     // X+
+	{{  1,  2,  7 },  {  1,  3,  5 },  {  9, 11, 12 },  {  9, 10, 15 }},  // FACE_LEFT 		// X-
+	{{  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 }},  // FACE_TOP 		// Y+
+	{{  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 }},  // FACE_BOTTOM 	// Y-
+	{{  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 }},  // FACE_FRONT 	// Z+
+	{{  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 },  {  0,  0,  0 }}	  // FACE_BACK 		// Z-
 };
 
 
 ChunkMesh::ChunkMesh(Chunk* chunk)
 	: _chunk(chunk), _isBuffered(false) {
 
-	vertices.reserve(CHUNK_AREA * 2 * 8);
-	indices.reserve(CHUNK_AREA * 2 * 36);
+	vertices.reserve(CHUNK_AREA * 8);
+	indices.reserve(CHUNK_AREA * 36);
 }
 
 ChunkMesh::~ChunkMesh() {
@@ -211,7 +211,7 @@ void ChunkMesh::_addBlockFace(const Block& block, const int& face, const unsigne
 		indicesCount + 3 
 	});
 
-	const MeshFace& meshFace = _FACES[face];
+	const MeshFace& meshFace = _FACES[(int) face];
 
 	int index = 0;
 	for(int i = 0; i < 4; i++) {
@@ -219,28 +219,34 @@ void ChunkMesh::_addBlockFace(const Block& block, const int& face, const unsigne
 					  yi = y + meshFace.vertices[index++],
 					  zi = z + meshFace.vertices[index++];
 
-		unsigned char ao = _vertexAO({ x, y, z }, face, i);
+		unsigned char ao = 0; // _vertexAO({ x, y, z }, (int) face, i);
 
 		ChunkVertex chunkVertex = {
 			(xi | yi << 8 | zi << 16 | meshFace.lightLevel << 24),
-			(block.textures[face] | meshFace.textureCoords[i] << 8 | meshFace.normal << 16 | ao << 24)
+			(block.textures[(int)face] | meshFace.textureCoords[i] << 8 | meshFace.normal << 16 | ao << 24)
 		};
 
 		vertices.push_back(chunkVertex);
 	}
 }
 
+unsigned char ChunkMesh::_getVertexAO(const bool& corner, const bool& side1, const bool& side2) {
+	return (side1 && side2) ? 3 : (side1 + side2 + corner);
+}
+
 unsigned char ChunkMesh::_vertexAO(const LocationXYZ& location, const int& face, const int& vertex) {
 	auto useAmbient = [&](const int& adj) {
 		LocationXYZ loc = _AO_ADJACENTS[_AO[face][vertex].adjacents[adj]];
 		LocationXYZ worldLoc = LocationXYZ(_chunk->worldCoord.x, 0, _chunk->worldCoord.z) + location + loc;
-		
 		return BlockManager::getBlock(World::getChunkManager().getBlockID(worldLoc)).useAmbient;
 	};
 
-	bool side1 = useAmbient(0),
-		 side2 = useAmbient(1),
-		 corner = useAmbient(2);
+	bool side1 = useAmbient(0);
+	bool side2 = useAmbient(1);
+	bool corner = useAmbient(2);
 	
-	return (side1 && side2) ? 3 : (side1 + side2 + corner);
+	unsigned char f = (side1 && side2) ? 3 : (side1 + side2 + corner);
+
+	if(face > 1) f = 3;
+	return f;
 }
