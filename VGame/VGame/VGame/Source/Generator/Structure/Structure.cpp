@@ -12,10 +12,8 @@ const int Structure::BUSH_RADIUS = 2;
 
 
 void Structure::build() {
-	for(auto& structureBlock : _structureBlocks) {
-		if(World::getChunkManager().getBlockID(structureBlock.position) == BlockID::AIR)
-			World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
-	}
+	for(auto& structureBlock : _structureBlocks)
+		World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
 }
 
 void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, const BlockID& leaveBlock) {

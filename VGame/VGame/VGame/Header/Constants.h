@@ -18,7 +18,7 @@ constexpr auto PATH_SCREENSHOTS			= "./Screenshots/";
 
 
 /* Player */
-constexpr auto RENDER_DISTANCE			= 32;
+constexpr auto RENDER_DISTANCE			= 10;
 constexpr auto DESTROY_DISTANCE			= (RENDER_DISTANCE + 3);
 
 constexpr auto MOUSE_SENSITIVITY		= 0.075f;
@@ -43,10 +43,9 @@ constexpr auto FAR_PLANE		= 2000.f;
 constexpr auto BLOCK_SIZE		= 1.f;
 constexpr auto HALF_BLOCK_SIZE	= (BLOCK_SIZE / 2.f);
 
-constexpr auto CHUNK_SIZE		= 16;
-constexpr auto CHUNK_HEIGHT		= 256;
+constexpr auto CHUNK_SIZE		= 32;
 constexpr auto CHUNK_AREA		= (CHUNK_SIZE * CHUNK_SIZE);
-constexpr auto CHUNK_VOLUME		= (CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE);
+constexpr auto CHUNK_VOLUME		= (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 constexpr auto HALF_CHUNK_SIZE	= (CHUNK_SIZE / 2);
 
 constexpr auto WATER_LEVEL = 64;

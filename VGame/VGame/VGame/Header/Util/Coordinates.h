@@ -35,7 +35,7 @@ struct ChunkXZ {
 struct ChunkXYZ {
 	int32_t x, y, z;
 
-	ChunkXYZ()	: x(0), y(0), z(0) { }
+	ChunkXYZ() : x(0), y(0), z(0) { }
 	ChunkXYZ(const int32_t& x, const int32_t& y, const int32_t& z) 
 		: x(x), y(y), z(z) { }
 

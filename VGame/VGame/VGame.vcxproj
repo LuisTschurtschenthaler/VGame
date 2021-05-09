@@ -189,6 +189,7 @@
     <ClCompile Include="VEngine\Source\Timer.cpp" />
     <ClCompile Include="VGame\Header\Enums\MeshTypes.h" />
     <ClCompile Include="VGame\Header\World\Skybox.h" />
+    <ClCompile Include="VGame\Source\Chunk\ChunkArea.cpp" />
     <ClCompile Include="VGame\Source\Entity\PlayerInput.cpp" />
     <ClCompile Include="VGame\Source\Generator\Biome\Biome.cpp" />
     <ClCompile Include="VGame\Source\Block\Block.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="VEngine\Header\Texture.h" />
     <ClInclude Include="VEngine\Header\Timer.h" />
     <ClInclude Include="VEngine\Header\Vertex.h" />
+    <ClInclude Include="VGame\Header\Chunk\ChunkArea.h" />
     <ClInclude Include="VGame\Header\Chunk\ChunkSlice.h" />
     <ClInclude Include="VGame\Header\Entity\BlockID.h" />
     <ClInclude Include="VGame\Header\Enums\EventTypes.h" />

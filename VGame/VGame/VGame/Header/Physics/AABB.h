@@ -23,7 +23,7 @@ public:
 	~AABB();
 
 	void update(const glm::vec3& pos);
-	void update(const ChunkXZ& pos);
+	void update(const ChunkXYZ& pos);
 
 	static void handleCollision(Entity& entity, const glm::vec3& velocity);
 	static bool isColliding(const Entity& entity);

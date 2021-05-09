@@ -129,6 +129,9 @@
     <ClCompile Include="VGame\Source\Generator\Structure\Vein.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="VGame\Source\Chunk\ChunkArea.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VGame\Header\Game.h">
@@ -282,6 +285,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="VGame\Header\Entity\Player.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="VGame\Header\Chunk\ChunkArea.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

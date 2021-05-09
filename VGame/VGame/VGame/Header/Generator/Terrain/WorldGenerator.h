@@ -10,14 +10,14 @@
 #include "Biomes.h"
 
 class NoiseGenerator;
-class Chunk;
+class ChunkArea;
 
 
 class WorldGenerator {
 
 private:
 	NoiseGenerator* _biomeNoise;
-	Chunk* _chunk;
+	ChunkArea* _chunkArea;
 
 	Desert* _desert;
 	Grassland* _grassland;
@@ -33,7 +33,7 @@ public:
 	WorldGenerator();
 	~WorldGenerator();
 
-	void generateChunk(Chunk& chunk);
+	void generateChunkArea(ChunkArea& chunkArea);
 
 	Biome* getBiomeAt(const int& x, const int& z, const ChunkXZ& coord);
 	Biome* getBiomeType(const float& value);
