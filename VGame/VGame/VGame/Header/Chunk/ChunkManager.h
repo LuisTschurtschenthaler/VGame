@@ -57,6 +57,7 @@ public:
 private:
 	std::vector<Chunk*> _getSortedCunks(const int& playerX, const int& playerY, const int& playerZ);
 	void _setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& location);
+	void _setNearbyChunkAreasMinMax(ChunkArea* chunkArea, const int& min, const int& max);
 	bool _chunkAreaExists(const ChunkXZ& coord);
 	void _generateChunks();
 

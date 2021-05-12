@@ -55,6 +55,22 @@ void Structure::generateCactus(const LocationXYZ& pos) {
 }
 
 
+void Structure::generatePyramid(const LocationXYZ& pos) {
+	int pyramidSize = 25;
+	int yOffset = 1;
+
+	while(pyramidSize >= 0) {
+		int pyramidHalfSize = pyramidSize / 2;
+		LocationXYZ start	= { pos.x - pyramidHalfSize, pos.y + yOffset, pos.z - pyramidHalfSize };
+		LocationXYZ end		= { pos.x + pyramidHalfSize, pos.y + yOffset, pos.z + pyramidHalfSize };
+		fillXZ(start, end, BlockID::SMIRK);
+		
+		yOffset++;
+		pyramidSize -= 2;
+	}
+}
+
+
 void Structure::fillXZ(const LocationXYZ& start, const LocationXYZ& end, const BlockID& blockID) {
 	for(int x = start.x; x <= end.x; x++)
 	for(int z = start.z; z <= end.z; z++)

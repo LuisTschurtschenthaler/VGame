@@ -43,7 +43,6 @@ void WorldGenerator::generateChunkArea(ChunkArea& chunkArea) {
 	_generateBiomeMap();
 	_generateHeightMap();
 	_setBlocks();
-
 	// Caves
 	_generateVeins();
 	_chunkArea->chunkDataGenerated = true;
@@ -107,7 +106,6 @@ void WorldGenerator::_setBlocks() {
 						continue;
 					}
 
-
 					LocationXYZ loc = { x + chunk->coord.x * CHUNK_SIZE,
 										y + chunk->coord.y * CHUNK_SIZE + 1,
 										z + chunk->coord.z * CHUNK_SIZE };
@@ -137,47 +135,19 @@ void WorldGenerator::_setBlocks() {
 				chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else chunk->chunkData.set(x, y, z, biome->getUnderEarth());
 		}
-
-		/*
-		for(auto& plant : plants)
-			chunk->chunkData.set(plant.second, plant.first->getPlant());
-
-		for(auto& tree : trees) {
-			Structure structure;
-			if(instanceof<Desert>(tree.first))
-				structure.generateCactus({ tree.second.x + chunk->coord.x * CHUNK_SIZE,
-					tree.second.y + chunk->coord.y * CHUNK_SIZE, tree.second.z + chunk->coord.z * CHUNK_SIZE });
-			else {
-				BlockID logBlock = AIR, leaveBlock = AIR;
-				if(instanceof<BirchForest>(tree.first)) {
-					logBlock = BlockID::BIRCH_LOG;
-					leaveBlock = BlockID::BIRCH_LEAVE;
-				}
-				else {
-					logBlock = BlockID::OAK_LOG;
-					leaveBlock = BlockID::OAK_LEAVE;
-				}
-			
-				structure.generateTree({ tree.second.x + chunk->coord.x * CHUNK_SIZE,
-					tree.second.y + chunk->coord.y * CHUNK_SIZE, tree.second.z + chunk->coord.z * CHUNK_SIZE },
-									   logBlock, leaveBlock);
-			}
-
-			structure.build();
-		}*/
 	}
 }
 
 void WorldGenerator::_generateVeins() {
 	/*
-	Vein::generate(_chunk->worldCoord, { BlockID::COAL_ORE,		20, 4, 12, 1, 128 });
-	Vein::generate(_chunk->worldCoord, { BlockID::IRON_ORE,		15, 1,  8, 1,  64 });
-	Vein::generate(_chunk->worldCoord, { BlockID::LAPIS_ORE,	7,  1,  6, 1,  32 });
-	Vein::generate(_chunk->worldCoord, { BlockID::GOLD_ORE,		9,  1,  6, 1,  32 });
-	Vein::generate(_chunk->worldCoord, { BlockID::DIAMOND_ORE,	9,  1,  8, 1,  16 });
-	Vein::generate(_chunk->worldCoord, { BlockID::EMERALD_ORE,	2,  1,  2, 4,  32 });
-	
-	Vein::generate(_chunk->worldCoord, { BlockID::DIRT,			5, 10, 32, 0, 255 });
-	Vein::generate(_chunk->worldCoord, { BlockID::GRAVEL,		3, 10, 32, 0, 255 });
+	Vein::generate(_chunkArea->worldCoord, { BlockID::COAL_ORE,		20, 4, 12, 1, 128 });
+	Vein::generate(_chunkArea->worldCoord, { BlockID::IRON_ORE,		15, 1,  8, 1,  64 });
+	Vein::generate(_chunkArea->worldCoord, { BlockID::LAPIS_ORE,	7,  1,  6, 1,  32 });
+	Vein::generate(_chunkArea->worldCoord, { BlockID::GOLD_ORE,		9,  1,  6, 1,  32 });
+	Vein::generate(_chunkArea->worldCoord, { BlockID::DIAMOND_ORE,	9,  1,  8, 1,  16 });
+	Vein::generate(_chunkArea->worldCoord, { BlockID::EMERALD_ORE,	2,  1,  2, 4,  32 });
+						 
+	Vein::generate(_chunkArea->worldCoord, { BlockID::DIRT,			5, 10, 32, 0, 255 });
+	Vein::generate(_chunkArea->worldCoord, { BlockID::GRAVEL,		3, 10, 32, 0, 255 });
 	*/
 }

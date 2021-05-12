@@ -233,7 +233,8 @@ void ChunkMesh::_addBlockFace(const Block& block, const int& face, const unsigne
 unsigned char ChunkMesh::_vertexAO(const LocationXYZ& location, const int& face, const int& vertex) {
 	auto useAmbient = [&](const int& adj) {
 		LocationXYZ loc = _AO_ADJACENTS[_AO[face][vertex].adjacents[adj]];
-		LocationXYZ worldLoc = LocationXYZ(_chunk->worldCoord.x, 0, _chunk->worldCoord.z) + location + loc;
+		LocationXYZ worldLoc = LocationXYZ(_chunk->worldCoord.x, _chunk->worldCoord.y, _chunk->worldCoord.z) 
+			+ location + loc;
 		
 		return BlockManager::getBlock(World::getChunkManager().getBlockID(worldLoc)).useAmbient;
 	};
@@ -242,5 +243,5 @@ unsigned char ChunkMesh::_vertexAO(const LocationXYZ& location, const int& face,
 		 side2 = useAmbient(1),
 		 corner = useAmbient(2);
 	
-	return (side1 && side2) ? 0 : (side1 + side2 + corner);
+	return (side1 && side2) ? 3 : (side1 + side2 + corner);
 }

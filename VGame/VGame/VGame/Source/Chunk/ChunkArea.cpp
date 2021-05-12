@@ -7,7 +7,7 @@
 
 
 ChunkArea::ChunkArea(const ChunkXZ& coord) 
-	: coord(coord) {
+	: coord(coord), worldCoord(coord * CHUNK_SIZE) {
 
 	minimumPoint = 256;
 	highestPoint = 0;
@@ -60,18 +60,17 @@ void ChunkArea::setDecorations() {
 
 			structure.generateTree(tree.second, logBlock, leaveBlock);
 		}
-
 		structure.build();
 	}
 }
 
 Chunk* ChunkArea::getChunk(const int& y) {
-	ChunkXYZ c = { coord.x, y, coord.z };
-	if(!_chunkExists(c)) {
-		chunks.emplace(c, new Chunk(c));
+	ChunkXYZ chunkCoord = { coord.x, y, coord.z };
+	if(!_chunkExists(chunkCoord)) {
+		chunks.emplace(chunkCoord, new Chunk(chunkCoord));
 	}
 
-	return chunks[c];
+	return chunks[chunkCoord];
 }
 
 

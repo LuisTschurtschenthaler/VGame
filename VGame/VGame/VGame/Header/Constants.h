@@ -18,7 +18,7 @@ constexpr auto PATH_SCREENSHOTS			= "./Screenshots/";
 
 
 /* Player */
-constexpr auto RENDER_DISTANCE			= 10;
+constexpr auto RENDER_DISTANCE			= 11;
 constexpr auto DESTROY_DISTANCE			= (RENDER_DISTANCE + 3);
 
 constexpr auto MOUSE_SENSITIVITY		= 0.075f;

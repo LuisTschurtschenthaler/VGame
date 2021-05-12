@@ -16,7 +16,7 @@ class ChunkArea {
 	friend class WorldGenerator;
 
 public:
-	const ChunkXZ coord;
+	const ChunkXZ coord, worldCoord;
 	std::unordered_map<ChunkXYZ, Chunk*> chunks;
 	ChunkArea* nearbyChunkAreas[TOTAL_NEARBY_CHUNK_AREAS];
 	

@@ -112,13 +112,14 @@ void ChunkManager::getNearbyChunkAreas(const ChunkXZ& coord, ChunkArea** nearbyC
 
 void ChunkManager::placeBlock(const LocationXYZ& loc, const BlockID& blockID) {
 	Chunk* chunk = getChunkFromLocation(loc);
+	ChunkArea* chunkArea = getChunkArea({ chunk->coord.x, chunk->coord.z });
 	LocationXYZ blockLoc = getBlockLocation(loc);
 
 	if(isLocationOutOfChunkRange(blockLoc))
 		return;
 
 	_setNearbyChunksDirty(chunk, blockLoc);
-	//_setNearbyChunksMinMax(chunk, loc.y - 1, loc.y + 1);
+	_setNearbyChunkAreasMinMax(chunkArea, loc.y - 1, loc.y + 1);
 	chunk->chunkData.set(blockLoc, blockID);
 }
 
@@ -247,12 +248,27 @@ void ChunkManager::_setNearbyChunksDirty(Chunk* chunk, const LocationXYZ& locati
 	};
 
 	chunk->isDirty = true;
-	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_LEFT],   (location.x == 0));
-	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_LEFT],   (location.y == 0));
-	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_BOTTOM], (location.z == 0));
+	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_LEFT],	(location.x == 0));
+	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_BOTTOM],  (location.y == 0));
+	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_BACK],	(location.z == 0));
 	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_RIGHT], (location.x == CHUNK_SIZE - 1));
 	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_TOP],	  (location.y == CHUNK_SIZE - 1));
 	setNearbyChunkDirty(chunk->nearbyChunks[CHUNK_FRONT], (location.z == CHUNK_SIZE - 1));
+}
+
+void ChunkManager::_setNearbyChunkAreasMinMax(ChunkArea* chunkArea, const int& min, const int& max) {
+	auto setMinMax = [&](ChunkArea* nearbyChunkArea) {
+		if(nearbyChunkArea != nullptr) {
+			nearbyChunkArea->minimumPoint = std::min(nearbyChunkArea->minimumPoint, (min < 0) ? 0 : min);
+			nearbyChunkArea->highestPoint = std::max(nearbyChunkArea->highestPoint, max);
+		}
+	};
+
+	setMinMax(chunkArea);
+	setMinMax(chunkArea->nearbyChunkAreas[CHUNK_AREA_LEFT]);
+	setMinMax(chunkArea->nearbyChunkAreas[CHUNK_AREA_BACK]);
+	setMinMax(chunkArea->nearbyChunkAreas[CHUNK_AREA_RIGHT]);
+	setMinMax(chunkArea->nearbyChunkAreas[CHUNK_AREA_FRONT]);
 }
 
 bool ChunkManager::_chunkAreaExists(const ChunkXZ& coord) {

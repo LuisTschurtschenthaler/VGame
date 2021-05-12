@@ -15,6 +15,8 @@
 #include "EventDispatcher.h"
 #include "BlockEvents.h"
 
+#include "Structure.h"
+#include "Coordinates.h"
 
 EventDispatcher Game::eventDispatcher = EventDispatcher();
 Shader* Game::basicShader = nullptr;
@@ -49,6 +51,19 @@ void Game::update() {
 		_HUDvisible = !_HUDvisible;
 	if(Input::isKeyPressedAndReleased(GLFW_KEY_F4))
 		_wireframeActive = !_wireframeActive;
+
+
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_G)) {
+		LocationXYZ playerPos = {
+			static_cast<const int32_t&>(_world->getPlayer().position.x),
+			static_cast<const int32_t&>(_world->getPlayer().position.y + 2),
+			static_cast<const int32_t&>(_world->getPlayer().position.z)
+		};
+
+		Structure structure;
+		structure.generatePyramid(playerPos);
+		structure.build();
+	}
 
 
 	_world->update();

@@ -123,7 +123,7 @@ const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 
-		return (nearbyChunks[CHUNK_TOP] == nullptr) ? BlockManager::getBlock(BlockID::ERROR) 
+		return (nearbyChunks[CHUNK_TOP] == nullptr) ? BlockManager::getBlock(BlockID::AIR)
 			: nearbyChunks[CHUNK_TOP]->_getBlock(loc.x, 0, loc.z);
 	}
 
@@ -134,7 +134,7 @@ const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 
-		return (nearbyChunks[CHUNK_BOTTOM] == nullptr) ? BlockManager::getBlock(BlockID::ERROR)
+		return (nearbyChunks[CHUNK_BOTTOM] == nullptr) ? BlockManager::getBlock(BlockID::AIR)
 			: nearbyChunks[CHUNK_BOTTOM]->_getBlock(loc.x, CHUNK_SIZE - 1, loc.z);
 	}
 
