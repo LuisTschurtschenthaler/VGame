@@ -242,5 +242,5 @@ unsigned char ChunkMesh::_vertexAO(const LocationXYZ& location, const int& face,
 		 side2 = useAmbient(1),
 		 corner = useAmbient(2);
 	
-	return (side1 && side2) ? 3 : (side1 + side2 + corner);
+	return (side1 && side2) ? 0 : (side1 + side2 + corner);
 }

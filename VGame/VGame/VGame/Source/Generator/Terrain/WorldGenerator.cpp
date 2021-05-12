@@ -5,8 +5,6 @@
 #include "ChunkArea.h"
 #include "Random.h"
 #include "Biome.h"
-#include "Structure.h"
-#include "Util.h"
 #include "Block.h"
 #include "Vein.h"
 #include "World.h"
@@ -80,8 +78,6 @@ void WorldGenerator::_generateBiomeMap() {
 }
 
 void WorldGenerator::_setBlocks() {
-	std::vector<std::pair<Biome*, LocationXYZ>> plants, trees;
-
 	int maxChunk = static_cast<int>(_chunkArea->highestPoint / CHUNK_SIZE);
 	
 	for(int c = 0; c <= (maxChunk + 1); c++) {
@@ -111,10 +107,15 @@ void WorldGenerator::_setBlocks() {
 						continue;
 					}
 
+
+					LocationXYZ loc = { x + chunk->coord.x * CHUNK_SIZE,
+										y + chunk->coord.y * CHUNK_SIZE + 1,
+										z + chunk->coord.z * CHUNK_SIZE };
+
 					if(Random::getIntInRange(0, biome->getPlantFrequency()) == 5)
-						plants.push_back(std::make_pair(biome, LocationXYZ(x, y + 1, z)));
+						_chunkArea->_plants.push_back(std::make_pair(biome, loc));
 					else if(Random::getIntInRange(0, biome->getTreeFrequency()) == 5)
-						trees.push_back(std::make_pair(biome, LocationXYZ(x, y + 1, z)));
+						_chunkArea->_trees.push_back(std::make_pair(biome, loc));
 
 					chunk->chunkData.set(x, y, z, biome->getTopBlock());
 				}
@@ -137,7 +138,7 @@ void WorldGenerator::_setBlocks() {
 			else chunk->chunkData.set(x, y, z, biome->getUnderEarth());
 		}
 
-		
+		/*
 		for(auto& plant : plants)
 			chunk->chunkData.set(plant.second, plant.first->getPlant());
 
@@ -163,7 +164,7 @@ void WorldGenerator::_setBlocks() {
 			}
 
 			structure.build();
-		}
+		}*/
 	}
 }
 

@@ -6,9 +6,14 @@
 #include <vector>
 #include "Coordinates.h"
 #include "Chunk.h"
+#include "Biome.h"
+
+class WorldGenerator;
 
 
 class ChunkArea {
+
+	friend class WorldGenerator;
 
 public:
 	const ChunkXZ coord;
@@ -18,13 +23,16 @@ public:
 	int highestPoint, minimumPoint;
 	bool chunkDataGenerated, nearbyChunksDetected;
 
+private:
+	std::vector<std::pair<Biome*, LocationXYZ>> _plants, _trees;
+
 
 public:
 	ChunkArea(const ChunkXZ& coord);
 	~ChunkArea();
 
 	void prepare();
-	void generate();
+	void setDecorations();
 	Chunk* getChunk(const int& y);
 
 private:

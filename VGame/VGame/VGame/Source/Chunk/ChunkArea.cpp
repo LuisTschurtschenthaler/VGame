@@ -2,6 +2,8 @@
 #include "World.h"
 #include "ChunkManager.h"
 #include "WorldGenerator.h"
+#include "Structure.h"
+#include "Util.h"
 
 
 ChunkArea::ChunkArea(const ChunkXZ& coord) 
@@ -25,17 +27,41 @@ void ChunkArea::prepare() {
 	}
 
 	for(auto nearbyChunkArea : nearbyChunkAreas) {
-		if(!nearbyChunkArea->chunkDataGenerated)
+		if(!nearbyChunkArea->chunkDataGenerated) {
 			World::worldGenerator->generateChunkArea(*nearbyChunkArea);
+			nearbyChunkArea->setDecorations();
+		}
 	}
 
-	if(!chunkDataGenerated)
+	if(!chunkDataGenerated) {
 		World::worldGenerator->generateChunkArea(*this);
+		setDecorations();
+	}
 }
 
-void ChunkArea::generate() {
-	for(auto it : chunks) {
-		
+void ChunkArea::setDecorations() {
+	for(auto& plant : _plants)
+		World::getChunkManager().placeBlock(plant.second, plant.first->getPlant());
+
+	for(auto& tree : _trees) {
+		Structure structure;
+		if(instanceof<Desert>(tree.first))
+			structure.generateCactus(tree.second);
+		else {
+			BlockID logBlock = AIR, leaveBlock = AIR;
+			if(instanceof<BirchForest>(tree.first)) {
+				logBlock = BlockID::BIRCH_LOG;
+				leaveBlock = BlockID::BIRCH_LEAVE;
+			}
+			else {
+				logBlock = BlockID::OAK_LOG;
+				leaveBlock = BlockID::OAK_LEAVE;
+			}
+
+			structure.generateTree(tree.second, logBlock, leaveBlock);
+		}
+
+		structure.build();
 	}
 }
 
