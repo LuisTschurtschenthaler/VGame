@@ -29,17 +29,17 @@ void ChunkArea::prepare() {
 	for(auto nearbyChunkArea : nearbyChunkAreas) {
 		if(!nearbyChunkArea->chunkDataGenerated) {
 			World::worldGenerator->generateChunkArea(*nearbyChunkArea);
-			nearbyChunkArea->setDecorations();
+			nearbyChunkArea->placeDecorations();
 		}
 	}
 
 	if(!chunkDataGenerated) {
 		World::worldGenerator->generateChunkArea(*this);
-		setDecorations();
+		placeDecorations();
 	}
 }
 
-void ChunkArea::setDecorations() {
+void ChunkArea::placeDecorations() {
 	for(auto& plant : _plants)
 		World::getChunkManager().placeBlock(plant.second, plant.first->getPlant());
 

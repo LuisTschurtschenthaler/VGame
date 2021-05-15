@@ -5,6 +5,7 @@
 #include "ChunkManager.h"
 #include "Constants.h"
 #include "BlockID.h"
+#include "ChunkArea.h"
 
 
 const std::vector<LocationXYZ> Vein::_directions = {
@@ -17,19 +18,19 @@ const std::vector<LocationXYZ> Vein::_directions = {
 };
 
 
-void Vein::generate(const ChunkXZ& worldCoord, const VeinSettings& veinSettings) {
+void Vein::generate(ChunkArea* chunkArea, const VeinSettings& veinSettings) {
 	for(int i = 0; i < veinSettings.spawnTries; i++) {
 		std::vector<LocationXYZ> vein = std::vector<LocationXYZ>();
 		int actualSize = Random::getIntInRange(veinSettings.minSize, veinSettings.maxSize);
 		
 		LocationXYZ veinLoc;
-		veinLoc.y = Random::getIntInRange(0, World::getChunkManager().getChunkArea(worldCoord)->highestPoint - 1);
+		veinLoc.y = Random::getIntInRange(0, chunkArea->highestPoint - 1);
 
 		if(veinLoc.y >= veinSettings.minHeight + actualSize 
 		   && veinLoc.y <= veinSettings.maxHeight - actualSize) {
 			
-			veinLoc.x = worldCoord.x + Random::getIntInRange(0, CHUNK_SIZE - 1);
-			veinLoc.z = worldCoord.z + Random::getIntInRange(0, CHUNK_SIZE - 1);
+			veinLoc.x = chunkArea->worldCoord.x + Random::getIntInRange(0, CHUNK_SIZE - 1);
+			veinLoc.z = chunkArea->worldCoord.z + Random::getIntInRange(0, CHUNK_SIZE - 1);
 			vein.push_back(veinLoc);
 
 			for(int i = 0; i <= actualSize; i++) {
@@ -40,8 +41,9 @@ void Vein::generate(const ChunkXZ& worldCoord, const VeinSettings& veinSettings)
 				vein.push_back(veinPos);
 			}
 
-			for(auto& blockPosition : vein)
+			for(auto& blockPosition : vein) {
 				World::getChunkManager().replaceBlock(blockPosition, BlockID::STONE, veinSettings.block);
+			}
 		}
 	}
 }

@@ -20,8 +20,6 @@ void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, co
 	int height = Random::get(4, 6);
 
 	int y = pos.y + height;
-	fillY(pos, logBlock, height - 1);
-
 	fillXZ({ pos.x - CROWN_RADIUS, y - 1, pos.z - CROWN_RADIUS },
 		   { pos.x + CROWN_RADIUS, y - 1, pos.z + CROWN_RADIUS },
 		   leaveBlock);
@@ -36,6 +34,8 @@ void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, co
 
 	clearEdges({ pos.x, y - 2, pos.z }, BUSH_RADIUS);
 	clearEdges({ pos.x, y - 1, pos.z }, CROWN_RADIUS);
+
+	fillY(pos, logBlock, height - 1);
 	_structureBlocks.emplace_back(pos.x, y, pos.z, leaveBlock);
 }
 
@@ -67,6 +67,17 @@ void Structure::generatePyramid(const LocationXYZ& pos) {
 		
 		yOffset++;
 		pyramidSize -= 2;
+	}
+}
+
+void Structure::generateSphere(const LocationXYZ& pos, const BlockID& blockID, const int& radius) {
+	for(int x = pos.x - radius; x <= pos.x + radius; x++)
+	for(int y = pos.y - radius; y <= pos.y + radius; y++)
+	for(int z = pos.z - radius; z <= pos.z + radius; z++) {
+		
+		const int tempX = pos.x - x, tempY = pos.y - y, tempZ = pos.z - z;
+		if((tempX * tempX + tempY * tempY + tempZ * tempZ) <= (radius * radius))
+			_structureBlocks.emplace_back(x, y, z, blockID);
 	}
 }
 

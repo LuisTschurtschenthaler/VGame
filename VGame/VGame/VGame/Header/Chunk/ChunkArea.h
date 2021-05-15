@@ -32,7 +32,7 @@ public:
 	~ChunkArea();
 
 	void prepare();
-	void setDecorations();
+	void placeDecorations();
 	Chunk* getChunk(const int& y);
 
 private:

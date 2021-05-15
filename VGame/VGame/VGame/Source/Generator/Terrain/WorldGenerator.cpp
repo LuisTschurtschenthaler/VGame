@@ -131,23 +131,19 @@ void WorldGenerator::_setBlocks() {
 				chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else if(actualY == 3 && Random::getIntInRange(0, 10) <= 3)
 				chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
-			else if(actualY == 4 && Random::getIntInRange(0, 10) <= 1)
-				chunk->chunkData.set(x, y, z, BlockID::BEDROCK);
 			else chunk->chunkData.set(x, y, z, biome->getUnderEarth());
 		}
 	}
 }
 
 void WorldGenerator::_generateVeins() {
-	/*
-	Vein::generate(_chunkArea->worldCoord, { BlockID::COAL_ORE,		20, 4, 12, 1, 128 });
-	Vein::generate(_chunkArea->worldCoord, { BlockID::IRON_ORE,		15, 1,  8, 1,  64 });
-	Vein::generate(_chunkArea->worldCoord, { BlockID::LAPIS_ORE,	7,  1,  6, 1,  32 });
-	Vein::generate(_chunkArea->worldCoord, { BlockID::GOLD_ORE,		9,  1,  6, 1,  32 });
-	Vein::generate(_chunkArea->worldCoord, { BlockID::DIAMOND_ORE,	9,  1,  8, 1,  16 });
-	Vein::generate(_chunkArea->worldCoord, { BlockID::EMERALD_ORE,	2,  1,  2, 4,  32 });
+	Vein::generate(_chunkArea, { BlockID::COAL_ORE,		20, 4, 12, 1, 128 });
+	Vein::generate(_chunkArea, { BlockID::IRON_ORE,		15, 1,  8, 1,  64 });
+	Vein::generate(_chunkArea, { BlockID::LAPIS_ORE,	7,  1,  6, 1,  32 });
+	Vein::generate(_chunkArea, { BlockID::GOLD_ORE,		9,  1,  6, 1,  32 });
+	Vein::generate(_chunkArea, { BlockID::DIAMOND_ORE,	9,  1,  8, 1,  16 });
+	Vein::generate(_chunkArea, { BlockID::EMERALD_ORE,	2,  1,  2, 4,  32 });
 						 
-	Vein::generate(_chunkArea->worldCoord, { BlockID::DIRT,			5, 10, 32, 0, 255 });
-	Vein::generate(_chunkArea->worldCoord, { BlockID::GRAVEL,		3, 10, 32, 0, 255 });
-	*/
+	Vein::generate(_chunkArea, { BlockID::DIRT,			5, 10, 32, 0, 255 });
+	Vein::generate(_chunkArea, { BlockID::GRAVEL,		3, 10, 32, 0, 255 });
 }

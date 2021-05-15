@@ -33,7 +33,8 @@ public:
 	void generateCactus(const LocationXYZ& pos);
 
 	void generatePyramid(const LocationXYZ& pos);
-
+	void generateSphere(const LocationXYZ& pos, const BlockID& blockID, const int& radius);
+	
 	void fillXZ(const LocationXYZ& start, const LocationXYZ& end, const BlockID& blockID);
 	void fillY(const LocationXYZ& start, const BlockID& blockID, const int& height);
 	void clearEdges(const LocationXYZ& pos, const int& distance);

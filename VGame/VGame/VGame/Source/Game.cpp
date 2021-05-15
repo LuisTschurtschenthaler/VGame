@@ -52,18 +52,25 @@ void Game::update() {
 	if(Input::isKeyPressedAndReleased(GLFW_KEY_F4))
 		_wireframeActive = !_wireframeActive;
 
+	/* TEMPORARY */
+	LocationXYZ playerPos = {
+		static_cast<const int32_t&>(_world->getPlayer().position.x),
+		static_cast<const int32_t&>(_world->getPlayer().position.y + 2),
+		static_cast<const int32_t&>(_world->getPlayer().position.z)
+	};
 
 	if(Input::isKeyPressedAndReleased(GLFW_KEY_G)) {
-		LocationXYZ playerPos = {
-			static_cast<const int32_t&>(_world->getPlayer().position.x),
-			static_cast<const int32_t&>(_world->getPlayer().position.y + 2),
-			static_cast<const int32_t&>(_world->getPlayer().position.z)
-		};
-
 		Structure structure;
 		structure.generatePyramid(playerPos);
 		structure.build();
 	}
+	if(Input::isKeyPressedAndReleased(GLFW_KEY_M)) {
+		Structure structure;
+		structure.generateSphere(playerPos, BlockID::AIR, 50);
+		structure.build();
+	}
+
+	/* TEMPORARY */
 
 
 	_world->update();
