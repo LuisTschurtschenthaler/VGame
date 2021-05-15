@@ -7,8 +7,8 @@
 #include "Util.h"
 
 
-Chunk::Chunk(const ChunkXZ& coord)
-	: coord(coord), worldCoord(coord.x * CHUNK_SIZE, coord.z * CHUNK_SIZE) {
+Chunk::Chunk(const ChunkXYZ& coord)
+	: coord(coord), worldCoord(coord.x * CHUNK_SIZE, coord.y * CHUNK_SIZE, coord.z * CHUNK_SIZE) {
 
 
 	_solid = new ChunkMesh(this);
@@ -18,13 +18,8 @@ Chunk::Chunk(const ChunkXZ& coord)
 	_aabb->update(worldCoord);
 
 	chunkData.fill(BlockID::AIR);
-	chunkDataGenerated = false;
 	meshesGenerated = false;
-	nearbyChunksDetected = false;
 	isDirty = false;
-
-	minimumPoint = CHUNK_HEIGHT;
-	highestPoint = WATER_LEVEL + 1;
 }
 
 Chunk::~Chunk() {
@@ -49,21 +44,10 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
 	ChunkMesh* solidMesh = (solid == nullptr) ? this->_solid : solid;
 	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->_fluid : fluid;
 
-	if(!nearbyChunksDetected) {
-		World::getChunkManager().getNearbyChunks(coord, nearbyChunks);
-		nearbyChunksDetected = true;
-	}
-	
-	for(auto& chunk : nearbyChunks) {
-		if(!chunk->chunkDataGenerated)
-			World::worldGenerator->generateChunk(*chunk);
-	}
-	
 	//std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	for(int x = 0; x < CHUNK_SIZE; x++)
-	for(int z = 0; z < CHUNK_SIZE; z++)
-	for(int y = minimumPoint; y < highestPoint; y++) {
-		
+	for(int y = 0; y < CHUNK_SIZE; y++)
+	for(int z = 0; z < CHUNK_SIZE; z++) {
 		const BlockID& chunkBlock = chunkData.get(x, y, z);
 		if(chunkBlock == BlockID::AIR)
 			continue;
@@ -115,7 +99,7 @@ void Chunk::recreateChunkMesh() {
 const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	// Right -> X+
 	if(loc.x >= CHUNK_SIZE
-	   && loc.y < CHUNK_HEIGHT
+	   && loc.y < CHUNK_SIZE
 	   && loc.y >= 0
 	   && loc.z < CHUNK_SIZE
 	   && loc.z >= 0) {
@@ -125,7 +109,7 @@ const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 
 	// Left -> X-
 	else if(loc.x < 0
-			&& loc.y < CHUNK_HEIGHT
+			&& loc.y < CHUNK_SIZE
 			&& loc.y >= 0
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
@@ -136,11 +120,12 @@ const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	// Top -> Y+
 	else if(loc.x < CHUNK_SIZE
 			&& loc.x >= 0
-			&& loc.y >= CHUNK_HEIGHT
+			&& loc.y >= CHUNK_SIZE
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
-		
-		return BlockManager::getBlock(BlockID::ERROR);
+
+		return (nearbyChunks[CHUNK_TOP] == nullptr) ? BlockManager::getBlock(BlockID::AIR)
+			: nearbyChunks[CHUNK_TOP]->_getBlock(loc.x, 0, loc.z);
 	}
 
 	// Bottom -> Y- 
@@ -150,13 +135,14 @@ const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 			&& loc.z < CHUNK_SIZE
 			&& loc.z >= 0) {
 
-		return BlockManager::getBlock(BlockID::ERROR);
+		return (nearbyChunks[CHUNK_BOTTOM] == nullptr) ? BlockManager::getBlock(BlockID::AIR)
+			: nearbyChunks[CHUNK_BOTTOM]->_getBlock(loc.x, CHUNK_SIZE - 1, loc.z);
 	}
 
 	// Front -> Z+
 	else if(loc.x < CHUNK_SIZE
 			&& loc.x >= 0 
-			&& loc.y < CHUNK_HEIGHT
+			&& loc.y < CHUNK_SIZE
 			&& loc.y >= 0
 			&& loc.z >= CHUNK_SIZE) {
 
@@ -166,7 +152,7 @@ const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	// Back -> Z-
 	else if(loc.x < CHUNK_SIZE
 			&& loc.x >= 0
-			&& loc.y < CHUNK_HEIGHT
+			&& loc.y < CHUNK_SIZE
 			&& loc.y >= 0
 			&& loc.z < 0) {
 
@@ -174,7 +160,7 @@ const Block& Chunk::getBlockRelative(const LocationXYZ& loc) const {
 	}
 
 	else if(ChunkManager::isLocationOutOfChunkRange(loc)) {
-		Chunk* chunk = World::getChunkManager().getChunk({ loc.x / CHUNK_SIZE, loc.z / CHUNK_SIZE });
+		Chunk* chunk = World::getChunkManager().getChunk({ loc.x / CHUNK_SIZE, loc.y / CHUNK_SIZE, loc.z / CHUNK_SIZE });
 		return chunk->_getBlock(World::getChunkManager().getBlockLocation(loc));
 	}
 

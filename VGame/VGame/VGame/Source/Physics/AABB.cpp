@@ -24,8 +24,8 @@ void AABB::update(const glm::vec3& pos) {
 	max = min + dimensions;
 }
 
-void AABB::update(const ChunkXZ& pos) {
-	min = glm::vec3(pos.x, 0, pos.z);
+void AABB::update(const ChunkXYZ& pos) {
+	min = glm::vec3(pos.x, pos.y, pos.z);
 	max = min + dimensions;
 }
 

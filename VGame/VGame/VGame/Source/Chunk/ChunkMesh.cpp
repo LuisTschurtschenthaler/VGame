@@ -237,7 +237,9 @@ unsigned char ChunkMesh::_getVertexAO(const bool& corner, const bool& side1, con
 unsigned char ChunkMesh::_vertexAO(const LocationXYZ& location, const int& face, const int& vertex) {
 	auto useAmbient = [&](const int& adj) {
 		LocationXYZ loc = _AO_ADJACENTS[_AO[face][vertex].adjacents[adj]];
-		LocationXYZ worldLoc = LocationXYZ(_chunk->worldCoord.x, 0, _chunk->worldCoord.z) + location + loc;
+		LocationXYZ worldLoc = LocationXYZ(_chunk->worldCoord.x, _chunk->worldCoord.y, _chunk->worldCoord.z) 
+			+ location + loc;
+    
 		return BlockManager::getBlock(World::getChunkManager().getBlockID(worldLoc)).useAmbient;
 	};
 

@@ -5,7 +5,7 @@
 #include "Coordinates.h"
 #include "BlockID.h"
 
-class Chunk;
+class ChunkArea;
 
 
 struct VeinSettings {
@@ -23,7 +23,7 @@ private:
 
 
 public:
-	static void generate(const ChunkXZ& worldCoord, const VeinSettings& veinSettings);
+	static void generate(ChunkArea* chunkArea, const VeinSettings& veinSettings);
 
 };
 

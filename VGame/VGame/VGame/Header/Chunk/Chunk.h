@@ -20,12 +20,11 @@ class WorldGeneration;
 class Chunk {
 
 public:
-	const ChunkXZ coord, worldCoord;
+	const ChunkXYZ coord, worldCoord;
 	Chunk* nearbyChunks[TOTAL_NEARBY_CHUNKS];
 
-	Array3D<BlockID, CHUNK_SIZE, CHUNK_HEIGHT, CHUNK_SIZE> chunkData;
-	bool chunkDataGenerated, meshesGenerated, nearbyChunksDetected, isDirty;
-	uint8_t highestPoint, minimumPoint;
+	Array3D<BlockID, CHUNK_SIZE, CHUNK_SIZE, CHUNK_SIZE> chunkData;
+	bool meshesGenerated, nearbyChunksDetected, isDirty;
 
 private:
 	ChunkMesh* _solid, *_fluid;
@@ -33,7 +32,7 @@ private:
 
 
 public:
-	Chunk(const ChunkXZ& coord);
+	Chunk(const ChunkXYZ& coord);
 	~Chunk();
 
 	void drawSolid() const;

@@ -12,18 +12,14 @@ const int Structure::BUSH_RADIUS = 2;
 
 
 void Structure::build() {
-	for(auto& structureBlock : _structureBlocks) {
-		if(World::getChunkManager().getBlockID(structureBlock.position) == BlockID::AIR)
-			World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
-	}
+	for(auto& structureBlock : _structureBlocks)
+		World::getChunkManager().placeBlock(structureBlock.position, structureBlock.block);
 }
 
 void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, const BlockID& leaveBlock) {
 	int height = Random::get(4, 6);
 
 	int y = pos.y + height;
-	fillY(pos, logBlock, height - 1);
-
 	fillXZ({ pos.x - CROWN_RADIUS, y - 1, pos.z - CROWN_RADIUS },
 		   { pos.x + CROWN_RADIUS, y - 1, pos.z + CROWN_RADIUS },
 		   leaveBlock);
@@ -38,6 +34,8 @@ void Structure::generateTree(const LocationXYZ& pos, const BlockID& logBlock, co
 
 	clearEdges({ pos.x, y - 2, pos.z }, BUSH_RADIUS);
 	clearEdges({ pos.x, y - 1, pos.z }, CROWN_RADIUS);
+
+	fillY(pos, logBlock, height - 1);
 	_structureBlocks.emplace_back(pos.x, y, pos.z, leaveBlock);
 }
 
@@ -54,6 +52,33 @@ void Structure::generateCactus(const LocationXYZ& pos) {
 			return;
 	}
 	fillY({ pos.x, pos.y, pos.z }, BlockID::CACTUS, Random::get(2, 3));
+}
+
+
+void Structure::generatePyramid(const LocationXYZ& pos) {
+	int pyramidSize = 25;
+	int yOffset = 1;
+
+	while(pyramidSize >= 0) {
+		int pyramidHalfSize = pyramidSize / 2;
+		LocationXYZ start	= { pos.x - pyramidHalfSize, pos.y + yOffset, pos.z - pyramidHalfSize };
+		LocationXYZ end		= { pos.x + pyramidHalfSize, pos.y + yOffset, pos.z + pyramidHalfSize };
+		fillXZ(start, end, BlockID::SMIRK);
+		
+		yOffset++;
+		pyramidSize -= 2;
+	}
+}
+
+void Structure::generateSphere(const LocationXYZ& pos, const BlockID& blockID, const int& radius) {
+	for(int x = pos.x - radius; x <= pos.x + radius; x++)
+	for(int y = pos.y - radius; y <= pos.y + radius; y++)
+	for(int z = pos.z - radius; z <= pos.z + radius; z++) {
+		
+		const int tempX = pos.x - x, tempY = pos.y - y, tempZ = pos.z - z;
+		if((tempX * tempX + tempY * tempY + tempZ * tempZ) <= (radius * radius))
+			_structureBlocks.emplace_back(x, y, z, blockID);
+	}
 }
 
 
