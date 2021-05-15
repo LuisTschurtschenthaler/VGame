@@ -52,8 +52,6 @@ const Block BlockManager::_blocks[BlockID::TOTAL_BLOCKS] = {
 	Block { "Andesite",				57, {  57,  57,  57,  57,  57,  57 }, SOLID,  0.f, false, true, false, true },
 	Block { "Granite",				58, {  58,  58,  58,  58,  58,  58 }, SOLID,  0.f, false, true, false, true },
 	Block { "Magma",				59, {  59,  59,  59,  59,  59,  59 }, SOLID, 15.f, false, true, false, true },
-	Block { "Villager",				60, {  60,  60,  60,  60,  60,  60 }, SOLID,  0.f, false, true, false, true },
-	Block { "Bookshelf",			61, {  61,  61,  39,  39,  61,  61 }, SOLID,  0.f, false, true, false, true },
 	
 	Block { "Error",			   255, { 255, 255, 255, 255, 255, 255 }, SOLID,  0.f, false, true, false, true }
 };
