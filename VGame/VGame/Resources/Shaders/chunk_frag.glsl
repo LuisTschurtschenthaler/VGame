@@ -31,6 +31,6 @@ void main() {
 	if(textureColor.a <= 0.f || fogFactor >= 1.f) discard;
 
 	vec3 result = textureColor.rgb * vs_lightLevel;
-	result = mix(result, vec3(0.05f), vs_ao * 0.3f * distance(vs_texCoord, vec2(0.5f)));
+	result = mix(result, vec3(0.05f), vs_ao * 0.35f * distance(vs_texCoord, vec2(0.5f)));
 	color = (vec4(result, (textureColor.a - fogFactor)));
 }

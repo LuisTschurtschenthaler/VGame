@@ -126,7 +126,7 @@ void Player::_handleMouseMove() {
 }
 
 void Player::_handleMouseInputs() {
-	// Handle mouse wheel
+	/* Handle mouse wheel */
 	int mouseWheelScroll = Input::getMouseScroll(ScrollType::VERTICAL);
 	if(mouseWheelScroll != 0) {
 		_selectedBlock += mouseWheelScroll;
@@ -138,14 +138,14 @@ void Player::_handleMouseInputs() {
 		std::cout << BlockManager::getBlock(_selectedBlock).name << std::endl;
 	}
 
-	// Select block
+	/* Select block */
 	if(Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_MIDDLE)) {
 		LocationXYZ blockLocation = Raycast::getBlockToBreak().blockToBreak;
 		_selectedBlock = World::getChunkManager().getBlockID(blockLocation);
 	}
 
 
-	// Break block
+	/* Break block */
 	if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_LEFT)
 	   || (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
 
@@ -153,7 +153,7 @@ void Player::_handleMouseInputs() {
 		Game::eventDispatcher.dispatchEvent(BLOCK_BREAK_EVENT, blockBreakLocation);
 		_mouseTimer->update();
 	}
-	// Place block
+	/* Place block */
 	else if(Input::isMouseButtonPressedAndReleased(GLFW_MOUSE_BUTTON_RIGHT)
 		|| (Input::isMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT) && _mouseTimer->elapse() >= BLOCK_BREAK_DURATION)) {
 

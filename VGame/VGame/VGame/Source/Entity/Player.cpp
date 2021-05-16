@@ -22,7 +22,7 @@ Player::Player()
 	velocity = glm::vec3(0.f);
 
 	_mouseTimer = new Timer();
-	_selectedBlock = BlockID::MAGMA;
+	_selectedBlock = BlockID::BOOKSHELF;
 	_jump = 0;
 }
 

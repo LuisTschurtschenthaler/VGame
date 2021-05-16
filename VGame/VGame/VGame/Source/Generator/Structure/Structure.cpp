@@ -63,7 +63,11 @@ void Structure::generatePyramid(const LocationXYZ& pos) {
 		int pyramidHalfSize = pyramidSize / 2;
 		LocationXYZ start	= { pos.x - pyramidHalfSize, pos.y + yOffset, pos.z - pyramidHalfSize };
 		LocationXYZ end		= { pos.x + pyramidHalfSize, pos.y + yOffset, pos.z + pyramidHalfSize };
-		fillXZ(start, end, BlockID::SMIRK);
+		
+		for(int x = start.x; x <= end.x; x++)
+		for(int z = start.z; z <= end.z; z++)
+			if(x == start.x || x == end.x || z == start.z || z == end.z)
+				_structureBlocks.emplace_back(x, start.y, z, BlockID::SMIRK);
 		
 		yOffset++;
 		pyramidSize -= 2;

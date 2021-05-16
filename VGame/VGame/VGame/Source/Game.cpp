@@ -69,7 +69,6 @@ void Game::update() {
 		structure.generateSphere(playerPos, BlockID::AIR, 50);
 		structure.build();
 	}
-
 	/* TEMPORARY */
 
 

@@ -34,7 +34,7 @@ constexpr auto MAX_BLOCK_REACH_DISTANCE = 5;
 constexpr auto FOV = 110.f;
 constexpr auto FOV_SPRINT = (FOV + 15.f);
 constexpr auto FOV_SPRINT_STEPS = 2.5f;
-constexpr auto FOV_ZOOM = 45.f;
+constexpr auto FOV_ZOOM = 40.f;
 constexpr auto NEAR_PLANE = 0.01f;
 constexpr auto FAR_PLANE = 2000.f;
 
