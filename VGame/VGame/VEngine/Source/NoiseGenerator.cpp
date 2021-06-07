@@ -11,7 +11,7 @@ NoiseGenerator::NoiseGenerator(const int& seed)
 	_settings.amplitude = 160;
 	_settings.smoothness = 1050;
 	_settings.offset = 0;
-	_settings.roughness = 0.55f;
+	_settings.roughness = 0.45f;
 }
 
 NoiseGenerator::~NoiseGenerator() {

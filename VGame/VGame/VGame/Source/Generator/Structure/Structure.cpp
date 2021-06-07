@@ -55,9 +55,9 @@ void Structure::generateCactus(const LocationXYZ& pos) {
 }
 
 
-void Structure::generatePyramid(const LocationXYZ& pos) {
-	int pyramidSize = 25;
-	int yOffset = 1;
+void Structure::generatePyramid(const LocationXYZ& pos, const int& size, const bool isHollow) {
+	int pyramidSize = size,
+		yOffset = 1;
 
 	while(pyramidSize >= 0) {
 		int pyramidHalfSize = pyramidSize / 2;
@@ -66,7 +66,7 @@ void Structure::generatePyramid(const LocationXYZ& pos) {
 		
 		for(int x = start.x; x <= end.x; x++)
 		for(int z = start.z; z <= end.z; z++)
-			if(x == start.x || x == end.x || z == start.z || z == end.z)
+			if(!isHollow || x == start.x || x == end.x || z == start.z || z == end.z)
 				_structureBlocks.emplace_back(x, start.y, z, BlockID::SMIRK);
 		
 		yOffset++;
@@ -74,13 +74,17 @@ void Structure::generatePyramid(const LocationXYZ& pos) {
 	}
 }
 
-void Structure::generateSphere(const LocationXYZ& pos, const BlockID& blockID, const int& radius) {
-	for(int x = pos.x - radius; x <= pos.x + radius; x++)
-	for(int y = pos.y - radius; y <= pos.y + radius; y++)
-	for(int z = pos.z - radius; z <= pos.z + radius; z++) {
-		
+void Structure::generateSphere(const LocationXYZ& pos, const BlockID& blockID, const int& diameter, const bool isHollow) {
+	const int radius = std::floor(diameter/2);
+	LocationXYZ start	= { pos.x - radius, pos.y - radius, pos.z - radius };
+	LocationXYZ end		= { pos.x + radius, pos.y + radius, pos.z + radius };
+
+	for(int x = start.x; x <= end.x; x++)
+	for(int y = start.y; y <= end.y; y++)
+	for(int z = start.z; z <= end.z; z++) {
 		const int tempX = pos.x - x, tempY = pos.y - y, tempZ = pos.z - z;
-		if((tempX * tempX + tempY * tempY + tempZ * tempZ) <= (radius * radius))
+		
+		if(std::sqrt(tempX*tempX + tempY*tempY + tempZ*tempZ) <= radius - 0.5f)
 			_structureBlocks.emplace_back(x, y, z, blockID);
 	}
 }

@@ -26,7 +26,7 @@ private:
 	SnowForest* _snowForest;
 
 	Array2D<float, CHUNK_SIZE, CHUNK_SIZE> _heightMap;
-	Array2D<Biome*, CHUNK_SIZE + 1, CHUNK_SIZE + 1> _biomeMap;
+	Array2D<Biome*, CHUNK_SIZE, CHUNK_SIZE> _biomeMap;
 
 
 public:

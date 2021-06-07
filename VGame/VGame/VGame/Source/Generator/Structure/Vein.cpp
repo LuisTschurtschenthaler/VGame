@@ -41,9 +41,9 @@ void Vein::generate(ChunkArea* chunkArea, const VeinSettings& veinSettings) {
 				vein.push_back(veinPos);
 			}
 
-			for(auto& blockPosition : vein) {
+			for(auto& blockPosition : vein)
+				if(blockPosition.y < chunkArea->highestPoint)
 				World::getChunkManager().replaceBlock(blockPosition, BlockID::STONE, veinSettings.block);
-			}
 		}
 	}
 }

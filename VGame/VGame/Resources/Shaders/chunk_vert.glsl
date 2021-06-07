@@ -78,17 +78,15 @@ void main() {
 	float x = float(vertex[0] & 0xFF);
 	float y = float((vertex[0] & 0xFF00) >> 8);
 	float z = float((vertex[0] & 0xFF0000) >> 16);
-	
-	float lightLevel = float((vertex[0] & 0x0F000000) >> 24) / 5.f;
+	float lightLevel = float((vertex[0] & 0x0F000000) >> 24);
 	
 	uint textureID	   = uint(vertex[1] & 0xFF);
     uint textureCoords = uint((vertex[1] & 0xFF00) >> 8);
 	uint normalIndex   = uint((vertex[1] & 0xFF0000) >> 16);
-	
 	float ao		   = float((vertex[1] & 0xFF000000) >> 24);
 	
 	vs_texCoord = getTextureCoordinates(textureCoords, textureID);
-	vs_lightLevel = lightLevel;
+	vs_lightLevel = lightLevel / 5.f;
 	vs_ao = ao;
 
 	vec3 vertexOffset = getVertexOffset(textureID, NORMALS[normalIndex]);

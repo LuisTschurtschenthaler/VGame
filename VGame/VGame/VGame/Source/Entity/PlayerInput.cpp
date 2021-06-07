@@ -29,7 +29,7 @@ void Player::_handleKeyboardInputs() {
 	}
 
 	float gravity = 0.5f * CoreEngine::gameTimer->getDeltaTime();
-	float movementSpeed = ((isFlying) ? FLY_SPEED : WALK_SPEED) * CoreEngine::gameTimer->getDeltaTime();
+	float movementSpeed = ((isFlying) ? 4 : WALK_SPEED) * CoreEngine::gameTimer->getDeltaTime();
 
 	if(Input::isKeyPressed(GLFW_KEY_LEFT_CONTROL)) movementSpeed *= 1.25f;
 	if(isSwimming) movementSpeed /= 1.25f;

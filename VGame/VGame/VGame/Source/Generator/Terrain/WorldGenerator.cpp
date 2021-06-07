@@ -24,7 +24,7 @@ WorldGenerator::WorldGenerator() {
 	_biomeNoise = new NoiseGenerator(Random::get(100, 9999));
 
 	_heightMap = Array2D<float, CHUNK_SIZE, CHUNK_SIZE>();
-	_biomeMap = Array2D<Biome*, CHUNK_SIZE + 1, CHUNK_SIZE + 1>();
+	_biomeMap = Array2D<Biome*, CHUNK_SIZE, CHUNK_SIZE>();
 }
 
 WorldGenerator::~WorldGenerator() {
@@ -53,9 +53,10 @@ Biome* WorldGenerator::getBiomeAt(const int& x, const int& z, const ChunkXZ& coo
 }
 
 Biome* WorldGenerator::getBiomeType(const float& value) {
-	if(value > 140) return _grassland;
-	else if(value > 130) return _forest;
-	else if(value > 120) return _birchForest;
+	if(value > 150) return _snowForest;
+	else if(value > 140) return _forest;
+	else if(value > 130) return _birchForest;
+	else if(value > 120) return _grassland;
 	else return _desert;
 }
 
@@ -71,8 +72,8 @@ void WorldGenerator::_generateHeightMap() {
 }
 
 void WorldGenerator::_generateBiomeMap() {
-	for(int x = 0; x < CHUNK_SIZE + 1; x++)
-	for(int z = 0; z < CHUNK_SIZE + 1; z++)
+	for(int x = 0; x < CHUNK_SIZE; x++)
+	for(int z = 0; z < CHUNK_SIZE; z++)
 		_biomeMap.set(x, z, getBiomeType(_biomeNoise->getNoise(x, z, _chunkArea->coord.x, _chunkArea->coord.z)));
 }
 
@@ -82,8 +83,8 @@ void WorldGenerator::_setBlocks() {
 	for(int c = 0; c <= (maxChunk + 1); c++) {
 		Chunk* chunk = _chunkArea->getChunk(c);
 
-		for(int y = 0; y < CHUNK_SIZE; y++)
 		for(int x = 0; x < CHUNK_SIZE; x++)
+		for(int y = 0; y < CHUNK_SIZE; y++)
 		for(int z = 0; z < CHUNK_SIZE; z++) {
 			Biome* biome = _biomeMap.get(x, z);
 			int height = _heightMap.get(x, z);
@@ -137,13 +138,13 @@ void WorldGenerator::_setBlocks() {
 }
 
 void WorldGenerator::_generateVeins() {
-	Vein::generate(_chunkArea, { BlockID::COAL_ORE,		20, 4, 12, 1, 128 });
-	Vein::generate(_chunkArea, { BlockID::IRON_ORE,		15, 1,  8, 1,  64 });
-	Vein::generate(_chunkArea, { BlockID::LAPIS_ORE,	7,  1,  6, 1,  32 });
-	Vein::generate(_chunkArea, { BlockID::GOLD_ORE,		9,  1,  6, 1,  32 });
-	Vein::generate(_chunkArea, { BlockID::DIAMOND_ORE,	9,  1,  8, 1,  16 });
-	Vein::generate(_chunkArea, { BlockID::EMERALD_ORE,	2,  1,  2, 4,  32 });
-						 
-	Vein::generate(_chunkArea, { BlockID::DIRT,			5, 10, 32, 0, 255 });
-	Vein::generate(_chunkArea, { BlockID::GRAVEL,		3, 10, 32, 0, 255 });
+	Vein::generate(_chunkArea, { BlockID::COAL_ORE,		20,    4, 17,   0, 128 });
+	Vein::generate(_chunkArea, { BlockID::IRON_ORE,		20,    2,  9,   0,  64 });
+	Vein::generate(_chunkArea, { BlockID::GOLD_ORE,		 2,    2,  9,   0,  32 });
+	Vein::generate(_chunkArea, { BlockID::LAPIS_ORE,	 2,    2,  7,   0,  32 });
+	Vein::generate(_chunkArea, { BlockID::EMERALD_ORE,	 1,    1,  2,   8,  32 });
+	Vein::generate(_chunkArea, { BlockID::DIAMOND_ORE,   2,    2,  8,   0,  16 });
+															   		 
+	Vein::generate(_chunkArea, { BlockID::DIRT,			10,   10, 33,   0, 256 });
+	Vein::generate(_chunkArea, { BlockID::GRAVEL,		 8,   10, 33,   0, 256 });
 }

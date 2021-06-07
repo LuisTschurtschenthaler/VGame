@@ -140,9 +140,6 @@
     <ClInclude Include="VEngine\Header\CoreEngine.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="VEngine\Header\Window.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="VEngine\Header\RenderUtil.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
@@ -288,6 +285,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="VGame\Header\Chunk\ChunkArea.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="VEngine\Header\Window.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

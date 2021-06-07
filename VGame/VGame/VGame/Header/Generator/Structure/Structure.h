@@ -32,8 +32,8 @@ public:
 	void generateTree(const LocationXYZ& pos, const BlockID& logBlock, const BlockID& leaveBlock);
 	void generateCactus(const LocationXYZ& pos);
 
-	void generatePyramid(const LocationXYZ& pos);
-	void generateSphere(const LocationXYZ& pos, const BlockID& blockID, const int& radius);
+	void generatePyramid(const LocationXYZ& pos, const int& size, const bool isHollow = false);
+	void generateSphere(const LocationXYZ& pos, const BlockID& blockID, const int& diameter, const bool isHollow = false);
 	
 	void fillXZ(const LocationXYZ& start, const LocationXYZ& end, const BlockID& blockID);
 	void fillY(const LocationXYZ& start, const BlockID& blockID, const int& height);

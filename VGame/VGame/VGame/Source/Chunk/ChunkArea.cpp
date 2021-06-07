@@ -65,15 +65,21 @@ void ChunkArea::placeDecorations() {
 }
 
 Chunk* ChunkArea::getChunk(const int& y) {
-	ChunkXYZ chunkCoord = { coord.x, y, coord.z };
-	if(!_chunkExists(chunkCoord)) {
-		chunks.emplace(chunkCoord, new Chunk(chunkCoord));
+	const ChunkXYZ chunkCoord = { coord.x, y, coord.z };
+
+	try {
+		if(chunks.find(chunkCoord) == chunks.end()) {
+			std::lock_guard<std::mutex> lock(chunkMutex);
+			chunks.emplace(chunkCoord, new Chunk(chunkCoord));
+		}
 	}
+	catch(const std::exception& e) { return nullptr; }
 
 	return chunks[chunkCoord];
 }
 
 
 bool ChunkArea::_chunkExists(const ChunkXYZ& coord) {
+	std::lock_guard<std::mutex> lock(chunkMutex);
 	return (chunks.find(coord) != chunks.end());
 }

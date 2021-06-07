@@ -56,13 +56,15 @@ void ChunkManager::draw() {
 	_textureAtlas->getTexture().bind();
 
 	for(auto& chunk : sortedChunks) {
-		_chunkShader->setVec3("chunkWorldCoord", glm::vec3(chunk->worldCoord.x, chunk->worldCoord.y, chunk->worldCoord.z));
+		glm::vec3 worldCoord = glm::vec3(chunk->worldCoord.x, chunk->worldCoord.y, chunk->worldCoord.z);
+		_chunkShader->setVec3("chunkWorldCoord", worldCoord);
 		chunk->drawSolid();
 	}
 
 	glDisable(GL_CULL_FACE);
 	for(auto& chunk : sortedChunks) {
-		_chunkShader->setVec3("chunkWorldCoord", glm::vec3(chunk->worldCoord.x, chunk->worldCoord.y, chunk->worldCoord.z));
+		glm::vec3 worldCoord = glm::vec3(chunk->worldCoord.x, chunk->worldCoord.y, chunk->worldCoord.z);
+		_chunkShader->setVec3("chunkWorldCoord", worldCoord);
 		chunk->drawFluid();
 	}
 
@@ -298,7 +300,6 @@ void ChunkManager::_generateChunks() {
 
 				if(!it.second->meshesGenerated)
 					it.second->generateChunkMesh();
-
 				else if(it.second->isDirty)
 					it.second->recreateChunkMesh();
 			}

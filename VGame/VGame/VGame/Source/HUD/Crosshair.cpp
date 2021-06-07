@@ -23,11 +23,11 @@ void Crosshair::draw() {
 	glLoadIdentity();
 
 	glLineWidth(4.f);
-
 	if(Game::debugMode)
 		_drawDebugLines(halfWindowWidth, halfWindowHeight);
 	else _drawLines(halfWindowWidth, halfWindowHeight);
 
+	glLineWidth(1.f);
 	glPopMatrix();
 }
 

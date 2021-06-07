@@ -46,7 +46,6 @@ void Player::update() {
 	velocity.x *= drag;
 	velocity.z *= drag;
 
-
 	auto doCollision = [&](const glm::vec3& velocity) {
 		position += velocity;
 		AABB::handleCollision(*this, velocity);

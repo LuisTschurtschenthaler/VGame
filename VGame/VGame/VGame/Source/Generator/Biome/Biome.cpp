@@ -12,7 +12,7 @@ Biome::Biome(const int& treeFrequency, const int& plantFrequency, const int& see
 	settings.octaves = 11;
 	settings.amplitude = 75;
 	settings.smoothness = 150;
-	settings.offset = 25;
+	settings.offset = 15;
 	settings.roughness = 0.45f;
 	_noise->setNoiseSettings(settings);
 }
