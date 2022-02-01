@@ -44,7 +44,7 @@ void WorldGenerator::generateChunkArea(ChunkArea& chunkArea) {
 	_generateHeightMap();
 	_setBlocks();
 	// Caves
-	_generateVeins();
+	//_generateVeins();
 	_chunkArea->chunkDataGenerated = true;
 }
 

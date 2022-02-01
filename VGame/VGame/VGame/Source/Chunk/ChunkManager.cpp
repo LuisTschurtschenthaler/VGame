@@ -274,7 +274,6 @@ void ChunkManager::_setNearbyChunkAreasMinMax(ChunkArea* chunkArea, const int& m
 }
 
 bool ChunkManager::_chunkAreaExists(const ChunkXZ& coord) {
-	std::lock_guard<std::mutex> lock(chunkAreaMutex);
 	return (_chunkAreas.find(coord) != _chunkAreas.end());
 }
 

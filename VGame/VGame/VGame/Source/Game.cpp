@@ -32,7 +32,7 @@ Game::Game()
 	_world = new World();
 
 	_textRenderer = new TextRenderer();
-	_textRenderer->init("./Resources/Fonts/font.ttf", 42);
+	_textRenderer->init("./resources/fonts/font.ttf", 42);
 
 	EventDispatcher::registerEvents(eventDispatcher);
 }

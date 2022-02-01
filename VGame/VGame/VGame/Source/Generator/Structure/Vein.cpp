@@ -26,8 +26,8 @@ void Vein::generate(ChunkArea* chunkArea, const VeinSettings& veinSettings) {
 		LocationXYZ veinLoc;
 		veinLoc.y = Random::getIntInRange(0, chunkArea->highestPoint - 1);
 
-		if(veinLoc.y >= veinSettings.minHeight + actualSize 
-		   && veinLoc.y <= veinSettings.maxHeight - actualSize) {
+		if(veinLoc.y >= veinSettings.minHeight 
+		   && veinLoc.y <= veinSettings.maxHeight) {
 			
 			veinLoc.x = chunkArea->worldCoord.x + Random::getIntInRange(0, CHUNK_SIZE - 1);
 			veinLoc.z = chunkArea->worldCoord.z + Random::getIntInRange(0, CHUNK_SIZE - 1);

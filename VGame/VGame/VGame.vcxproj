@@ -22,7 +22,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{C6E88EB0-88DA-4430-B324-5914F2972A99}</ProjectGuid>
     <RootNamespace>VGame</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -78,12 +78,12 @@
     <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)</OutDir>
-    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)</OutDir>
-    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration) $(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration) $(Platform)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -116,14 +116,17 @@
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)VGame\VEngine\source\;$(SolutionDir)VGame\VEngine\source\event\;$(SolutionDir)VGame\VGame\;$(SolutionDir)VGame\VGame\source\;$(SolutionDir)VGame\VGame\source\block\;$(SolutionDir)VGame\VGame\source\chunk\;$(SolutionDir)VGame\VGame\source\entity\;$(SolutionDir)VGame\VGame\source\enums\;$(SolutionDir)VGame\VGame\source\events\;$(SolutionDir)VGame\VGame\source\generator\biome\;$(SolutionDir)VGame\VGame\source\generator\structure\;$(SolutionDir)VGame\VGame\source\generator\terrain\;$(SolutionDir)VGame\VGame\source\hud\;$(SolutionDir)VGame\VGame\source\particles\;$(SolutionDir)VGame\VGame\source\physics\;$(SolutionDir)VGame\VGame\source\util\;$(SolutionDir)VGame\VGame\source\world\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;shell32.lib;glfw3.lib;freetype.lib;glew32s.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDIr)Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDIr)libraries\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)VGame\resources\" "$(SolutionDir)bin\Debug x64\resources\" /e /y /i /r</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -150,24 +153,26 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>MinSpace</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <FloatingPointModel>Precise</FloatingPointModel>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <ExceptionHandling>false</ExceptionHandling>
-      <AdditionalIncludeDirectories>$(SolutionDir)Include;$(SolutionDir)VGame\VEngine\Header;$(SolutionDir)VGame\VEngine\Header\Event;$(SolutionDir)VGame\VEngine\Header\Event\Events;$(SolutionDir)VGame\VGame\Header;$(SolutionDir)VGame\VGame\Header\Block;$(SolutionDir)VGame\VGame\Header\Chunk;$(SolutionDir)VGame\VGame\Header\Generator;$(SolutionDir)VGame\VGame\Header\Util;$(SolutionDir)VGame\VGame\Header\World;$(SolutionDir)VGame\VGame\Header\Entity;$(SolutionDir)VGame\VGame\Header\Generator\Biome;$(SolutionDir)VGame\VGame\Header\Generator\Terrain;$(SolutionDir)VGame\VGame\Header\Generator\Structure;$(SolutionDir)VGame\VGame\Header\Physics;$(SolutionDir)VGame\VGame\Header\Generator\Biome\Biomes;$(SolutionDir)VGame\VGame\Header\Enums;$(SolutionDir)VGame\VGame\Header\HUD;$(SolutionDir)VGame\VGame\Header\Events;$(SolutionDir)VGame\VGame\Header\Particles;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\;$(SolutionDir)VGame\VEngine\source\;$(SolutionDir)VGame\VEngine\source\event\;$(SolutionDir)VGame\VGame\;$(SolutionDir)VGame\VGame\source\;$(SolutionDir)VGame\VGame\source\block\;$(SolutionDir)VGame\VGame\source\chunk\;$(SolutionDir)VGame\VGame\source\entity\;$(SolutionDir)VGame\VGame\source\enums\;$(SolutionDir)VGame\VGame\source\events\;$(SolutionDir)VGame\VGame\source\generator\biome\;$(SolutionDir)VGame\VGame\source\generator\structure\;$(SolutionDir)VGame\VGame\source\generator\terrain\;$(SolutionDir)VGame\VGame\source\hud\;$(SolutionDir)VGame\VGame\source\particles\;$(SolutionDir)VGame\VGame\source\physics\;$(SolutionDir)VGame\VGame\source\util\;$(SolutionDir)VGame\VGame\source\world\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;opengl32.lib;shell32.lib;glfw3.lib;freetype.lib;glew32s.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDIr)Libraries;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDIr)libraries\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)VGame\resources\" "$(SolutionDir)bin\Release x64\resources\" /e /y /i /r</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="VEngine\Source\Camera.cpp" />
@@ -183,8 +188,6 @@
     <ClCompile Include="VEngine\Source\TextRenderer.cpp" />
     <ClCompile Include="VEngine\Source\Texture.cpp" />
     <ClCompile Include="VEngine\Source\Timer.cpp" />
-    <ClCompile Include="VGame\Header\Enums\MeshTypes.h" />
-    <ClCompile Include="VGame\Header\World\Skybox.h" />
     <ClCompile Include="VGame\Source\Chunk\ChunkArea.cpp" />
     <ClCompile Include="VGame\Source\Entity\PlayerInput.cpp" />
     <ClCompile Include="VGame\Source\Generator\Biome\Biome.cpp" />
@@ -212,65 +215,65 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="VEngine\Header\Camera.h" />
-    <ClInclude Include="VEngine\Header\CoreEngine.h" />
-    <ClInclude Include="VEngine\Header\Event\Cancellable.h" />
-    <ClInclude Include="VEngine\Header\Event\Event.h" />
-    <ClInclude Include="VEngine\Header\Event\EventDispatcher.h" />
-    <ClInclude Include="VEngine\Header\FramerateCounter.h" />
-    <ClInclude Include="VEngine\Header\GeneralMath.h" />
-    <ClInclude Include="VEngine\Header\Input.h" />
-    <ClInclude Include="VEngine\Header\Log.h" />
-    <ClInclude Include="VEngine\Header\NoiseGenerator.h" />
-    <ClInclude Include="VEngine\Header\RenderUtil.h" />
-    <ClInclude Include="VEngine\Header\Screenshot.h" />
-    <ClInclude Include="VEngine\Header\Shader.h" />
-    <ClInclude Include="VEngine\Header\TextRenderer.h" />
-    <ClInclude Include="VEngine\Header\Texture.h" />
-    <ClInclude Include="VEngine\Header\Timer.h" />
-    <ClInclude Include="VEngine\Header\Vertex.h" />
-    <ClInclude Include="VGame\Header\Chunk\ChunkArea.h" />
+    <ClInclude Include="VEngine\source\Camera.h" />
+    <ClInclude Include="VEngine\source\CoreEngine.h" />
+    <ClInclude Include="VEngine\Source\event\Cancellable.h" />
+    <ClInclude Include="VEngine\Source\event\Event.h" />
+    <ClInclude Include="VEngine\Source\event\EventDispatcher.h" />
+    <ClInclude Include="VEngine\source\FramerateCounter.h" />
+    <ClInclude Include="VEngine\source\GeneralMath.h" />
+    <ClInclude Include="VEngine\source\Input.h" />
+    <ClInclude Include="VEngine\source\Log.h" />
+    <ClInclude Include="VEngine\source\NoiseGenerator.h" />
+    <ClInclude Include="VEngine\source\Random.h" />
+    <ClInclude Include="VEngine\source\RenderUtil.h" />
+    <ClInclude Include="VEngine\source\Screenshot.h" />
+    <ClInclude Include="VEngine\source\Shader.h" />
+    <ClInclude Include="VEngine\source\TextRenderer.h" />
+    <ClInclude Include="VEngine\source\Texture.h" />
+    <ClInclude Include="VEngine\source\Timer.h" />
+    <ClInclude Include="VEngine\source\Vertex.h" />
+    <ClInclude Include="VEngine\source\Window.h" />
     <ClInclude Include="VGame\Header\Chunk\ChunkSlice.h" />
-    <ClInclude Include="VGame\Header\Entity\BlockID.h" />
-    <ClInclude Include="VGame\Header\Enums\EventTypes.h" />
-    <ClInclude Include="VGame\Header\Enums\Orientation.h" />
-    <ClInclude Include="VGame\Header\Events\BlockEvents.h" />
-    <ClInclude Include="VGame\Header\Events\PlayerEvents.h" />
-    <ClInclude Include="VGame\Header\Generator\Biome\Biome.h" />
-    <ClInclude Include="VGame\Header\Generator\Biome\Biomes.h" />
-    <ClInclude Include="VGame\Header\Block\Block.h" />
-    <ClInclude Include="VGame\Header\Chunk\Chunk.h" />
-    <ClInclude Include="VGame\Header\Chunk\ChunkManager.h" />
-    <ClInclude Include="VGame\Header\Chunk\ChunkMesh.h" />
-    <ClInclude Include="VGame\Header\Entity\Entity.h" />
-    <ClInclude Include="VGame\Header\Entity\Player.h" />
-    <ClInclude Include="VGame\Header\Generator\Structure\Structure.h" />
-    <ClInclude Include="VGame\Header\Generator\Terrain\Vein.h" />
-    <ClInclude Include="VGame\Header\Generator\Terrain\WorldGenerator.h" />
-    <ClInclude Include="VGame\Header\HUD\Crosshair.h" />
-    <ClInclude Include="VGame\Header\Physics\AABB.h" />
-    <ClInclude Include="VGame\Header\Util\Array2D.h" />
-    <ClInclude Include="VGame\Header\Util\Array3D.h" />
-    <ClInclude Include="VGame\Header\Util\Coordinates.h" />
-    <ClInclude Include="VGame\Header\Game.h" />
-    <ClInclude Include="VEngine\Header\Window.h" />
-    <ClInclude Include="VGame\Header\Util\Hasher.h" />
-    <ClInclude Include="VGame\Header\Util\Raycast.h" />
-    <ClInclude Include="VGame\Header\Util\TextureAtlas.h" />
-    <ClInclude Include="VGame\Header\Util\Util.h" />
-    <ClInclude Include="VGame\Header\World\World.h" />
-    <ClInclude Include="VGame\Header\Constants.h" />
-    <ClInclude Include="VEngine\Header\Random.h" />
-    <ClInclude Include="VGame\Header\Particles\ParticleEmitter.h" />
-    <ClInclude Include="VGame\Header\Particles\ParticleSystem.h" />
+    <ClInclude Include="VGame\source\block\Block.h" />
+    <ClInclude Include="VGame\source\chunk\Chunk.h" />
+    <ClInclude Include="VGame\source\chunk\ChunkArea.h" />
+    <ClInclude Include="VGame\source\chunk\ChunkManager.h" />
+    <ClInclude Include="VGame\source\chunk\ChunkMesh.h" />
+    <ClInclude Include="VGame\source\Constants.h" />
+    <ClInclude Include="VGame\source\entity\BlockID.h" />
+    <ClInclude Include="VGame\source\entity\Entity.h" />
+    <ClInclude Include="VGame\source\entity\Player.h" />
+    <ClInclude Include="VGame\source\enums\EventTypes.h" />
+    <ClInclude Include="VGame\source\enums\MeshTypes.h" />
+    <ClInclude Include="VGame\source\enums\Orientation.h" />
+    <ClInclude Include="VGame\source\events\BlockEvents.h" />
+    <ClInclude Include="VGame\source\events\PlayerEvents.h" />
+    <ClInclude Include="VGame\source\Game.h" />
+    <ClInclude Include="VGame\source\generator\biome\Biome.h" />
+    <ClInclude Include="VGame\source\generator\biome\Biomes.h" />
+    <ClInclude Include="VGame\source\generator\structure\Structure.h" />
+    <ClInclude Include="VGame\source\generator\terrain\Vein.h" />
+    <ClInclude Include="VGame\source\generator\terrain\WorldGenerator.h" />
+    <ClInclude Include="VGame\source\hud\Crosshair.h" />
+    <ClInclude Include="VGame\source\particles\ParticleEmitter.h" />
+    <ClInclude Include="VGame\source\particles\ParticleSystem.h" />
+    <ClInclude Include="VGame\source\physics\AABB.h" />
+    <ClInclude Include="VGame\source\util\Array2D.h" />
+    <ClInclude Include="VGame\source\util\Array3D.h" />
+    <ClInclude Include="VGame\source\util\Coordinates.h" />
+    <ClInclude Include="VGame\source\util\Hasher.h" />
+    <ClInclude Include="VGame\source\util\Raycast.h" />
+    <ClInclude Include="VGame\source\util\TextureAtlas.h" />
+    <ClInclude Include="VGame\source\util\Util.h" />
+    <ClInclude Include="VGame\source\world\Skybox.h" />
+    <ClInclude Include="VGame\source\world\World.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Media\Config\Settings.ini" />
     <None Include="Resources\Shaders\chunk_frag.glsl" />
     <None Include="Resources\Shaders\chunk_vert.glsl" />
     <None Include="Resources\Shaders\basic_frag.glsl" />
     <None Include="Resources\Shaders\basic_vert.glsl" />
-    <None Include="Resources\Shaders\skybox_frag.glsl" />
     <None Include="Resources\Shaders\skybox_vert.glsl" />
     <None Include="Resources\Shaders\text_frag.glsl" />
     <None Include="Resources\Shaders\text_vert.glsl" />

@@ -43,7 +43,7 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
 	ChunkMesh* solidMesh = (solid == nullptr) ? this->_solid : solid;
 	ChunkMesh* fluidMesh = (fluid == nullptr) ? this->_fluid : fluid;
 
-	//std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	for(int x = 0; x < CHUNK_SIZE; x++)
 	for(int y = 0; y < CHUNK_SIZE; y++)
 	for(int z = 0; z < CHUNK_SIZE; z++) {
@@ -77,9 +77,9 @@ void Chunk::generateChunkMesh(ChunkMesh* solid, ChunkMesh* fluid) {
 		}
 	}
 	meshesGenerated = true;
-	//std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	//long long us = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
-	//std::cout << "Time needed: " << us << " us (" << (us / 1000.f) << " ms)" << std::endl;
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	long long us = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+	std::cout << "Time needed: " << us << " us (" << (us / 1000.f) << " ms)" << std::endl;
 }
 
 void Chunk::recreateChunkMesh() {

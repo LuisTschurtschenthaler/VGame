@@ -12,9 +12,9 @@ constexpr auto MAX_BLOCK_BREAK_PARTICLES	= 30;
 
 
 /* File system */
-constexpr auto PATH_SHADERS				= "./Resources/Shaders/";
-constexpr auto PATH_TEXTURES			= "./Resources/Textures/";
-constexpr auto PATH_SCREENSHOTS			= "./Screenshots/";
+constexpr auto PATH_SHADERS				= "./resources/shaders/";
+constexpr auto PATH_TEXTURES			= "./resources/textures/";
+constexpr auto PATH_SCREENSHOTS			= "./screenshots/";
 
 
 /* Player */
